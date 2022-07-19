@@ -1,8 +1,9 @@
 import { useUserStore } from "@/stores/auth";
 import { createRouter, createWebHistory } from "vue-router";
-import DashboardView from "@/views/DashboardView.vue";
-import LoginView from "@/views/LoginView.vue";
-import CategoriesView from "@/views/CategoriesView.vue";
+
+const DashboardView = () => import("@/views/DashboardView.vue");
+const LoginView = () => import("@/views/LoginView.vue");
+const CategoriesView = () => import("@/views/CategoriesView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

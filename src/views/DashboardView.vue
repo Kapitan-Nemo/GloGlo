@@ -11,7 +11,6 @@
 
 <script setup lang="ts">
 import Header from "@/components/HeaderBar.vue";
-
 import FinancePanels from "@/components/FinancePanels.vue";
 import FinanceTable from "@/components/FinanceTable.vue";
 </script>
