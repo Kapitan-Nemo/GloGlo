@@ -1,9 +1,6 @@
 <template>
   <nav class="menu">
-    <p class="menu__logo">
-      GloGlo
-      <LogoIcon></LogoIcon>
-    </p>
+    <p class="menu__logo">GloGlo<LogoIcon></LogoIcon></p>
     <RouterLink class="menu__link" to="/"
       ><DashboardIcon></DashboardIcon>Dashboard</RouterLink
     >
@@ -18,7 +15,6 @@
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-
 import LogoIcon from "./components/icons/IconLogo.vue";
 import DashboardIcon from "./components/icons/IconDashboard.vue";
 import CategoriesIcon from "./components/icons/IconCategories.vue";

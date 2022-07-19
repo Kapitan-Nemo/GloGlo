@@ -4,6 +4,10 @@
 </template>
 
 <script setup lang="ts">
-import Header from "@/components/HeaderBar.vue";
-import CategoriesEdit from "@/components/CategoriesEdit.vue";
+import { defineAsyncComponent } from "vue";
+
+const Header = defineAsyncComponent(() => import("@/components/HeaderBar.vue"));
+const CategoriesEdit = defineAsyncComponent(
+  () => import("@/components/CategoriesEdit.vue")
+);
 </script>

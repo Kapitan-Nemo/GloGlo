@@ -10,7 +10,13 @@
 </template>
 
 <script setup lang="ts">
-import Header from "@/components/HeaderBar.vue";
-import FinancePanels from "@/components/FinancePanels.vue";
-import FinanceTable from "@/components/FinanceTable.vue";
+import { defineAsyncComponent } from "vue";
+
+const Header = defineAsyncComponent(() => import("@/components/HeaderBar.vue"));
+const FinancePanels = defineAsyncComponent(
+  () => import("@/components/FinancePanels.vue")
+);
+const FinanceTable = defineAsyncComponent(
+  () => import("@/components/FinanceTable.vue")
+);
 </script>
