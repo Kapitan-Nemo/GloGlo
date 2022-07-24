@@ -11,9 +11,7 @@
         ></Avatar1Icon>
       </div>
     </div>
-    <p class="header__subtitle">
-      {{ msg }}
-    </p>
+    <p class="header__subtitle">{{ msg }}</p>
     <Transition>
       <div v-if="showAccount" class="header__account">
         <p class="header__account-action">
