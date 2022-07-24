@@ -1,6 +1,54 @@
 <template>
   <div class="categories">
     <div
+      class="categories__collection"
+      :class="{
+        categories__collection__active: showOptions,
+      }"
+    >
+      <div class="categories__collection-header">
+        <h2 class="categories__collection-title">All categories</h2>
+      </div>
+      <div
+        v-for="(category, index) in finance.categories"
+        :key="index"
+        class="categories__row"
+        :class="{
+          categories__row__active: index === currentIndex,
+        }"
+      >
+        <span
+          :style="{ background: category.color }"
+          class="categories__row-badge"
+          >{{ category.text }}</span
+        >
+        <div class="categories__row-actions">
+          <button
+            :class="{
+              categories__hide: index === currentIndex,
+            }"
+            class="categories__row-button"
+            @click="editCategory(category.id)"
+          >
+            <EditIcon></EditIcon>
+          </button>
+          <button
+            v-if="index == currentIndex && showOptions"
+            class="categories__row-button"
+            @click="updateCategory(categoryCurrent[0].id)"
+          >
+            <SaveIcon></SaveIcon>
+          </button>
+          <button
+            class="categories__row-button"
+            @click="deleteCategory(category.id)"
+          >
+            <RemoveIcon></RemoveIcon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
       v-if="showOptions && categoryTextBefore !== ''"
       class="categories__edit"
     >
@@ -11,18 +59,11 @@
         default-format="hex"
         :color="colorUpdate"
         @color-change="updateCategoryColor"
-        alpha-channel="hide"
       >
         <template v-slot:copy-button>
           <span></span>
         </template>
       </ColorPicker>
-      <button
-        class="categories__save"
-        @click="updateCategory(categoryCurrent[0].id)"
-      >
-        Update <SaveIcon></SaveIcon>
-      </button>
     </div>
     <div v-else class="categories__edit">
       <input
@@ -36,7 +77,6 @@
         default-format="hex"
         :color="colorNew"
         @color-change="newCategoryColor"
-        alpha-channel="hide"
       >
         <template v-slot:copy-button>
           <span></span>
@@ -45,50 +85,6 @@
       <button class="categories__save" @click="addCategory()">
         Create <AddIcon></AddIcon>
       </button>
-    </div>
-
-    <div class="categories__collection">
-      <div class="categories__collection-header">
-        <h2 class="categories__collection-title">All categories</h2>
-        <button
-          class="categories__collection-options"
-          @click="showOptions = true"
-          v-if="!showOptions"
-        >
-          <OptionsIcon></OptionsIcon>
-        </button>
-        <button
-          class="categories__collection-options"
-          @click="showOptions = false"
-          v-else
-        >
-          <OptionsCheckIcon></OptionsCheckIcon>
-        </button>
-      </div>
-      <div class="categories__collection-wrapper">
-        <span
-          :class="{ categories__active: showOptions }"
-          v-for="(category, index) in finance.categories"
-          :key="index"
-          :style="{ background: category.color }"
-          class="categories__badge"
-          >{{ category.text }}
-          <div class="categories__collection-buttons" v-if="showOptions">
-            <button
-              class="categories__collection-button"
-              @click="editCategory(category.id)"
-            >
-              <EditIcon></EditIcon>
-            </button>
-            <button
-              @click="deleteCategory(category.id)"
-              class="categories__collection-button"
-            >
-              <RemoveIcon></RemoveIcon>
-            </button>
-          </div>
-        </span>
-      </div>
     </div>
   </div>
 </template>
@@ -110,8 +106,6 @@ import {
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
 import { useFinanceStore } from "@/stores/finance";
-import OptionsIcon from "@/components/icons/IconOptions.vue";
-import OptionsCheckIcon from "@/components/icons/IconOptionsCheck.vue";
 import EditIcon from "@/components/icons/IconEdit.vue";
 import RemoveIcon from "@/components/icons/IconRemove.vue";
 import SaveIcon from "@/components/icons/IconSave.vue";
@@ -123,8 +117,8 @@ interface Categories {
   id: string;
 }
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
-const user = useUserStore();
 const firestore = useFireStore();
+const user = useUserStore();
 const finance = useFinanceStore();
 const colorNew = ref("#000000");
 const colorUpdate = ref("");
@@ -135,6 +129,7 @@ const newCategory = ref<Array<Categories>>([{ id: "", text: "", color: "" }]);
 const categoryTextBefore = ref("");
 const categoryColorBefore = ref("");
 const showOptions = ref(false);
+const currentIndex = ref();
 const categoriesCollectionRef = collection(
   firestore.db,
   "users",
@@ -173,6 +168,9 @@ const editCategory = (id: string) => {
   colorUpdate.value = finance.categories[index].color;
   categoryTextBefore.value = finance.categories[index].text;
   categoryColorBefore.value = finance.categories[index].color;
+  showOptions.value = !showOptions.value;
+  currentIndex.value = index;
+  console.log(currentIndex);
 };
 const updateCategory = async (id: string) => {
   const index = finance.categories.findIndex((category) => category.id === id);
@@ -204,6 +202,8 @@ const updateCategory = async (id: string) => {
         "category.color": finance.categories[index].color,
       });
     });
+    showOptions.value = false;
+    currentIndex.value = undefined;
     alert("Category update sucess");
   }
 };
@@ -211,6 +211,8 @@ const updateCategory = async (id: string) => {
 const deleteCategory = (id: string) => {
   finance.categories.filter((category) => category.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "categories", id));
+  showOptions.value = false;
+  currentIndex.value = undefined;
 };
 
 const addCategory = () => {
@@ -232,11 +234,18 @@ const addCategory = () => {
   .vacp-color-picker {
     background: $bg-secondary;
     max-width: 330px;
+    padding: 0px;
   }
   .vacp-color-input {
     background-color: $bg-secondary;
-    border: none;
+    border: solid 1px;
+    border-radius: 10px;
+    font-size: 20px;
   }
+  .vacp-copy-button {
+    display: none;
+  }
+
   &__edit {
     width: 380px;
     min-height: 262px;
@@ -255,8 +264,8 @@ const addCategory = () => {
     border-right: none;
     background: transparent;
     color: #fff;
-    font-size: 20px;
-    max-width: 150px;
+    font-size: 25px;
+    max-width: 200px;
     padding: 0 0 5px 0;
     margin: 0 0 30px 0;
   }
@@ -279,12 +288,60 @@ const addCategory = () => {
     }
   }
 
+  &__row {
+    border: solid 1px #292d39;
+    margin: 0 0 25px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    &__active {
+      opacity: 1 !important;
+      pointer-events: all !important;
+    }
+    &-badge {
+      border-radius: 20px;
+      font-size: 20px;
+      color: $white;
+      width: 140px;
+      min-height: 40px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 0 0 15px;
+    }
+    &-actions {
+      display: flex;
+    }
+    &-button {
+      background: transparent;
+      cursor: pointer;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      border-left: solid 1px #292d39;
+      padding: 25px;
+    }
+  }
+
+  &__hide {
+    display: none;
+  }
+
   &__collection {
+    &__active {
+      .categories__row {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
     width: 380px;
-    min-height: 262px;
+    height: max-content;
     background-color: $bg-secondary;
     padding: 25px;
     border-radius: 10px;
+    margin: 0 30px 0 0;
     &-header {
       margin: 0 0 25px 0;
       display: flex;
@@ -329,18 +386,7 @@ const addCategory = () => {
       width: 100%;
     }
   }
-  &__badge {
-    border-radius: 20px;
-    font-size: 20px;
-    color: $white;
-    margin: 0 0 30px 0;
-    width: 140px;
-    height: 40px;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
   &__active {
     font-size: 0;
     padding: 0;
