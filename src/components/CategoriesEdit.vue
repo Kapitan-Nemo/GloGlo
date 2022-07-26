@@ -9,6 +9,10 @@
       <div class="categories__collection-header">
         <h2 class="categories__collection-title">All categories</h2>
       </div>
+      <div v-if="finance.categories[0] == null" class="categories__empty">
+        <EmptyIcon></EmptyIcon>
+        <p class="finance__empty-text">Whoops… There is no categories!</p>
+      </div>
       <div
         v-for="(category, index) in finance.categories"
         :key="index"
@@ -83,7 +87,7 @@
         </template>
       </ColorPicker>
       <button class="categories__save" @click="addCategory()">
-        Create <AddIcon></AddIcon>
+        Add new <AddIcon></AddIcon>
       </button>
     </div>
   </div>
@@ -110,6 +114,7 @@ import EditIcon from "@/components/icons/IconEdit.vue";
 import RemoveIcon from "@/components/icons/IconRemove.vue";
 import SaveIcon from "@/components/icons/IconSave.vue";
 import AddIcon from "@/components/icons/IconAdd.vue";
+import EmptyIcon from "@/components/icons/IconEmpty.vue";
 
 interface Categories {
   text: string;
@@ -170,7 +175,6 @@ const editCategory = (id: string) => {
   categoryColorBefore.value = finance.categories[index].color;
   showOptions.value = !showOptions.value;
   currentIndex.value = index;
-  console.log(currentIndex);
 };
 const updateCategory = async (id: string) => {
   const index = finance.categories.findIndex((category) => category.id === id);
@@ -244,6 +248,16 @@ const addCategory = () => {
   }
   .vacp-copy-button {
     display: none;
+  }
+
+  &__empty {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    svg {
+      width: 100px;
+    }
   }
 
   &__edit {
@@ -337,7 +351,9 @@ const addCategory = () => {
       }
     }
     width: 380px;
-    height: max-content;
+    overflow: scroll;
+    height: auto;
+    max-height: 521px;
     background-color: $bg-secondary;
     padding: 25px;
     border-radius: 10px;
