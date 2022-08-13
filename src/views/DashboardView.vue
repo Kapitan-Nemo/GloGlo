@@ -4,8 +4,11 @@
   ></Header>
 
   <div class="dashboard">
-    <FinancePanels></FinancePanels>
-    <FinanceTable></FinanceTable>
+    <div class="dashboard__wrapper">
+      <FinancePanels></FinancePanels>
+      <FinanceTable></FinanceTable>
+    </div>
+    <FinanceChart></FinanceChart>
   </div>
 </template>
 
@@ -19,4 +22,19 @@ const FinancePanels = defineAsyncComponent(
 const FinanceTable = defineAsyncComponent(
   () => import("@/components/FinanceTable.vue")
 );
+const FinanceChart = defineAsyncComponent(
+  () => import("@/components/FinanceChart.vue")
+);
 </script>
+<style lang="scss">
+.dashboard {
+  display: flex;
+  flex-flow: row;
+
+  &__wrapper {
+    display: flex;
+    flex-flow: column;
+    // max-width: 70%;
+  }
+}
+</style>

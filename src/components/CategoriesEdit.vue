@@ -102,10 +102,11 @@ import {
   query,
   updateDoc,
   doc,
-  where,
-  getDocs,
   addDoc,
   deleteDoc,
+  where,
+  getDocs,
+  orderBy,
 } from "firebase/firestore";
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
@@ -120,6 +121,8 @@ interface Categories {
   text: string;
   color: string;
   id: string;
+  total: number;
+  date: number;
 }
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const firestore = useFireStore();
@@ -128,9 +131,11 @@ const finance = useFinanceStore();
 const colorNew = ref("#000000");
 const colorUpdate = ref("");
 const categoryCurrent = ref<Array<Categories>>([
-  { id: "", text: "", color: "" },
+  { id: "", text: "", color: "", total: 0, date: Date.now() },
 ]);
-const newCategory = ref<Array<Categories>>([{ id: "", text: "", color: "" }]);
+const newCategory = ref<Array<Categories>>([
+  { id: "", text: "", color: "", total: 0, date: Date.now() },
+]);
 const categoryTextBefore = ref("");
 const categoryColorBefore = ref("");
 const showOptions = ref(false);
@@ -147,19 +152,27 @@ function newCategoryColor(eventData: { cssColor: string }) {
 function updateCategoryColor(eventData: { cssColor: string }) {
   categoryCurrent.value[0].color = eventData.cssColor;
 }
-const categoriesCollectionQuery = query(categoriesCollectionRef);
+
+const categoriesCollectionQuery = query(
+  categoriesCollectionRef,
+  orderBy("date", "desc")
+);
 onMounted(() => {
   onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
     const newCategories: {
       id: string;
       text: string;
       color: string;
+      total: number;
+      date: number;
     }[] = [];
     querySnapshot.forEach((doc) => {
       const category = {
         id: doc.id,
         text: doc.data().text,
         color: doc.data().color,
+        total: doc.data().total,
+        date: Date.now(),
       };
       newCategories.push(category);
     });
@@ -206,9 +219,10 @@ const updateCategory = async (id: string) => {
         "category.color": finance.categories[index].color,
       });
     });
+
     showOptions.value = false;
     currentIndex.value = undefined;
-    alert("Category update sucess");
+    // alert("Category update sucess");
   }
 };
 
@@ -226,6 +240,8 @@ const addCategory = () => {
     addDoc(collection(firestore.db, "users", user.userId, "categories"), {
       text: newCategory.value[0].text,
       color: colorNew.value,
+      total: 0,
+      date: Date.now(),
     });
     newCategory.value[0].text = "";
   }

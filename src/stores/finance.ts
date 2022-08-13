@@ -12,6 +12,7 @@ export const useFinanceStore = defineStore(
         text: string;
         id: string;
         color: string;
+        total: number;
       };
       editMode: boolean;
     }
@@ -19,13 +20,23 @@ export const useFinanceStore = defineStore(
       text: string;
       color: string;
       id: string;
+      total: number;
+      date: number;
+      month: number;
+      year: number;
     }
+
     const categories = ref<Array<Categories>>([]);
     const records = ref<Array<Records>>([]);
-
+    const chartValues = ref([0]);
+    const chartLabels = ref([""]);
+    const chartColors = ref([""]);
     return {
       records,
       categories,
+      chartValues,
+      chartLabels,
+      chartColors,
     };
   },
   {

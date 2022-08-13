@@ -42,6 +42,7 @@
               v-bind:value="{
                 color: category.color,
                 text: category.text,
+                id: category.id,
               }"
             >
               {{ category.text }}
@@ -73,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -86,6 +87,7 @@ import {
   onSnapshot,
   query,
   orderBy,
+  increment,
 } from "firebase/firestore";
 
 import AddIcon from "@/components/icons/IconAdd.vue";
@@ -93,14 +95,12 @@ import EditIcon from "@/components/icons/IconEdit.vue";
 import RemoveIcon from "@/components/icons/IconRemove.vue";
 import SaveIcon from "@/components/icons/IconSave.vue";
 import EmptyIcon from "@/components/icons/IconEmpty.vue";
-
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
 const newRecordCost = ref(0);
 const newRecordCategory = ref("");
 const finance = useFinanceStore();
-
 const date = new Date();
 const currentMonth = date.getMonth();
 const currentYear = date.getFullYear();
@@ -136,6 +136,9 @@ onMounted(() => {
         text: string;
         color: string;
         id: string;
+        total: number;
+        month: number;
+        year: number;
       };
       editMode: boolean;
     }[] = [];
@@ -158,14 +161,20 @@ onMounted(() => {
       text: string;
       id: string;
       color: string;
+      total: number;
+      date: number;
       month: number;
+      year: number;
     }[] = [];
     querySnapshot.forEach((doc) => {
       const category = {
         id: doc.id,
         text: doc.data().text,
         color: doc.data().color,
+        total: doc.data().total,
+        date: doc.data().date,
         month: doc.data().month,
+        year: doc.data().year,
       };
       newCategories.push(category);
     });
@@ -187,14 +196,76 @@ const addRecord = () => {
 };
 
 const deleteRecord = (id: string) => {
+  const index = finance.records.findIndex((record) => record.id === id);
+  const updateDocCategory = doc(
+    firestore.db,
+    "users",
+    user.userId,
+    "categories",
+    finance.records[index].category.id
+  );
+  updateDoc(updateDocCategory, {
+    total: increment(-finance.records[index].cost),
+  });
+
   finance.records = finance.records.filter((record) => record.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
+
+  setTimeout(() => {
+    const financeMonthFilter = computed(() => {
+      return finance.categories.filter(
+        (n) => n.month == currentMonth && n.year == currentYear
+      );
+    });
+
+    const financeLabels = computed(() => {
+      return financeMonthFilter.value.map((data) => data.text);
+    });
+    const financeColor = computed(() => {
+      return financeMonthFilter.value.map((data) => data.color);
+    });
+    const financeTotal = computed(() => {
+      return financeMonthFilter.value.map((data) => data.total);
+    });
+
+    finance.chartColors = financeColor.value;
+    finance.chartLabels = financeLabels.value;
+    finance.chartValues = financeTotal.value;
+  }, 100);
 };
 
-const saveRecord = (id: string) => {
+const saveRecord = async (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
+
   if (finance.records[index].cost > 0) {
+    const updateDocCategory = doc(
+      firestore.db,
+      "users",
+      user.userId,
+      "categories",
+      finance.records[index].category.id
+    );
+
+    const financeValueFilter = computed(() => {
+      return finance.records.filter(
+        (n) => n.category.text == finance.records[index].category.text
+      );
+    });
+
+    const financeValue = computed(() => {
+      return financeValueFilter.value.reduce(
+        (financeValue: number, record: { cost: number }) =>
+          record.cost + financeValue,
+        0
+      );
+    });
+
+    updateDoc(updateDocCategory, {
+      total: financeValue.value,
+      month: currentMonth,
+      year: currentYear,
+    });
     updateDoc(updateDocRef, {
       cost: finance.records[index].cost,
       category: finance.records[index].category,
@@ -206,12 +277,34 @@ const saveRecord = (id: string) => {
   } else {
     alert("Cost can't be 0");
   }
+  setTimeout(() => {
+    const financeMonthFilter = computed(() => {
+      return finance.categories.filter(
+        (n) => n.month == currentMonth && n.year == currentYear
+      );
+    });
+
+    const financeLabels = computed(() => {
+      return financeMonthFilter.value.map((data) => data.text);
+    });
+    const financeColor = computed(() => {
+      return financeMonthFilter.value.map((data) => data.color);
+    });
+    const financeTotal = computed(() => {
+      return financeMonthFilter.value.map((data) => data.total);
+    });
+
+    finance.chartColors = financeColor.value;
+    finance.chartLabels = financeLabels.value;
+    finance.chartValues = financeTotal.value;
+  }, 100);
 };
 
 const editRecord = (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
   finance.records[index].editMode = true;
 };
+console.log("Finance categories:", finance.categories);
 </script>
 
 <style lang="scss">
