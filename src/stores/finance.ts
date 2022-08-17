@@ -12,7 +12,6 @@ export const useFinanceStore = defineStore(
         text: string;
         id: string;
         color: string;
-        total: number;
       };
       editMode: boolean;
     }
@@ -22,8 +21,6 @@ export const useFinanceStore = defineStore(
       id: string;
       total: number;
       date: number;
-      month: number;
-      year: number;
     }
 
     const categories = ref<Array<Categories>>([]);

@@ -11,11 +11,14 @@
     </div>
     <div
       class="finance__row"
-      v-for="(record, index) in finance.records"
+      v-for="(record, index) in financeMonthFilter"
       :key="index"
     >
       <div class="finance__row-data">
         <span class="finance__row-cell">{{ index }}#</span>
+        <span class="finance__row-cell"
+          >{{ record.month }}#{{ record.year }}</span
+        >
         <span v-if="!record.editMode" class="finance__row-cell"
           >{{ record.cost }} $</span
         >
@@ -123,7 +126,11 @@ const recordsCollectionQuery = query(
   orderBy("date", "desc")
 );
 const categoriesCollectionQuery = query(categoriesCollectionRef);
-
+const financeMonthFilter = computed(() => {
+  return finance.records.filter(
+    (n) => n.month == currentMonth && n.year == currentYear
+  );
+});
 onMounted(() => {
   const finance = useFinanceStore();
   onSnapshot(recordsCollectionQuery, (querySnapshot) => {
@@ -163,8 +170,6 @@ onMounted(() => {
       color: string;
       total: number;
       date: number;
-      month: number;
-      year: number;
     }[] = [];
     querySnapshot.forEach((doc) => {
       const category = {
@@ -173,8 +178,6 @@ onMounted(() => {
         color: doc.data().color,
         total: doc.data().total,
         date: doc.data().date,
-        month: doc.data().month,
-        year: doc.data().year,
       };
       newCategories.push(category);
     });
@@ -212,26 +215,27 @@ const deleteRecord = (id: string) => {
   deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
 
   setTimeout(() => {
-    const financeMonthFilter = computed(() => {
-      return finance.categories.filter(
-        (n) => n.month == currentMonth && n.year == currentYear
-      );
-    });
+    // const financeMonthFilter = computed(() => {
+    //   return finance.categories.filter(
+    //     (n) => n.month == currentMonth && n.year == currentYear
+    //   );
+    // });
 
     const financeLabels = computed(() => {
-      return financeMonthFilter.value.map((data) => data.text);
+      return finance.categories.map((data) => data.text);
     });
     const financeColor = computed(() => {
-      return financeMonthFilter.value.map((data) => data.color);
+      return finance.categories.map((data) => data.color);
     });
     const financeTotal = computed(() => {
-      return financeMonthFilter.value.map((data) => data.total);
+      return finance.categories.map((data) => data.total);
     });
 
     finance.chartColors = financeColor.value;
     finance.chartLabels = financeLabels.value;
     finance.chartValues = financeTotal.value;
-  }, 100);
+    console.log(finance.chartValues);
+  }, 500);
 };
 
 const saveRecord = async (id: string) => {
@@ -278,26 +282,27 @@ const saveRecord = async (id: string) => {
     alert("Cost can't be 0");
   }
   setTimeout(() => {
-    const financeMonthFilter = computed(() => {
-      return finance.categories.filter(
-        (n) => n.month == currentMonth && n.year == currentYear
-      );
-    });
+    // const financeMonthFilter = computed(() => {
+    //   return finance.categories.filter(
+    //     (n) => n.month == currentMonth && n.year == currentYear
+    //   );
+    // });
 
     const financeLabels = computed(() => {
-      return financeMonthFilter.value.map((data) => data.text);
+      return finance.categories.map((data) => data.text);
     });
     const financeColor = computed(() => {
-      return financeMonthFilter.value.map((data) => data.color);
+      return finance.categories.map((data) => data.color);
     });
     const financeTotal = computed(() => {
-      return financeMonthFilter.value.map((data) => data.total);
+      return finance.categories.map((data) => data.total);
     });
 
     finance.chartColors = financeColor.value;
     finance.chartLabels = financeLabels.value;
     finance.chartValues = financeTotal.value;
-  }, 100);
+    console.log(finance.chartValues);
+  }, 500);
 };
 
 const editRecord = (id: string) => {

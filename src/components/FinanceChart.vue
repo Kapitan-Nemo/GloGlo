@@ -1,13 +1,11 @@
 <template>
-  <div v-if="finance.chartValues <= [0] || null">
-    <p>There is no data!</p>
-  </div>
-  <div v-else class="dashboard__chart">
+  <div class="dashboard__chart">
+    <h2 class="dashboard__title">Categories</h2>
     <DoughnutChart
       ref="doughnutRef"
       :width="300"
       :height="300"
-      :chartData="testData"
+      :chartData="chartData"
       :options="options"
     />
   </div>
@@ -44,13 +42,13 @@ const options = ref({
   },
 });
 
-const testData = computed(() => ({
+const chartData = computed(() => ({
   labels: finance.chartLabels,
   datasets: [
     {
       data: finance.chartValues,
       backgroundColor: finance.chartColors,
-      spacing: 15,
+      spacing: 5,
       borderWidth: 0,
       borderRadius: 25,
       cutout: "90%",
@@ -62,11 +60,13 @@ const testData = computed(() => ({
 <style lang="scss">
 .dashboard {
   &__chart {
-    display: flex;
-    align-items: center;
     background: #1e1f25;
     border-radius: 10px;
     padding: 25px;
+  }
+  &__title {
+    margin: 0 0 30px 0;
+    font-size: 25px;
   }
 }
 </style>
