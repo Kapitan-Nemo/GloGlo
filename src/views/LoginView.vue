@@ -1,14 +1,21 @@
 <template>
   <div class="login__wrapper">
+    <img class="login__shape-left" src="@/assets/images/shape1.png" />
     <div class="login__box">
-      <div class="login__logo">
-        <h1 class="login__logo-title">GloGlo</h1>
-        <LogoIcon></LogoIcon>
+      <div class="login__box-left">
+        <LoginIcon></LoginIcon>
       </div>
-      <button class="login__button" type="button" @click="singInWithGoogle">
-        <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span>Sign
-        in with Google
-      </button>
+      <div class="login__box-right">
+        <img class="login__shape-right" src="@/assets/images/shape2.png" />
+        <div class="login__logo">
+          <h1 class="login__logo-title">GloGlo</h1>
+          <LogoIcon></LogoIcon>
+        </div>
+        <button class="login__button" type="button" @click="singInWithGoogle">
+          <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
+          >Sign in with Google
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +26,7 @@ import router from "@/router";
 import { onMounted, onUnmounted } from "vue";
 import GoogleIcon from "@/components/icons/IconGoogle.vue";
 import LogoIcon from "@/components/icons/IconLogo.vue";
+import LoginIcon from "@/components/icons/IconLogin.vue";
 function singInWithGoogle() {
   const provider = new GoogleAuthProvider();
   signInWithPopup(getAuth(), provider)
@@ -46,23 +54,44 @@ onUnmounted(() => {
   .menu {
     display: none;
   }
+  &__shape {
+    &-left {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 300px;
+    }
+    &-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 400px;
+      transform: rotate(45deg);
+    }
+  }
   &__logo {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0 0 50px 0;
     &-title {
       margin: 0;
     }
   }
   &__box {
-    width: 295px;
-    height: 190px;
-    background: $bg-secondary;
     display: flex;
-    flex-flow: column;
-    justify-content: space-between;
+    flex-flow: row;
+    align-items: center;
+    width: 600px;
+    height: 300px;
+    background: $bg-secondary;
     border-radius: 10px;
-    padding: 25px 50px 25px 50px;
+    &-left {
+      background: white;
+      padding: 25px;
+      margin: 0 50px 0px 0;
+      border-radius: 10px;
+    }
   }
   &__wrapper {
     display: flex;
