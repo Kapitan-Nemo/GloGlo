@@ -92,6 +92,7 @@ import {
   orderBy,
   increment,
 } from "firebase/firestore";
+import { financeChart } from "@/composables/financechart.js";
 
 import AddIcon from "@/components/icons/IconAdd.vue";
 import EditIcon from "@/components/icons/IconEdit.vue";
@@ -107,6 +108,7 @@ const finance = useFinanceStore();
 const date = new Date();
 const currentMonth = date.getMonth();
 const currentYear = date.getFullYear();
+
 //Firebase refs
 const recordsCollectionRef = collection(
   firestore.db,
@@ -213,29 +215,7 @@ const deleteRecord = (id: string) => {
 
   finance.records = finance.records.filter((record) => record.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
-
-  setTimeout(() => {
-    // const financeMonthFilter = computed(() => {
-    //   return finance.categories.filter(
-    //     (n) => n.month == currentMonth && n.year == currentYear
-    //   );
-    // });
-
-    const financeLabels = computed(() => {
-      return finance.categories.map((data) => data.text);
-    });
-    const financeColor = computed(() => {
-      return finance.categories.map((data) => data.color);
-    });
-    const financeTotal = computed(() => {
-      return finance.categories.map((data) => data.total);
-    });
-
-    finance.chartColors = financeColor.value;
-    finance.chartLabels = financeLabels.value;
-    finance.chartValues = financeTotal.value;
-    console.log(finance.chartValues);
-  }, 500);
+  financeChart();
 };
 
 const saveRecord = async (id: string) => {
@@ -281,28 +261,7 @@ const saveRecord = async (id: string) => {
   } else {
     alert("Cost can't be 0");
   }
-  setTimeout(() => {
-    // const financeMonthFilter = computed(() => {
-    //   return finance.categories.filter(
-    //     (n) => n.month == currentMonth && n.year == currentYear
-    //   );
-    // });
-
-    const financeLabels = computed(() => {
-      return finance.categories.map((data) => data.text);
-    });
-    const financeColor = computed(() => {
-      return finance.categories.map((data) => data.color);
-    });
-    const financeTotal = computed(() => {
-      return finance.categories.map((data) => data.total);
-    });
-
-    finance.chartColors = financeColor.value;
-    finance.chartLabels = financeLabels.value;
-    finance.chartValues = financeTotal.value;
-    console.log(finance.chartValues);
-  }, 500);
+  financeChart();
 };
 
 const editRecord = (id: string) => {
