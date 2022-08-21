@@ -16,9 +16,9 @@
     >
       <div class="finance__row-data">
         <span class="finance__row-cell">{{ index }}#</span>
-        <span class="finance__row-cell"
+        <!-- <span class="finance__row-cell"
           >{{ record.month }}#{{ record.year }}</span
-        >
+        > -->
         <span v-if="!record.editMode" class="finance__row-cell"
           >{{ record.cost }} $</span
         >
@@ -135,6 +135,7 @@ const financeMonthFilter = computed(() => {
 });
 onMounted(() => {
   const finance = useFinanceStore();
+  financeChart();
   onSnapshot(recordsCollectionQuery, (querySnapshot) => {
     const newRecords: {
       id: string;
@@ -202,6 +203,7 @@ const addRecord = () => {
 
 const deleteRecord = (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
+  console.log(index);
   const updateDocCategory = doc(
     firestore.db,
     "users",
@@ -221,7 +223,7 @@ const deleteRecord = (id: string) => {
 const saveRecord = async (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
-
+  console.log(index);
   if (finance.records[index].cost > 0) {
     const updateDocCategory = doc(
       firestore.db,
@@ -256,10 +258,10 @@ const saveRecord = async (id: string) => {
       editMode: false,
     });
     finance.records[index].editMode = false;
-  } else if (finance.records[index].category.text == undefined) {
+  } else if (finance.records[index].category.text == undefined || null) {
     alert("You must choose category! ");
-  } else {
-    alert("Cost can't be 0");
+  } else if (finance.records[index].cost <= 0) {
+    alert("Cost must be greater than 0! ");
   }
   financeChart();
 };

@@ -1,13 +1,15 @@
 <template>
-  <div class="dashboard__chart">
+  <div class="dashboard__wrap">
     <h2 class="dashboard__title">Categories</h2>
-    <DoughnutChart
-      ref="doughnutRef"
-      :width="300"
-      :height="300"
-      :chartData="chartData"
-      :options="options"
-    />
+    <div class="dashboard__chart">
+      <DoughnutChart
+        ref="doughnutRef"
+        :width="300"
+        :height="300"
+        :chartData="chartData"
+        :options="options"
+      />
+    </div>
   </div>
 </template>
 
@@ -59,13 +61,20 @@ const chartData = computed(() => ({
 
 <style lang="scss">
 .dashboard {
-  &__chart {
+  &__wrap {
     background: #1e1f25;
     border-radius: 10px;
     padding: 25px;
+    width: 100%;
+  }
+  &__chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
   &__title {
-    margin: 0 0 30px 0;
+    margin: 0;
     font-size: 25px;
   }
 }
