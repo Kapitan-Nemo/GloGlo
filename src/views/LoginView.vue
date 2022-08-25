@@ -111,10 +111,8 @@ onUnmounted(() => {
     background: #00000025;
     color: $white;
     &-wrapper {
-      background: $white;
       height: 39px;
       width: 39px;
-      //border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
