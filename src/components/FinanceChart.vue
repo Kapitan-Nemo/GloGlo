@@ -1,6 +1,11 @@
 <template>
   <div class="dashboard__wrap">
-    <h2 class="dashboard__title">Categories</h2>
+    <div class="dashboard__wrap-header">
+      <h2 class="dashboard__title">Categories</h2>
+      <button class="dashboard__button">
+        Overall<ChevronDownIcon></ChevronDownIcon>
+      </button>
+    </div>
     <div class="dashboard__chart">
       <DoughnutChart
         ref="doughnutRef"
@@ -18,6 +23,7 @@ import { computed, ref } from "vue";
 import { DoughnutChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { useFinanceStore } from "@/stores/finance";
+import ChevronDownIcon from "@/components/icons/IconChevronDown.vue";
 
 const finance = useFinanceStore();
 Chart.register(...registerables);
@@ -66,6 +72,10 @@ const chartData = computed(() => ({
     border-radius: 10px;
     padding: 25px;
     width: 100%;
+    &-header {
+      display: flex;
+      justify-content: space-between;
+    }
   }
   &__chart {
     display: flex;
@@ -76,6 +86,20 @@ const chartData = computed(() => ({
   &__title {
     margin: 0;
     font-size: 25px;
+  }
+  &__button {
+    width: 200px;
+    height: 45px;
+    padding: 0 15px 0 15px;
+    border: solid 1px #292d39;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: $secondary;
+    background-color: transparent;
+    border-radius: 10px;
+    font-size: 20px;
+    cursor: pointer;
   }
 }
 </style>
