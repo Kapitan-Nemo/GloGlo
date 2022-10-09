@@ -2,6 +2,7 @@
   <div class="summary">
     <div class="summary__panel">
       <h2 class="summary__title">This Month</h2>
+
       <p class="summary__cost">{{ financeMonth.toLocaleString() }}$</p>
       <CoinIcon class="summary__icon"></CoinIcon>
     </div>
@@ -24,7 +25,7 @@ import BagIcon from "@/components/icons/IconBag.vue";
 import GoldIcon from "@/components/icons/IconGold.vue";
 import { computed } from "vue";
 import { useFinanceStore } from "@/stores/finance";
-
+import MyIcon from "@/assets/icons/avatars/avatar-2.svg?component";
 const date = new Date();
 const currentMonth = date.getMonth();
 const currentYear = date.getFullYear();

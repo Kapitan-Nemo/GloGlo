@@ -5,10 +5,10 @@
       <div class="header__buttons">
         <CalendarIcon class="header__buttons-calendar"></CalendarIcon>
         <NotifyIcon class="header__buttons-notify"></NotifyIcon>
-        <Avatar1Icon
+        <AvatarIcon
           @click="showAccount = !showAccount"
           class="header__buttons-avatar"
-        ></Avatar1Icon>
+        ></AvatarIcon>
       </div>
     </div>
     <p class="header__subtitle">{{ msg }}</p>
@@ -33,7 +33,7 @@ import CalendarIcon from "./icons/IconCalendar.vue";
 import NotifyIcon from "./icons/IconNotify.vue";
 import UserIcon from "./icons/IconUser.vue";
 import LogoutIcon from "./icons/IconLogout.vue";
-import Avatar1Icon from "./icons/avatar/IconAvatar1.vue";
+import AvatarIcon from "@/assets/icons/avatars/avatar-1.svg?component";
 import { ref } from "vue";
 
 defineProps<{
@@ -118,6 +118,8 @@ function singOutGoogle() {
     }
     &-avatar {
       cursor: pointer;
+      width: 51px;
+      height: 68px;
     }
   }
 }

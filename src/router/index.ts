@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const DashboardView = () => import("@/views/DashboardView.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CategoriesView = () => import("@/views/CategoriesView.vue");
+const SettingsView = () => import("@/views/SettingsView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,12 @@ const router = createRouter({
       path: "/categories",
       name: "categories",
       component: CategoriesView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
       meta: { requiresAuth: true },
     },
   ],

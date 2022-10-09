@@ -7,6 +7,9 @@
     <RouterLink class="menu__link" to="/categories"
       ><CategoriesIcon></CategoriesIcon>Categories</RouterLink
     >
+    <RouterLink class="menu__link" to="/settings"
+      ><CategoriesIcon></CategoriesIcon>Settings</RouterLink
+    >
   </nav>
   <main>
     <RouterView />

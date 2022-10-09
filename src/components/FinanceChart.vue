@@ -70,7 +70,6 @@ const chartData = computed(() => ({
   &__wrap {
     background: #1e1f25;
     border-radius: 10px;
-    padding: 25px;
     width: 100%;
     &-header {
       display: flex;
