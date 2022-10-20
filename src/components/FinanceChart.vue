@@ -1,30 +1,9 @@
-<template>
-  <div class="dashboard__wrap">
-    <div class="dashboard__wrap-header">
-      <h2 class="dashboard__title">Categories</h2>
-      <button class="dashboard__button">
-        Overall<ChevronDownIcon></ChevronDownIcon>
-      </button>
-    </div>
-    <div class="dashboard__chart">
-      <DoughnutChart
-        ref="doughnutRef"
-        :width="300"
-        :height="300"
-        :chartData="chartData"
-        :options="options"
-      />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { DoughnutChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { useFinanceStore } from "@/stores/finance";
-import ChevronDownIcon from "@/components/icons/IconChevronDown.vue";
-
+import ArrowDown from "@/assets/icons/actions/arrow-down.svg?component";
 const finance = useFinanceStore();
 Chart.register(...registerables);
 const doughnutRef = ref();
@@ -64,6 +43,24 @@ const chartData = computed(() => ({
   ],
 }));
 </script>
+
+<template>
+  <div class="dashboard__wrap">
+    <div class="dashboard__wrap-header">
+      <h2 class="dashboard__title">Categories</h2>
+      <button class="dashboard__button">Overall<ArrowDown></ArrowDown></button>
+    </div>
+    <div class="dashboard__chart">
+      <DoughnutChart
+        ref="doughnutRef"
+        :width="300"
+        :height="300"
+        :chartData="chartData"
+        :options="options"
+      />
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .dashboard {

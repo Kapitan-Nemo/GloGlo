@@ -1,32 +1,11 @@
-<template>
-  <div class="login__wrapper">
-    <img class="login__shape-left" src="@/assets/images/shape1.png" />
-    <div class="login__box">
-      <div class="login__box-left">
-        <LoginIcon></LoginIcon>
-      </div>
-      <div class="login__box-right">
-        <img class="login__shape-right" src="@/assets/images/shape2.png" />
-        <div class="login__logo">
-          <h1 class="login__logo-title">GloGlo</h1>
-          <LogoIcon></LogoIcon>
-        </div>
-        <button class="login__button" type="button" @click="singInWithGoogle">
-          <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
-          >Sign in with Google
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import router from "@/router";
 import { onMounted, onUnmounted } from "vue";
-import GoogleIcon from "@/components/icons/IconGoogle.vue";
-import LogoIcon from "@/components/icons/IconLogo.vue";
-import LoginIcon from "@/components/icons/IconLogin.vue";
+import router from "@/router";
+import Logo from "@/assets/icons/logo/logo.svg?component";
+import LoginCharacter from "@/assets/icons/other/login-character.svg?component";
+import GoogleIcon from "@/assets/icons/social/google.svg?component";
+
 function singInWithGoogle() {
   const provider = new GoogleAuthProvider();
   signInWithPopup(getAuth(), provider)
@@ -45,6 +24,28 @@ onUnmounted(() => {
   document.body.classList.remove("login");
 });
 </script>
+
+<template>
+  <div class="login__wrapper">
+    <img class="login__shape-left" src="@/assets/images/shape1.png" />
+    <div class="login__box">
+      <div class="login__box-left">
+        <LoginCharacter></LoginCharacter>
+      </div>
+      <div class="login__box-right">
+        <img class="login__shape-right" src="@/assets/images/shape2.png" />
+        <div class="login__logo">
+          <h1 class="login__logo-title">GloGlo</h1>
+          <Logo></Logo>
+        </div>
+        <button class="login__button" type="button" @click="singInWithGoogle">
+          <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
+          >Sign in with Google
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .login {

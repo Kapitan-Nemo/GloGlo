@@ -1,98 +1,3 @@
-<template>
-  <div class="categories">
-    <div
-      class="categories__collection"
-      :class="{
-        categories__collection__active: showOptions,
-      }"
-    >
-      <div class="categories__collection-header">
-        <h2 class="categories__collection-title">All categories</h2>
-      </div>
-      <div v-if="finance.categories[0] == null" class="categories__empty">
-        <EmptyIcon></EmptyIcon>
-        <p class="finance__empty-text">Whoops… There is no categories!</p>
-      </div>
-      <div
-        v-for="(category, index) in finance.categories"
-        :key="index"
-        class="categories__row"
-        :class="{
-          categories__row__active: index === currentIndex,
-        }"
-      >
-        <span
-          :style="{ background: category.color }"
-          class="categories__row-badge"
-          >{{ category.text }}</span
-        >
-        <div class="categories__row-actions">
-          <button
-            :class="{
-              categories__hide: index === currentIndex,
-            }"
-            class="categories__row-button"
-            @click="editCategory(category.id)"
-          >
-            <EditIcon></EditIcon>
-          </button>
-          <button
-            v-if="index == currentIndex && showOptions"
-            class="categories__row-button"
-            @click="updateCategory(categoryCurrent[0].id)"
-          >
-            <SaveIcon></SaveIcon>
-          </button>
-          <button
-            class="categories__row-button"
-            @click="deleteCategory(category.id)"
-          >
-            <RemoveIcon></RemoveIcon>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="showOptions && categoryTextBefore !== ''"
-      class="categories__edit"
-    >
-      <input class="categories__input" v-model="categoryCurrent[0].text" />
-      <ColorPicker
-        id="update_category"
-        :visible-formats="['hex']"
-        default-format="hex"
-        :color="colorUpdate"
-        @color-change="updateCategoryColor"
-      >
-        <template v-slot:copy-button>
-          <span></span>
-        </template>
-      </ColorPicker>
-    </div>
-    <div v-else class="categories__edit">
-      <input
-        placeholder="Category name"
-        class="categories__input"
-        v-model="newCategory[0].text"
-      />
-      <ColorPicker
-        id="new_category"
-        :visible-formats="['hex']"
-        default-format="hex"
-        :color="colorNew"
-        @color-change="newCategoryColor"
-      >
-        <template v-slot:copy-button>
-          <span></span>
-        </template>
-      </ColorPicker>
-      <button class="categories__save" @click="addCategory()">
-        Add new <AddIcon></AddIcon>
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useFireStore } from "@/stores/firestore";
@@ -111,11 +16,11 @@ import {
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
 import { useFinanceStore } from "@/stores/finance";
-import EditIcon from "@/components/icons/IconEdit.vue";
-import RemoveIcon from "@/components/icons/IconRemove.vue";
-import SaveIcon from "@/components/icons/IconSave.vue";
-import AddIcon from "@/components/icons/IconAdd.vue";
-import EmptyIcon from "@/components/icons/IconEmpty.vue";
+
+import Add from "@/assets/icons/actions/add.svg?component";
+import Edit from "@/assets/icons/actions/edit.svg?component";
+import Delete from "@/assets/icons/actions/delete.svg?component";
+import Save from "@/assets/icons/actions/save.svg?component";
 
 interface Categories {
   text: string;
@@ -247,6 +152,100 @@ const addCategory = () => {
   }
 };
 </script>
+
+<template>
+  <div class="categories">
+    <div
+      class="categories__collection"
+      :class="{
+        categories__collection__active: showOptions,
+      }"
+    >
+      <div class="categories__collection-header">
+        <h2 class="categories__collection-title">All categories</h2>
+      </div>
+      <div v-if="finance.categories[0] == null" class="categories__empty">
+        <p class="finance__empty-text">Whoops… There is no categories!</p>
+      </div>
+      <div
+        v-for="(category, index) in finance.categories"
+        :key="index"
+        class="categories__row"
+        :class="{
+          categories__row__active: index === currentIndex,
+        }"
+      >
+        <span
+          :style="{ background: category.color }"
+          class="categories__row-badge"
+          >{{ category.text }}</span
+        >
+        <div class="categories__row-actions">
+          <button
+            :class="{
+              categories__hide: index === currentIndex,
+            }"
+            class="categories__row-button"
+            @click="editCategory(category.id)"
+          >
+            <Edit></Edit>
+          </button>
+          <button
+            v-if="index == currentIndex && showOptions"
+            class="categories__row-button"
+            @click="updateCategory(categoryCurrent[0].id)"
+          >
+            <Save></Save>
+          </button>
+          <button
+            class="categories__row-button"
+            @click="deleteCategory(category.id)"
+          >
+            <Delete></Delete>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="showOptions && categoryTextBefore !== ''"
+      class="categories__edit"
+    >
+      <input class="categories__input" v-model="categoryCurrent[0].text" />
+      <ColorPicker
+        id="update_category"
+        :visible-formats="['hex']"
+        default-format="hex"
+        :color="colorUpdate"
+        @color-change="updateCategoryColor"
+      >
+        <template v-slot:copy-button>
+          <span></span>
+        </template>
+      </ColorPicker>
+    </div>
+    <div v-else class="categories__edit">
+      <input
+        placeholder="Category name"
+        class="categories__input"
+        v-model="newCategory[0].text"
+      />
+      <ColorPicker
+        id="new_category"
+        :visible-formats="['hex']"
+        default-format="hex"
+        :color="colorNew"
+        @color-change="newCategoryColor"
+      >
+        <template v-slot:copy-button>
+          <span></span>
+        </template>
+      </ColorPicker>
+      <button class="categories__save" @click="addCategory()">
+        Add new <Add></Add>
+      </button>
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .categories {

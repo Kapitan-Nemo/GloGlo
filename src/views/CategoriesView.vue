@@ -1,11 +1,3 @@
-<template>
-  <Header
-    :msg="'You have total of ' + finance.categories.length + ' categories'"
-  ></Header>
-
-  <CategoriesEdit></CategoriesEdit>
-</template>
-
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
 import { useFinanceStore } from "@/stores/finance";
@@ -16,3 +8,11 @@ const CategoriesEdit = defineAsyncComponent(
   () => import("@/components/CategoriesEdit.vue")
 );
 </script>
+
+<template>
+  <Header
+    :msg="'You have total of ' + finance.categories.length + ' categories'"
+  ></Header>
+
+  <CategoriesEdit></CategoriesEdit>
+</template>

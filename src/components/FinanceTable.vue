@@ -1,81 +1,3 @@
-<template>
-  <div class="finance">
-    <div class="finance__header">
-      <button class="finance__button" @click="addRecord()">
-        Add record <AddIcon></AddIcon>
-      </button>
-    </div>
-    <div v-if="finance.records[0] == null" class="finance__empty">
-      <EmptyIcon></EmptyIcon>
-      <p class="finance__empty-text">Whoops… There is no data!</p>
-    </div>
-    <div
-      class="finance__row"
-      v-for="(record, index) in financeMonthFilter"
-      :key="index"
-    >
-      <div class="finance__row-data">
-        <span class="finance__row-cell">{{ index }}#</span>
-        <!-- <span class="finance__row-cell"
-          >{{ record.month }}#{{ record.year }}</span
-        > -->
-        <span v-if="!record.editMode" class="finance__row-cell"
-          >{{ record.cost }} $</span
-        >
-        <span v-else class="finance__row-cell"
-          ><input
-            type="number"
-            class="finance__row-input"
-            v-model="record.cost"
-          />
-        </span>
-        <span class="finance__row-cell" v-if="!record.editMode"
-          ><small
-            :style="{ 'background-color': record.category.color }"
-            class="finance__row-category"
-            >{{ record.category.text }}</small
-          ></span
-        >
-        <span class="finance__row-cell" v-else>
-          <select class="finance__row-select" v-model="record.category">
-            <option disabled value="">Select</option>
-            <option
-              v-for="(category, index) in finance.categories"
-              :key="index"
-              v-bind:value="{
-                color: category.color,
-                text: category.text,
-                id: category.id,
-              }"
-            >
-              {{ category.text }}
-            </option>
-          </select>
-        </span>
-      </div>
-      <div class="finance__row-actions">
-        <button
-          v-if="!record.editMode"
-          class="finance__row-button"
-          @click="editRecord(record.id)"
-        >
-          <EditIcon></EditIcon>
-        </button>
-        <button
-          v-else
-          class="finance__row-button"
-          @click="saveRecord(record.id)"
-        >
-          <SaveIcon></SaveIcon>
-        </button>
-        <button class="finance__row-button" @click="deleteRecord(record.id)">
-          <RemoveIcon></RemoveIcon>
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
@@ -94,17 +16,22 @@ import {
 } from "firebase/firestore";
 import { financeChart } from "@/composables/financechart.js";
 
-import AddIcon from "@/components/icons/IconAdd.vue";
-import EditIcon from "@/components/icons/IconEdit.vue";
-import RemoveIcon from "@/components/icons/IconRemove.vue";
-import SaveIcon from "@/components/icons/IconSave.vue";
-import EmptyIcon from "@/components/icons/IconEmpty.vue";
+import Add from "@/assets/icons/actions/add.svg?component";
+import Edit from "@/assets/icons/actions/edit.svg?component";
+import Delete from "@/assets/icons/actions/delete.svg?component";
+import Save from "@/assets/icons/actions/save.svg?component";
+
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
-const newRecordCost = ref(0);
-const newRecordCategory = ref("");
 const finance = useFinanceStore();
+const newRecordCost = ref(0);
+const newRecordCategory = ref({
+  color: "",
+  text: "",
+  id: "",
+});
+
 const date = new Date();
 const currentMonth = date.getMonth();
 const currentYear = date.getFullYear();
@@ -189,6 +116,11 @@ onMounted(() => {
 });
 
 const addRecord = () => {
+  newRecordCategory.value = {
+    color: finance.categories[0].color,
+    text: finance.categories[0].text,
+    id: finance.categories[0].id,
+  };
   addDoc(collection(firestore.db, "users", user.userId, "records"), {
     cost: newRecordCost.value,
     category: newRecordCategory.value,
@@ -198,10 +130,11 @@ const addRecord = () => {
     year: currentYear,
   });
   newRecordCost.value = 0;
-  newRecordCategory.value = "";
+  // newRecordCategory.value = { color: "", text: "", id: "" };
 };
 
 const deleteRecord = (id: string) => {
+  console.log(id);
   const index = finance.records.findIndex((record) => record.id === id);
   console.log(index);
   const updateDocCategory = doc(
@@ -221,6 +154,7 @@ const deleteRecord = (id: string) => {
 };
 
 const saveRecord = async (id: string) => {
+  console.log(id);
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
   console.log(index);
@@ -272,6 +206,97 @@ const editRecord = (id: string) => {
 };
 console.log("Finance categories:", finance.categories);
 </script>
+
+<template>
+  <div class="finance">
+    <div class="finance__header">
+      <button
+        :disabled="finance.categories.length == 0"
+        class="finance__button"
+        @click="addRecord()"
+      >
+        Add record <Add></Add>
+      </button>
+    </div>
+    <div v-if="finance.categories.length == 0" class="finance__empty">
+      <p>Whoops… There is no categories!</p>
+      <RouterLink class="d-flex" to="/categories"
+        >Add categories first!</RouterLink
+      >
+    </div>
+    <div
+      v-if="finance.records.length == 0 && finance.categories.length > 0"
+      class="finance__empty"
+    >
+      <p>Whoops… There is no data!</p>
+    </div>
+
+    <div
+      v-else
+      class="finance__row"
+      v-for="(record, index) in financeMonthFilter"
+      :key="index"
+    >
+      <div class="finance__row-data">
+        <span class="finance__row-cell">{{ index }}#</span>
+        <!-- <span class="finance__row-cell"
+          >{{ record.month }}#{{ record.year }}</span
+        > -->
+        <span v-if="!record.editMode" class="finance__row-cell"
+          >{{ record.cost }} $</span
+        >
+        <span v-else class="finance__row-cell"
+          ><input
+            type="number"
+            class="finance__row-input"
+            v-model="record.cost"
+          />
+        </span>
+        <span class="finance__row-cell" v-if="!record.editMode"
+          ><small
+            :style="{ 'background-color': record.category.color }"
+            class="finance__row-category"
+            >{{ record.category.text }}</small
+          ></span
+        >
+        <span class="finance__row-cell" v-else>
+          <select class="finance__row-select" v-model="record.category">
+            <option
+              v-for="(category, index) in finance.categories"
+              :key="index"
+              v-bind:value="{
+                color: category.color,
+                text: category.text,
+                id: category.id,
+              }"
+            >
+              {{ category.text }}
+            </option>
+          </select>
+        </span>
+      </div>
+      <div class="finance__row-actions">
+        <button
+          v-if="!record.editMode"
+          class="finance__row-button"
+          @click="editRecord(record.id)"
+        >
+          <Edit></Edit>
+        </button>
+        <button
+          v-else
+          class="finance__row-button"
+          @click="saveRecord(record.id)"
+        >
+          <Save></Save>
+        </button>
+        <button class="finance__row-button" @click="deleteRecord(record.id)">
+          <Delete></Delete>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .finance {
@@ -365,6 +390,10 @@ console.log("Finance categories:", finance.categories);
     border-radius: 10px;
     font-size: 20px;
     cursor: pointer;
+    &:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
   }
   &__header {
     padding: 25px;

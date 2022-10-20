@@ -1,31 +1,11 @@
-<template>
-  <div class="summary">
-    <div class="summary__panel">
-      <h2 class="summary__title">This Month</h2>
-
-      <p class="summary__cost">{{ financeMonth.toLocaleString() }}$</p>
-      <CoinIcon class="summary__icon"></CoinIcon>
-    </div>
-    <div class="summary__panel">
-      <h2 class="summary__title">This Year</h2>
-      <p class="summary__cost">{{ financeYear.toLocaleString() }}$</p>
-      <BagIcon class="summary__icon"></BagIcon>
-    </div>
-    <div class="summary__panel">
-      <h2 class="summary__title">Overall</h2>
-      <p class="summary__cost">{{ financeOverall.toLocaleString() }}$</p>
-      <GoldIcon class="summary__icon"></GoldIcon>
-    </div>
-  </div>
-</template>
-
 <script lang="ts" setup>
-import CoinIcon from "@/components/icons/IconCoin.vue";
-import BagIcon from "@/components/icons/IconBag.vue";
-import GoldIcon from "@/components/icons/IconGold.vue";
 import { computed } from "vue";
 import { useFinanceStore } from "@/stores/finance";
-import MyIcon from "@/assets/icons/avatars/avatar-2.svg?component";
+
+import month from "@/assets/icons/cards/month.svg?component";
+import year from "@/assets/icons/cards/year.svg?component";
+import overall from "@/assets/icons/cards/overall.svg?component";
+
 const date = new Date();
 const currentMonth = date.getMonth();
 const currentYear = date.getFullYear();
@@ -60,6 +40,27 @@ const financeOverall = computed(() => {
   );
 });
 </script>
+
+<template>
+  <div class="summary">
+    <div class="summary__panel">
+      <h2 class="summary__title">This Month</h2>
+
+      <p class="summary__cost">{{ financeMonth.toLocaleString() }}$</p>
+      <month class="summary__icon"></month>
+    </div>
+    <div class="summary__panel">
+      <h2 class="summary__title">This Year</h2>
+      <p class="summary__cost">{{ financeYear.toLocaleString() }}$</p>
+      <year class="summary__icon"></year>
+    </div>
+    <div class="summary__panel">
+      <h2 class="summary__title">Overall</h2>
+      <p class="summary__cost">{{ financeOverall.toLocaleString() }}$</p>
+      <overall class="summary__icon"></overall>
+    </div>
+  </div>
+</template>
 
 <style lang="scss">
 .summary {

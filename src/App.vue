@@ -1,28 +1,27 @@
+<script setup lang="ts">
+import { RouterLink, RouterView } from "vue-router";
+import Logo from "@/assets/icons/logo/logo.svg?component";
+import Home from "@/assets/icons/other/home.svg?component";
+import Categories from "@/assets/icons/other/categories.svg?component";
+import Settings from "@/assets/icons/other/settings.svg?component";
+import "@/scss/app.scss";
+</script>
+
 <template>
   <nav class="menu">
-    <p class="menu__logo">GloGlo<LogoIcon></LogoIcon></p>
-    <RouterLink class="menu__link" to="/"
-      ><DashboardIcon></DashboardIcon>Dashboard</RouterLink
-    >
+    <p class="menu__logo">GloGlo<Logo></Logo></p>
+    <RouterLink class="menu__link" to="/"><Home></Home>Dashboard</RouterLink>
     <RouterLink class="menu__link" to="/categories"
-      ><CategoriesIcon></CategoriesIcon>Categories</RouterLink
+      ><Categories></Categories>Categories</RouterLink
     >
     <RouterLink class="menu__link" to="/settings"
-      ><CategoriesIcon></CategoriesIcon>Settings</RouterLink
+      ><Settings></Settings>Settings</RouterLink
     >
   </nav>
   <main>
     <RouterView />
   </main>
 </template>
-
-<script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import LogoIcon from "./components/icons/IconLogo.vue";
-import DashboardIcon from "./components/icons/IconDashboard.vue";
-import CategoriesIcon from "./components/icons/IconCategories.vue";
-import "@/scss/app.scss";
-</script>
 
 <style lang="scss">
 main {

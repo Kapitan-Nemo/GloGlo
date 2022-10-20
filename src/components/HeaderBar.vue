@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { useUserStore } from "@/stores/auth";
+import { getAuth, signOut } from "firebase/auth";
+import { ref } from "vue";
+import router from "@/router";
+
+import AvatarIcon from "@/assets/icons/avatars/avatar-1.svg?component";
+import CalendarIcon from "@/assets/icons/other/calendar.svg?component";
+import LogoutIcon from "@/assets/icons/actions/logout.svg?component";
+import NotifyIcon from "@/assets/icons/actions/notification.svg?component";
+import UserIcon from "@/assets/icons/other/settings-color.svg?component";
+
+defineProps<{
+  msg: string;
+}>();
+const user = useUserStore();
+const auth = getAuth();
+const showAccount = ref(false);
+function singOutGoogle() {
+  signOut(auth)
+    .then(() => {
+      router.push("/login");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+</script>
+
 <template>
   <header class="header">
     <div class="header__wrap">
@@ -24,34 +53,6 @@
     </Transition>
   </header>
 </template>
-
-<script setup lang="ts">
-import { useUserStore } from "@/stores/auth";
-import { getAuth, signOut } from "firebase/auth";
-import router from "@/router";
-import CalendarIcon from "./icons/IconCalendar.vue";
-import NotifyIcon from "./icons/IconNotify.vue";
-import UserIcon from "./icons/IconUser.vue";
-import LogoutIcon from "./icons/IconLogout.vue";
-import AvatarIcon from "@/assets/icons/avatars/avatar-1.svg?component";
-import { ref } from "vue";
-
-defineProps<{
-  msg: string;
-}>();
-const user = useUserStore();
-const auth = getAuth();
-const showAccount = ref(false);
-function singOutGoogle() {
-  signOut(auth)
-    .then(() => {
-      router.push("/login");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-</script>
 
 <style lang="scss">
 .header {
