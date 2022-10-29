@@ -45,6 +45,9 @@ main {
   display: flex;
   flex-flow: column;
   background: $bg-secondary;
+  svg {
+    fill: $secondary;
+  }
   &__link {
     font-size: 20px;
     color: $secondary;
@@ -57,6 +60,9 @@ main {
   &__active {
     color: $primary;
     border-right: solid 2px;
+    svg {
+      fill: $primary;
+    }
   }
   &__logo {
     display: flex;
