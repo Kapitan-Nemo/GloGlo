@@ -12,9 +12,7 @@ import {
   initializeAuth,
 } from "firebase/auth";
 
-const firebaseApp = initializeApp(FIREBASE_CONFIG);
-
-initializeAuth(firebaseApp, {
+initializeAuth(initializeApp(FIREBASE_CONFIG), {
   persistence: browserLocalPersistence,
   popupRedirectResolver: browserPopupRedirectResolver,
 });

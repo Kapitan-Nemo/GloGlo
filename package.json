@@ -10,8 +10,11 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^3.5.2",
     "chart.js": "^3.9.1",
     "firebase": "^9.13.0",
+    "i": "^0.3.7",
+    "npm": "^8.19.2",
     "pinia": "^2.0.23",
     "pinia-plugin-persistedstate": "^2.3.0",
     "vue": "^3.2.41",

@@ -3,16 +3,17 @@ import { computed, ref } from "vue";
 import { DoughnutChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { useFinanceStore } from "@/stores/finance";
+
 import ArrowDown from "@/assets/icons/actions/arrow-down.svg?component";
-const finance = useFinanceStore();
+
 Chart.register(...registerables);
+const finance = useFinanceStore();
 const doughnutRef = ref();
 const options = ref({
-  // resposive: true,
   plugins: {
     legend: {
-      display: true,
-      position: "bottom",
+      display: false,
+      position: "top",
       labels: {
         usePointStyle: true,
         pointStyle: "rectRounded",
@@ -48,7 +49,7 @@ const chartData = computed(() => ({
   <div class="dashboard__wrap">
     <div class="dashboard__wrap-header">
       <h2 class="dashboard__title">Categories</h2>
-      <button class="dashboard__button">Overall<ArrowDown></ArrowDown></button>
+      <button class="dashboard__button">Overall<ArrowDown /></button>
     </div>
     <div class="dashboard__chart">
       <DoughnutChart

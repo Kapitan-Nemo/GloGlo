@@ -64,7 +64,7 @@ const categoriesCollectionQuery = query(
 );
 onMounted(() => {
   onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
-    const newCategories: {
+    const getCategories: {
       id: string;
       text: string;
       color: string;
@@ -79,9 +79,9 @@ onMounted(() => {
         total: doc.data().total,
         date: Date.now(),
       };
-      newCategories.push(category);
+      getCategories.push(category);
     });
-    finance.categories = newCategories;
+    finance.categories = getCategories;
   });
 });
 

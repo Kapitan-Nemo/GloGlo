@@ -20,10 +20,9 @@ export default defineConfig({
     },
   },
   css: {
+    devSourcemap: true,
     preprocessorOptions: {
       scss: {
-        // example : additionalData: `@import "./src/design/styles/variables";`
-        // dont need include file extend .scss
         additionalData: ` @import "./src/scss/variables.scss";
         @import "./src/scss/global/mixins.scss";`,
       },

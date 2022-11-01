@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
+import { useDateStore } from "@/stores/date";
 import {
   doc,
   collection,
@@ -13,6 +14,8 @@ import {
   query,
   orderBy,
   increment,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { financeChart } from "@/composables/financechart.js";
 
@@ -21,20 +24,27 @@ import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
 import Save from "@/assets/icons/actions/save.svg?component";
 
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import type { Records } from "@/utils/interface";
+// import { apiRecord } from "@/api/firestore";
+
+const selected = ref({
+  month: new Date().getMonth(),
+  year: new Date().getFullYear(),
+});
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
 const finance = useFinanceStore();
+const date = useDateStore();
+
 const newRecordCost = ref(0);
 const newRecordCategory = ref({
   color: "",
   text: "",
   id: "",
 });
-
-const date = new Date();
-const currentMonth = date.getMonth();
-const currentYear = date.getFullYear();
 
 //Firebase refs
 const recordsCollectionRef = collection(
@@ -50,48 +60,15 @@ const categoriesCollectionRef = collection(
   "categories"
 );
 
-const recordsCollectionQuery = query(
-  recordsCollectionRef,
+const categoriesCollectionQuery = query(
+  categoriesCollectionRef,
   orderBy("date", "desc")
 );
-const categoriesCollectionQuery = query(categoriesCollectionRef);
-const financeMonthFilter = computed(() => {
-  return finance.records.filter(
-    (n) => n.month == currentMonth && n.year == currentYear
-  );
-});
+
 onMounted(() => {
   const finance = useFinanceStore();
   financeChart();
-  onSnapshot(recordsCollectionQuery, (querySnapshot) => {
-    const newRecords: {
-      id: string;
-      cost: number;
-      month: number;
-      year: number;
-      category: {
-        text: string;
-        color: string;
-        id: string;
-        total: number;
-        month: number;
-        year: number;
-      };
-      editMode: boolean;
-    }[] = [];
-    querySnapshot.forEach((doc) => {
-      const record = {
-        id: doc.id,
-        cost: doc.data().cost,
-        category: doc.data().category,
-        editMode: doc.data().editMode,
-        month: doc.data().month,
-        year: doc.data().year,
-      };
-      newRecords.push(record);
-    });
-    finance.records = newRecords;
-  });
+  fetchRecords();
 
   onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
     const newCategories: {
@@ -116,6 +93,7 @@ onMounted(() => {
 });
 
 const addRecord = () => {
+  console.log("dodaje");
   newRecordCategory.value = {
     color: finance.categories[0].color,
     text: finance.categories[0].text,
@@ -126,10 +104,11 @@ const addRecord = () => {
     category: newRecordCategory.value,
     editMode: true,
     date: Date.now(),
-    month: currentMonth,
-    year: currentYear,
+    month: selected.value.month,
+    year: selected.value.year,
   });
   newRecordCost.value = 0;
+  fetchRecords();
   // newRecordCategory.value = { color: "", text: "", id: "" };
 };
 
@@ -154,10 +133,8 @@ const deleteRecord = (id: string) => {
 };
 
 const saveRecord = async (id: string) => {
-  console.log(id);
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
-  console.log(index);
   if (finance.records[index].cost > 0) {
     const updateDocCategory = doc(
       firestore.db,
@@ -183,8 +160,8 @@ const saveRecord = async (id: string) => {
 
     updateDoc(updateDocCategory, {
       total: financeValue.value,
-      month: currentMonth,
-      year: currentYear,
+      month: date.month(),
+      year: date.year(),
     });
     updateDoc(updateDocRef, {
       cost: finance.records[index].cost,
@@ -205,6 +182,27 @@ const editRecord = (id: string) => {
   finance.records[index].editMode = true;
 };
 console.log("Finance categories:", finance.categories);
+
+const fetchRecords = async () => {
+  const querySnapshot = await getDocs(
+    query(recordsCollectionRef, where("month", "==", selected.value.month))
+  );
+  const newRecords = ref<Records[]>([]);
+  querySnapshot.forEach((doc) => {
+    const record = {
+      id: doc.id,
+      cost: doc.data().cost,
+      category: doc.data().category,
+      editMode: doc.data().editMode,
+      month: doc.data().month,
+      year: doc.data().year,
+    };
+    newRecords.value.push(record);
+  });
+  console.log("newRecords:", newRecords);
+  finance.records;
+  finance.records = newRecords.value;
+};
 </script>
 
 <template>
@@ -217,6 +215,14 @@ console.log("Finance categories:", finance.categories);
       >
         Add record <Add></Add>
       </button>
+
+      <Datepicker
+        @closed="fetchRecords"
+        autoApply
+        dark
+        v-model="selected"
+        monthPicker
+      ></Datepicker>
     </div>
     <div v-if="finance.categories.length == 0" class="finance__empty">
       <p>Whoops… There is no categories!</p>
@@ -234,7 +240,7 @@ console.log("Finance categories:", finance.categories);
     <div
       v-else
       class="finance__row"
-      v-for="(record, index) in financeMonthFilter"
+      v-for="(record, index) in finance.records"
       :key="index"
     >
       <div class="finance__row-data">

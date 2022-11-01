@@ -4,8 +4,8 @@ import { useFinanceStore } from "@/stores/finance";
 
 const finance = useFinanceStore();
 const Header = defineAsyncComponent(() => import("@/components/HeaderBar.vue"));
-const CategoriesEdit = defineAsyncComponent(
-  () => import("@/components/CategoriesEdit.vue")
+const CategoryPanel = defineAsyncComponent(
+  () => import("@/components/CategoryPanel.vue")
 );
 </script>
 
@@ -14,5 +14,5 @@ const CategoriesEdit = defineAsyncComponent(
     :msg="'You have total of ' + finance.categories.length + ' categories'"
   ></Header>
 
-  <CategoriesEdit></CategoriesEdit>
+  <CategoryPanel />
 </template>
