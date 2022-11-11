@@ -1,19 +1,19 @@
 import { useUserStore } from "@/stores/auth";
-import { collection, getDocs, query, where } from "@firebase/firestore";
 import { useFireStore } from "@/stores/firestore";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+
 const firestore = useFireStore();
 const user = useUserStore();
-//get all record for current user
-export async function apiRecord(param: string | number) {
-  getDocs(
+
+export async function apiRecord(month: number) {
+  await getDocs(
     query(
       collection(firestore.db, "users", user.userId, "records"),
-      where("month", "==", param)
+      where("month", "==", month)
     )
   );
 }
-
 //get all categories for current user
-export async function apiCategories() {
+export function apiCategories() {
   collection(firestore.db, "users", user.userId, "categories");
 }

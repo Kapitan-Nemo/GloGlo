@@ -8,7 +8,6 @@ export const useFinanceStore = defineStore("financeStore", {
     chartLabels: [],
     chartColors: [],
   }),
-  persist: true,
 });
 
 interface Records {

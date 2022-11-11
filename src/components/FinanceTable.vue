@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
-import { useDateStore } from "@/stores/date";
 import {
   doc,
   collection,
@@ -14,11 +13,9 @@ import {
   query,
   orderBy,
   increment,
-  where,
-  getDocs,
 } from "firebase/firestore";
 import { financeChart } from "@/composables/financechart.js";
-
+import { storeToRefs } from "pinia";
 import Add from "@/assets/icons/actions/add.svg?component";
 import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
@@ -27,17 +24,12 @@ import Save from "@/assets/icons/actions/save.svg?component";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { Records } from "@/utils/interface";
-// import { apiRecord } from "@/api/firestore";
 
-const selected = ref({
-  month: new Date().getMonth(),
-  year: new Date().getFullYear(),
-});
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
+const { dateSelected, testingRecord } = storeToRefs(firestore);
 const finance = useFinanceStore();
-const date = useDateStore();
 
 const newRecordCost = ref(0);
 const newRecordCategory = ref({
@@ -46,13 +38,6 @@ const newRecordCategory = ref({
   id: "",
 });
 
-//Firebase refs
-const recordsCollectionRef = collection(
-  firestore.db,
-  "users",
-  userid,
-  "records"
-);
 const categoriesCollectionRef = collection(
   firestore.db,
   "users",
@@ -64,9 +49,7 @@ const categoriesCollectionQuery = query(
   categoriesCollectionRef,
   orderBy("date", "desc")
 );
-
 onMounted(() => {
-  const finance = useFinanceStore();
   financeChart();
   fetchRecords();
 
@@ -93,7 +76,6 @@ onMounted(() => {
 });
 
 const addRecord = () => {
-  console.log("dodaje");
   newRecordCategory.value = {
     color: finance.categories[0].color,
     text: finance.categories[0].text,
@@ -104,12 +86,11 @@ const addRecord = () => {
     category: newRecordCategory.value,
     editMode: true,
     date: Date.now(),
-    month: selected.value.month,
-    year: selected.value.year,
+    month: dateSelected.value.month,
+    year: dateSelected.value.year,
   });
   newRecordCost.value = 0;
   fetchRecords();
-  // newRecordCategory.value = { color: "", text: "", id: "" };
 };
 
 const deleteRecord = (id: string) => {
@@ -160,8 +141,8 @@ const saveRecord = async (id: string) => {
 
     updateDoc(updateDocCategory, {
       total: financeValue.value,
-      month: date.month(),
-      year: date.year(),
+      month: new Date().getMonth(),
+      year: new Date().getFullYear(),
     });
     updateDoc(updateDocRef, {
       cost: finance.records[index].cost,
@@ -181,27 +162,25 @@ const editRecord = (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
   finance.records[index].editMode = true;
 };
-console.log("Finance categories:", finance.categories);
 
 const fetchRecords = async () => {
-  const querySnapshot = await getDocs(
-    query(recordsCollectionRef, where("month", "==", selected.value.month))
-  );
-  const newRecords = ref<Records[]>([]);
-  querySnapshot.forEach((doc) => {
-    const record = {
-      id: doc.id,
-      cost: doc.data().cost,
-      category: doc.data().category,
-      editMode: doc.data().editMode,
-      month: doc.data().month,
-      year: doc.data().year,
-    };
-    newRecords.value.push(record);
-  });
-  console.log("newRecords:", newRecords);
-  finance.records;
-  finance.records = newRecords.value;
+  try {
+    const newRecords = ref<Records[]>([]);
+    (await testingRecord.value).forEach(async (doc) => {
+      const record = {
+        id: doc.id,
+        cost: doc.data().cost,
+        category: doc.data().category,
+        editMode: doc.data().editMode,
+        month: new Date().getMonth(),
+        year: new Date().getFullYear(),
+      };
+      newRecords.value.push(record);
+    });
+    finance.records = newRecords.value;
+  } catch {
+    console.log("catch");
+  }
 };
 </script>
 
@@ -220,7 +199,7 @@ const fetchRecords = async () => {
         @closed="fetchRecords"
         autoApply
         dark
-        v-model="selected"
+        v-model="dateSelected"
         monthPicker
       ></Datepicker>
     </div>
