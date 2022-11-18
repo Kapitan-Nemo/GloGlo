@@ -1,31 +1,31 @@
+import type { ICategories, IRecords } from "@/utils/interface";
 import { defineStore } from "pinia";
 
 export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
-    categories: [] as Categories[],
-    records: [] as Records[],
+    categories: [] as ICategories[],
+    records: [] as IRecords[],
     chartValues: [],
     chartLabels: [],
     chartColors: [],
   }),
 });
 
-interface Records {
-  id: string;
-  cost: number;
-  month: number;
-  year: number;
-  category: {
-    text: string;
-    id: string;
-    color: string;
-  };
-  editMode: boolean;
-}
-interface Categories {
-  text: string;
-  color: string;
-  id: string;
-  total: number;
-  date: number;
-}
+// interface Records {
+//   id: string;
+//   cost: number;
+//   month: number;
+//   year: number;
+//   category: {
+//     id: string;
+//     text: string;
+//     color: string;
+//   };
+//   editMode: boolean;
+// }
+// interface Categories {
+//   id: string;
+//   text: string;
+//   color: string;
+//   date: number;
+// }

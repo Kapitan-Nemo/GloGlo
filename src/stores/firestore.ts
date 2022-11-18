@@ -16,7 +16,7 @@ export const useFireStore = defineStore("firebaseStore", {
     };
   },
   getters: {
-    testingRecord: async (state) =>
+    records: async (state) =>
       await getDocs(
         query(
           collection(state.db, "users", useUserStore().userId, "records"),

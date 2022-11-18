@@ -3,7 +3,6 @@ import { ref, onMounted } from "vue";
 import { useFireStore } from "@/stores/firestore";
 import {
   collection,
-  onSnapshot,
   query,
   updateDoc,
   doc,
@@ -16,119 +15,99 @@ import {
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
 import { useFinanceStore } from "@/stores/finance";
-
 import Add from "@/assets/icons/actions/add.svg?component";
 import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
 import Save from "@/assets/icons/actions/save.svg?component";
+import type { ICategories } from "@/utils/interface";
 
-interface Categories {
-  text: string;
-  color: string;
-  id: string;
-  total: number;
-  date: number;
-}
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
+
 const colorNew = ref("#000000");
-const colorUpdate = ref("");
-const categoryCurrent = ref<Array<Categories>>([
-  { id: "", text: "", color: "", total: 0, date: Date.now() },
+
+const newCategory = ref<Array<ICategories>>([
+  { id: "", text: "", color: "", date: Date.now() },
 ]);
-const newCategory = ref<Array<Categories>>([
-  { id: "", text: "", color: "", total: 0, date: Date.now() },
-]);
-const categoryTextBefore = ref("");
-const categoryColorBefore = ref("");
+
 const showOptions = ref(false);
 const currentIndex = ref();
-const categoriesCollectionRef = collection(
-  firestore.db,
-  "users",
-  userid,
-  "categories"
-);
+const currentEdited = {
+  text: "",
+  color: "",
+};
+const kurwidlo = ref({
+  id: "",
+  text: "",
+  color: "",
+  date: Date.now(),
+});
+
 function newCategoryColor(eventData: { cssColor: string }) {
   colorNew.value = eventData.cssColor;
 }
 function updateCategoryColor(eventData: { cssColor: string }) {
-  categoryCurrent.value[0].color = eventData.cssColor;
+  kurwidlo.value.color = eventData.cssColor;
 }
 
-const categoriesCollectionQuery = query(
-  categoriesCollectionRef,
-  orderBy("date", "desc")
-);
-onMounted(() => {
-  onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
-    const getCategories: {
-      id: string;
-      text: string;
-      color: string;
-      total: number;
-      date: number;
-    }[] = [];
-    querySnapshot.forEach((doc) => {
-      const category = {
-        id: doc.id,
-        text: doc.data().text,
-        color: doc.data().color,
-        total: doc.data().total,
-        date: Date.now(),
-      };
-      getCategories.push(category);
-    });
-    finance.categories = getCategories;
+onMounted(async () => {
+  const querySnapshot = await getDocs(
+    query(
+      collection(firestore.db, "users", userid, "categories"),
+      orderBy("date", "desc")
+    )
+  );
+  const categories: {
+    id: string;
+    text: string;
+    color: string;
+    date: number;
+  }[] = [];
+  querySnapshot.forEach((doc) => {
+    const fetchCategory = {
+      id: doc.id,
+      text: doc.data().text,
+      color: doc.data().color,
+      date: Date.now(),
+    };
+    categories.push(fetchCategory);
   });
+  finance.categories = categories;
 });
 
-const editCategory = (id: string) => {
-  const index = finance.categories.findIndex((category) => category.id === id);
-  categoryCurrent.value[0] = finance.categories[index];
-  colorUpdate.value = finance.categories[index].color;
-  categoryTextBefore.value = finance.categories[index].text;
-  categoryColorBefore.value = finance.categories[index].color;
+const editCategory = (index: number, category: ICategories) => {
   showOptions.value = !showOptions.value;
   currentIndex.value = index;
+  kurwidlo.value = category;
+
+  currentEdited.color = category.color;
+  currentEdited.text = category.text;
 };
+
 const updateCategory = async (id: string) => {
-  const index = finance.categories.findIndex((category) => category.id === id);
-  if (finance.categories[index].text == "") {
-    alert("Name can't be empty!");
-  } else {
-    const updateDocCategory = doc(
-      firestore.db,
-      "users",
-      user.userId,
-      "categories",
-      id
-    );
-    updateDoc(updateDocCategory, {
-      text: finance.categories[index].text,
-      color: finance.categories[index].color,
-    });
+  await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
+    text: kurwidlo.value.text,
+    color: kurwidlo.value.color,
+  });
 
-    const searchCategory = query(
+  const queryCategory = await getDocs(
+    query(
       collection(firestore.db, "users", user.userId, "records"),
-      where("category.text", "==", categoryTextBefore.value) ||
-        where("category.color", "==", categoryColorBefore.value)
-    );
-
-    const queryCategory = await getDocs(searchCategory);
-    queryCategory.forEach(async (doc) => {
-      await updateDoc(doc.ref, {
-        "category.text": finance.categories[index].text,
-        "category.color": finance.categories[index].color,
-      });
+      where("category.text", "==", currentEdited.text) ||
+        where("category.color", "==", currentEdited.color)
+    )
+  );
+  queryCategory.forEach(async (doc) => {
+    await updateDoc(doc.ref, {
+      "category.text": kurwidlo.value.text,
+      "category.color": kurwidlo.value.color,
     });
+  });
 
-    showOptions.value = false;
-    currentIndex.value = undefined;
-    // alert("Category update sucess");
-  }
+  showOptions.value = false;
+  currentIndex.value = undefined;
 };
 
 const deleteCategory = (id: string) => {
@@ -145,7 +124,6 @@ const addCategory = () => {
     addDoc(collection(firestore.db, "users", user.userId, "categories"), {
       text: newCategory.value[0].text,
       color: colorNew.value,
-      total: 0,
       date: Date.now(),
     });
     newCategory.value[0].text = "";
@@ -186,14 +164,14 @@ const addCategory = () => {
               categories__hide: index === currentIndex,
             }"
             class="categories__row-button"
-            @click="editCategory(category.id)"
+            @click="editCategory(index, category)"
           >
             <Edit></Edit>
           </button>
           <button
             v-if="index == currentIndex && showOptions"
             class="categories__row-button"
-            @click="updateCategory(categoryCurrent[0].id)"
+            @click="updateCategory(category.id)"
           >
             <Save></Save>
           </button>
@@ -206,16 +184,13 @@ const addCategory = () => {
         </div>
       </div>
     </div>
-    <div
-      v-if="showOptions && categoryTextBefore !== ''"
-      class="categories__edit"
-    >
-      <input class="categories__input" v-model="categoryCurrent[0].text" />
+    <div v-if="showOptions" class="categories__edit">
+      <input class="categories__input" v-model="kurwidlo.text" />
       <ColorPicker
         id="update_category"
         :visible-formats="['hex']"
         default-format="hex"
-        :color="colorUpdate"
+        :color="kurwidlo.color"
         @color-change="updateCategoryColor"
       >
         <template v-slot:copy-button>
