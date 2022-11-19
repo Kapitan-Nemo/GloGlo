@@ -22,13 +22,13 @@ import Save from "@/assets/icons/actions/save.svg?component";
 
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import type { IRecords, ICategories } from "@/utils/interface";
+import type { IRecords } from "@/utils/interface";
 
 const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
-const { dateSelected, records } = storeToRefs(firestore);
 const finance = useFinanceStore();
+const { dateSelected, records } = storeToRefs(firestore);
 
 const newRecordCost = ref(0);
 const newRecordCategory = ref({

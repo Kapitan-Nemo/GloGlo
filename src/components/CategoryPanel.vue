@@ -10,7 +10,6 @@ import {
   deleteDoc,
   where,
   getDocs,
-  orderBy,
 } from "firebase/firestore";
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
@@ -20,11 +19,12 @@ import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
 import Save from "@/assets/icons/actions/save.svg?component";
 import type { ICategories } from "@/utils/interface";
+import { storeToRefs } from "pinia";
 
-const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
+const { categories } = storeToRefs(firestore);
 
 const colorNew = ref("#000000");
 
@@ -53,28 +53,23 @@ function updateCategoryColor(eventData: { cssColor: string }) {
 }
 
 onMounted(async () => {
-  const querySnapshot = await getDocs(
-    query(
-      collection(firestore.db, "users", userid, "categories"),
-      orderBy("date", "desc")
-    )
-  );
-  const categories: {
+  const categories1: {
     id: string;
     text: string;
     color: string;
     date: number;
   }[] = [];
-  querySnapshot.forEach((doc) => {
+
+  (await categories.value).forEach((doc) => {
     const fetchCategory = {
       id: doc.id,
       text: doc.data().text,
       color: doc.data().color,
       date: Date.now(),
     };
-    categories.push(fetchCategory);
+    categories1.push(fetchCategory);
   });
-  finance.categories = categories;
+  finance.categories = categories1;
 });
 
 const editCategory = (index: number, category: ICategories) => {

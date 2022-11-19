@@ -10,22 +10,3 @@ export const useFinanceStore = defineStore("financeStore", {
     chartColors: [],
   }),
 });
-
-// interface Records {
-//   id: string;
-//   cost: number;
-//   month: number;
-//   year: number;
-//   category: {
-//     id: string;
-//     text: string;
-//     color: string;
-//   };
-//   editMode: boolean;
-// }
-// interface Categories {
-//   id: string;
-//   text: string;
-//   color: string;
-//   date: number;
-// }
