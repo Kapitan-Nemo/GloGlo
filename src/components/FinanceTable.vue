@@ -37,33 +37,33 @@ const newRecordCategory = ref({
   id: "",
 });
 
-const categoriesCollectionQuery = query(
-  collection(firestore.db, "users", userid, "categories"),
-  orderBy("date", "desc")
-);
+// const categoriesCollectionQuery = query(
+//   collection(firestore.db, "users", userid, "categories"),
+//   orderBy("date", "desc")
+// );
 
 onMounted(() => {
   financeChart();
   fetchRecords();
 
-  onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
-    const newCategories: {
-      id: string;
-      text: string;
-      color: string;
-      date: number;
-    }[] = [];
-    querySnapshot.forEach((doc) => {
-      const category = {
-        id: doc.id,
-        text: doc.data().text,
-        color: doc.data().color,
-        date: doc.data().date,
-      };
-      newCategories.push(category);
-    });
-    finance.categories = newCategories;
-  });
+  // onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
+  //   const newCategories: {
+  //     id: string;
+  //     text: string;
+  //     color: string;
+  //     date: number;
+  //   }[] = [];
+  //   querySnapshot.forEach((doc) => {
+  //     const category = {
+  //       id: doc.id,
+  //       text: doc.data().text,
+  //       color: doc.data().color,
+  //       date: doc.data().date,
+  //     };
+  //     newCategories.push(category);
+  //   });
+  //   finance.categories = newCategories;
+  // });
 });
 
 const addRecord = () => {

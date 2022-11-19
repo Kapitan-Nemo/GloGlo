@@ -30,11 +30,9 @@ export const useFireStore = defineStore("firebaseStore", {
         )
       ),
     categories: async (state) =>
-      await getDocs(
-        query(
-          collection(state.db, "users", useUserStore().userId, "categories"),
-          orderBy("date", "desc")
-        )
+      query(
+        collection(state.db, "users", useUserStore().userId, "categories"),
+        orderBy("date", "desc")
       ),
   },
 });

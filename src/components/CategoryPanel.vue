@@ -10,6 +10,7 @@ import {
   deleteDoc,
   where,
   getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
@@ -25,7 +26,7 @@ const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
 const { categories } = storeToRefs(firestore);
-
+const fetchCategories = ref<ICategories[]>([]);
 const colorNew = ref("#000000");
 
 const newCategory = ref<Array<ICategories>>([
@@ -53,23 +54,35 @@ function updateCategoryColor(eventData: { cssColor: string }) {
 }
 
 onMounted(async () => {
-  const categories1: {
-    id: string;
-    text: string;
-    color: string;
-    date: number;
-  }[] = [];
-
-  (await categories.value).forEach((doc) => {
-    const fetchCategory = {
-      id: doc.id,
-      text: doc.data().text,
-      color: doc.data().color,
-      date: Date.now(),
-    };
-    categories1.push(fetchCategory);
+  onSnapshot(await categories.value, (querySnapshot) => {
+    const newCategories: {
+      id: string;
+      text: string;
+      color: string;
+      date: number;
+    }[] = [];
+    querySnapshot.forEach((doc) => {
+      const category = {
+        id: doc.id,
+        text: doc.data().text,
+        color: doc.data().color,
+        date: doc.data().date,
+      };
+      newCategories.push(category);
+    });
+    finance.categories = newCategories;
   });
-  finance.categories = categories1;
+
+  // (await categories.value).forEach((doc) => {
+  //   const fetchCategory = {
+  //     id: doc.id,
+  //     text: doc.data().text,
+  //     color: doc.data().color,
+  //     date: Date.now(),
+  //   };
+  //   fetchCategories.value.push(fetchCategory);
+  // });
+  // finance.categories = fetchCategories.value;
 });
 
 const editCategory = (index: number, category: ICategories) => {
@@ -82,19 +95,22 @@ const editCategory = (index: number, category: ICategories) => {
 };
 
 const updateCategory = async (id: string) => {
+  // Update current category
   await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
     text: kurwidlo.value.text,
     color: kurwidlo.value.color,
   });
 
-  const queryCategory = await getDocs(
-    query(
-      collection(firestore.db, "users", user.userId, "records"),
-      where("category.text", "==", currentEdited.text) ||
-        where("category.color", "==", currentEdited.color)
+  // Search category in existed records and update
+  (
+    await getDocs(
+      query(
+        collection(firestore.db, "users", user.userId, "records"),
+        where("category.text", "==", currentEdited.text) ||
+          where("category.color", "==", currentEdited.color)
+      )
     )
-  );
-  queryCategory.forEach(async (doc) => {
+  ).forEach(async (doc) => {
     await updateDoc(doc.ref, {
       "category.text": kurwidlo.value.text,
       "category.color": kurwidlo.value.color,
