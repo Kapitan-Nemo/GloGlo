@@ -9,9 +9,6 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  onSnapshot,
-  query,
-  orderBy,
 } from "firebase/firestore";
 import { financeChart } from "@/composables/financechart.js";
 import { storeToRefs } from "pinia";
@@ -24,7 +21,6 @@ import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { IRecords } from "@/utils/interface";
 
-const userid = JSON.parse(localStorage.getItem("userId") || "{}");
 const user = useUserStore();
 const firestore = useFireStore();
 const finance = useFinanceStore();
@@ -37,14 +33,14 @@ const newRecordCategory = ref({
   id: "",
 });
 
-// const categoriesCollectionQuery = query(
-//   collection(firestore.db, "users", userid, "categories"),
-//   orderBy("date", "desc")
-// );
-
 onMounted(() => {
   financeChart();
   fetchRecords();
+
+  // const categoriesCollectionQuery = query(
+  //   collection(firestore.db, "users", userid, "categories"),
+  //   orderBy("date", "desc")
+  // );
 
   // onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
   //   const newCategories: {

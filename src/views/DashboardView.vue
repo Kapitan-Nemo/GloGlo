@@ -8,9 +8,9 @@ const FinancePanels = defineAsyncComponent(
 const FinanceTable = defineAsyncComponent(
   () => import("@/components/FinanceTable.vue")
 );
-const FinanceChart = defineAsyncComponent(
-  () => import("@/components/FinanceChart.vue")
-);
+// const FinanceChart = defineAsyncComponent(
+//   () => import("@/components/FinanceChart.vue")
+// );
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const FinanceChart = defineAsyncComponent(
       <FinancePanels></FinancePanels>
       <FinanceTable></FinanceTable>
     </div>
-    <FinanceChart></FinanceChart>
+    <!-- <FinanceChart></FinanceChart> -->
   </div>
 </template>
 

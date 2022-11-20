@@ -55,12 +55,7 @@ function updateCategoryColor(eventData: { cssColor: string }) {
 
 onMounted(async () => {
   onSnapshot(await categories.value, (querySnapshot) => {
-    const newCategories: {
-      id: string;
-      text: string;
-      color: string;
-      date: number;
-    }[] = [];
+    const newCategories = ref<ICategories[]>([]);
     querySnapshot.forEach((doc) => {
       const category = {
         id: doc.id,
@@ -68,21 +63,10 @@ onMounted(async () => {
         color: doc.data().color,
         date: doc.data().date,
       };
-      newCategories.push(category);
+      newCategories.value.push(category);
     });
-    finance.categories = newCategories;
+    finance.categories = newCategories.value;
   });
-
-  // (await categories.value).forEach((doc) => {
-  //   const fetchCategory = {
-  //     id: doc.id,
-  //     text: doc.data().text,
-  //     color: doc.data().color,
-  //     date: Date.now(),
-  //   };
-  //   fetchCategories.value.push(fetchCategory);
-  // });
-  // finance.categories = fetchCategories.value;
 });
 
 const editCategory = (index: number, category: ICategories) => {

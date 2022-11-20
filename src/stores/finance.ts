@@ -9,4 +9,5 @@ export const useFinanceStore = defineStore("financeStore", {
     chartLabels: [],
     chartColors: [],
   }),
+  persist: true,
 });
