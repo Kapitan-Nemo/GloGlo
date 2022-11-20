@@ -329,20 +329,25 @@ const addCategory = () => {
   }
 
   &__collection {
-    &__active {
-      .categories__row {
-        opacity: 0.5;
-        pointer-events: none;
-      }
+    overflow: auto;
+    &::-webkit-scrollbar {
+      display: none; /* Chrome and Safari */
     }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
     width: 380px;
-    overflow: scroll;
     height: auto;
     max-height: 521px;
     background-color: $bg-secondary;
     padding: 25px;
     border-radius: 10px;
     margin: 0 30px 0 0;
+    &__active {
+      .categories__row {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    }
     &-header {
       margin: 0 0 25px 0;
       display: flex;

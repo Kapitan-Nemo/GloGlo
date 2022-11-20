@@ -231,7 +231,12 @@ const fetchRecords = async () => {
   border-radius: 10px;
   width: 922px;
   height: 585px;
-  overflow: scroll;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none; /* Chrome and Safari */
+  }
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   @include max-1920 {
     height: 420px;
   }
