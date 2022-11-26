@@ -5,9 +5,10 @@ export interface IRecords {
   year: number;
   editMode: boolean;
   category: {
+    id: string;
     text: string;
     color: string;
-    id: string;
+    date: number;
   };
 }
 

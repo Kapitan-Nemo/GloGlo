@@ -1,14 +1,53 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { DoughnutChart } from "vue-chart-3";
 import { Chart, registerables } from "chart.js";
 import { useFinanceStore } from "@/stores/finance";
-
-import ArrowDown from "@/assets/icons/actions/arrow-down.svg?component";
-
+import type { ICategories } from "@/utils/interface";
 Chart.register(...registerables);
+
 const finance = useFinanceStore();
-const doughnutRef = ref();
+const dataChart = ref<Array<number>>([]);
+
+const financeColor = computed(() => {
+  const arr = finance.records.map((data) => data.category.color);
+  return [...new Map(arr.map((item) => [item, item])).values()];
+});
+
+const financeLabel = computed(() => {
+  const arr = finance.records.map((data) => data.category.text);
+  return [...new Map(arr.map((item) => [item, item])).values()];
+});
+
+const getValues = () => {
+  // Search Categories used in finance table
+  const arr = finance.records.map((data) => data.category);
+  // Filter duplicate Categories
+  const searchCategories = [
+    ...new Map(arr.map((item) => [item.id, item])).values(),
+  ];
+  searchCategories.forEach(categoriesCost);
+};
+
+const categoriesCost = (item: ICategories) => {
+  const searchFinanceRecords = finance.records.filter(
+    (element) => element.category.text == item.text
+  );
+
+  const dataCost = searchFinanceRecords.map((data) => data.cost);
+  const sumCategoriesCost = dataCost.reduce((a, b) => a + b, 0);
+  dataChart.value.push(sumCategoriesCost);
+};
+
+watch(
+  () => finance.records,
+  () => {
+    dataChart.value = [];
+    getValues();
+  },
+  { deep: true }
+);
+
 const options = ref({
   plugins: {
     legend: {
@@ -31,11 +70,11 @@ const options = ref({
 });
 
 const chartData = computed(() => ({
-  labels: finance.chartLabels,
+  labels: financeLabel.value,
   datasets: [
     {
-      data: finance.chartValues,
-      backgroundColor: finance.chartColors,
+      data: dataChart.value,
+      backgroundColor: financeColor.value,
       spacing: 5,
       borderWidth: 0,
       borderRadius: 25,
@@ -47,13 +86,9 @@ const chartData = computed(() => ({
 
 <template>
   <div class="dashboard__wrap">
-    <div class="dashboard__wrap-header">
-      <h2 class="dashboard__title">Categories</h2>
-      <button class="dashboard__button">Overall<ArrowDown /></button>
-    </div>
+    <h2 class="dashboard__title">Categories</h2>
     <div class="dashboard__chart">
       <DoughnutChart
-        ref="doughnutRef"
         :width="300"
         :height="300"
         :chartData="chartData"

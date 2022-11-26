@@ -26,7 +26,6 @@ const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
 const { categories } = storeToRefs(firestore);
-const fetchCategories = ref<ICategories[]>([]);
 const colorNew = ref("#000000");
 
 const newCategory = ref<Array<ICategories>>([

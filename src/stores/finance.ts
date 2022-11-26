@@ -5,7 +5,7 @@ export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
     categories: [] as ICategories[],
     records: [] as IRecords[],
-    chartValues: [],
+    chartValues: [0],
     chartLabels: [],
     chartColors: [],
   }),
