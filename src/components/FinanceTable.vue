@@ -36,30 +36,6 @@ const newRecordCategory = ref({
 onMounted(() => {
   financeChart();
   fetchRecords();
-
-  // const categoriesCollectionQuery = query(
-  //   collection(firestore.db, "users", userid, "categories"),
-  //   orderBy("date", "desc")
-  // );
-
-  // onSnapshot(categoriesCollectionQuery, (querySnapshot) => {
-  //   const newCategories: {
-  //     id: string;
-  //     text: string;
-  //     color: string;
-  //     date: number;
-  //   }[] = [];
-  //   querySnapshot.forEach((doc) => {
-  //     const category = {
-  //       id: doc.id,
-  //       text: doc.data().text,
-  //       color: doc.data().color,
-  //       date: doc.data().date,
-  //     };
-  //     newCategories.push(category);
-  //   });
-  //   finance.categories = newCategories;
-  // });
 });
 
 const addRecord = () => {
@@ -120,7 +96,7 @@ const fetchRecords = async () => {
       month: doc.data().month,
       year: doc.data().year,
     };
-    newRecords.value.push(record);
+    newRecords.value.unshift(record);
   });
   finance.records = newRecords.value;
 };

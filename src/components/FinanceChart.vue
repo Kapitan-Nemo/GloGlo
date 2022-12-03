@@ -39,9 +39,10 @@ const categoriesCost = (item: ICategories) => {
   dataChart.value.push(sumCategoriesCost);
 };
 
+// single ref
 watch(
   () => finance.records,
-  () => {
+  (newVal, oldVal) => {
     dataChart.value = [];
     getValues();
   },
@@ -49,10 +50,11 @@ watch(
 );
 
 const options = ref({
+  responsive: true,
   plugins: {
     legend: {
-      display: false,
-      position: "top",
+      display: true,
+      position: "bottom",
       labels: {
         usePointStyle: true,
         pointStyle: "rectRounded",
@@ -89,6 +91,7 @@ const chartData = computed(() => ({
     <h2 class="dashboard__title">Categories</h2>
     <div class="dashboard__chart">
       <DoughnutChart
+        ref="doughnutRef"
         :width="300"
         :height="300"
         :chartData="chartData"
