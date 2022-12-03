@@ -9,7 +9,11 @@ import "@/scss/app.scss";
 
 <template>
   <nav class="menu">
-    <p class="menu__logo">GloGlo<Logo></Logo></p>
+    <div class="menu__logo">
+      <Logo></Logo>
+      <p>modern ledger</p>
+    </div>
+
     <RouterLink class="menu__link" to="/"><Home></Home>Dashboard</RouterLink>
     <RouterLink class="menu__link" to="/categories"
       ><Categories></Categories>Categories</RouterLink
@@ -66,12 +70,12 @@ main {
   }
   &__logo {
     display: flex;
-    justify-content: space-between;
+    flex-flow: column;
+    font-family: $font-gothic;
     align-items: center;
     width: 100%;
     font-size: 30px;
-    color: white;
-    margin: 0 0 100px 0;
+    margin: 0 0 50px 0;
     padding: 50px 50px 0 50px;
   }
 }

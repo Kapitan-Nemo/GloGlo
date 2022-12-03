@@ -35,8 +35,8 @@ onUnmounted(() => {
       <div class="login__box-right">
         <img class="login__shape-right" src="@/assets/images/shape2.png" />
         <div class="login__logo">
-          <h1 class="login__logo-title">GloGlo</h1>
           <Logo></Logo>
+          <p class="login__logo-title">modern ledger</p>
         </div>
         <button class="login__button" type="button" @click="singInWithGoogle">
           <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
@@ -73,10 +73,10 @@ onUnmounted(() => {
   &__logo {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-flow: column;
     margin: 0 0 50px 0;
     &-title {
-      margin: 0;
+      margin: 10px 0 0 0;
     }
   }
   &__box {
