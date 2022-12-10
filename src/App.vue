@@ -11,7 +11,6 @@ import "@/scss/app.scss";
   <nav class="menu">
     <div class="menu__logo">
       <Logo></Logo>
-      <p>modern ledger</p>
     </div>
 
     <RouterLink class="menu__link" to="/"><Home></Home>Dashboard</RouterLink>
@@ -71,12 +70,11 @@ main {
   &__logo {
     display: flex;
     flex-flow: column;
-    font-family: $font-gothic;
     align-items: center;
     width: 100%;
     font-size: 30px;
     margin: 0 0 50px 0;
-    padding: 50px 50px 0 50px;
+    padding: 65px 50px 0 50px;
   }
 }
 </style>

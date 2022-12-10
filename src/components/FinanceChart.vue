@@ -87,9 +87,9 @@ const chartData = computed(() => ({
 </script>
 
 <template>
-  <div class="dashboard__wrap">
-    <h2 class="dashboard__title">Categories</h2>
-    <div class="dashboard__chart">
+  <div class="donutchart__wrap">
+    <h2 class="donutchart__title">Categories</h2>
+    <div class="donutchart__chart">
       <DoughnutChart
         ref="doughnutRef"
         :width="300"
@@ -102,11 +102,36 @@ const chartData = computed(() => ({
 </template>
 
 <style lang="scss">
-.dashboard {
+.dp__theme_dark {
+  --dp-background-color: #212121;
+  --dp-text-color: #ffffff;
+  --dp-hover-color: #484848;
+  --dp-hover-text-color: #ffffff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #00dee2;
+  --dp-primary-text-color: #ffffff;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-menu-border-color: #2d2d2d;
+  --dp-border-color-hover: #aaaeb7;
+  --dp-disabled-color: #737373;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-success-color-disabled: #428f59;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
+  --dp-highlight-color: rgba(0, 92, 178, 0.2);
+}
+.dp__overlay {
+  background: $bg-primary;
+}
+.donutchart {
   &__wrap {
     background: #1e1f25;
     border-radius: 10px;
     width: 100%;
+    padding: 25px;
     &-header {
       display: flex;
       justify-content: space-between;

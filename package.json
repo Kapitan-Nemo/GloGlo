@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.6.0",
-    "chart.js": "^4.0.1",
+    "chart.js": "^3.9.1",
     "firebase": "^9.14.0",
     "pinia": "^2.0.27",
     "pinia-plugin-persistedstate": "^3.0.1",
@@ -22,7 +22,6 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
-    "@types/chart.js": "^2.9.37",
     "@types/node": "^18.11.10",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue/eslint-config-prettier": "^7.0.0",

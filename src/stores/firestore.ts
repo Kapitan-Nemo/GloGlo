@@ -9,7 +9,7 @@ import {
   orderBy,
 } from "@firebase/firestore";
 import { useUserStore } from "@/stores/auth";
-import { FIREBASE_CONFIG } from "@/utils/const";
+import { FIREBASE_CONFIG } from "@/utils/constants";
 
 export const useFireStore = defineStore("firebaseStore", {
   state: () => {

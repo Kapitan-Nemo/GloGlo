@@ -1,4 +1,4 @@
-import { FIREBASE_CONFIG } from "@/utils/const";
+import { FIREBASE_CONFIG } from "@/utils/constants";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import { createPinia } from "pinia";

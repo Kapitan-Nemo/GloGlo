@@ -13,8 +13,8 @@ export function financeChart() {
   //   return finance.categories.map((data) => data.total);
   // });
   setTimeout(() => {
-    finance.chartColors = financeColor.value;
-    finance.chartLabels = financeLabels.value;
+    // finance.chartColors = financeColor.value;
+    // finance.chartLabels = financeLabels.value;
     // finance.chartValues = financeTotal.value;
     // console.log(finance.chartValues);
   }, 500);

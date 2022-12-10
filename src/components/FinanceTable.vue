@@ -12,11 +12,12 @@ import {
 } from "firebase/firestore";
 import { financeChart } from "@/composables/financechart.js";
 import { storeToRefs } from "pinia";
+
 import Add from "@/assets/icons/actions/add.svg?component";
 import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
 import Save from "@/assets/icons/actions/save.svg?component";
-
+import icon from "@/components/dynamicIcon.vue";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { IRecords } from "@/utils/interface";
@@ -110,15 +111,15 @@ const fetchRecords = async () => {
         class="finance__button"
         @click="addRecord()"
       >
-        Add record <Add></Add>
+        Add expense <Add></Add>
       </button>
-
       <Datepicker
         @closed="fetchRecords"
         autoApply
         dark
         v-model="dateSelected"
         monthPicker
+        :clearable="false"
       ></Datepicker>
     </div>
     <div v-if="finance.categories.length == 0" class="finance__empty">
