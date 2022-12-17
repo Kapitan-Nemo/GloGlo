@@ -42,7 +42,7 @@ const categoriesCost = (item: ICategories) => {
 // single ref
 watch(
   () => finance.records,
-  (newVal, oldVal) => {
+  () => {
     dataChart.value = [];
     getValues();
   },
