@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import Header from "@/components/headerBar.vue";
 const avatars = import.meta.glob("@/assets/icons/avatars/*.svg");
 const avatarsArray = Object.keys(avatars).map((font) =>
   font.replace("@/assets/icons/avatars/", "")
@@ -12,7 +13,7 @@ const activeAvatar = (avatar: string) => {
 </script>
 
 <template>
-  <h1 class="">Select your fighter</h1>
+  <Header msg="Select your fighter"></Header>
   <div class="avatars">
     <div
       class="avatars__single"
@@ -27,6 +28,12 @@ const activeAvatar = (avatar: string) => {
 </template>
 
 <style lang="scss" scoped>
+.title {
+  margin: 0 0 0 0;
+}
+.subtitle {
+  margin: 0 0 30px 0;
+}
 .avatars {
   display: flex;
   &__single {
