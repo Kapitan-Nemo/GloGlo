@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
 
-const Header = defineAsyncComponent(() => import("@/components/HeaderBar.vue"));
+const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
 const FinancePanels = defineAsyncComponent(
-  () => import("@/components/FinancePanels.vue")
+  () => import("@/views/dashboard/components/financePanels.vue")
 );
 const FinanceTable = defineAsyncComponent(
-  () => import("@/components/FinanceTable.vue")
+  () => import("@/views/dashboard/components/financeTable.vue")
 );
 const FinanceChart = defineAsyncComponent(
-  () => import("@/components/FinanceChart.vue")
+  () => import("@/views/dashboard/components/financeChart.vue")
 );
 </script>
 
@@ -20,10 +20,10 @@ const FinanceChart = defineAsyncComponent(
 
   <div class="dashboard">
     <div class="dashboard__wrapper">
-      <FinancePanels></FinancePanels>
-      <FinanceTable></FinanceTable>
+      <finance-panels />
+      <finance-table />
     </div>
-    <FinanceChart></FinanceChart>
+    <finance-chart />
   </div>
 </template>
 

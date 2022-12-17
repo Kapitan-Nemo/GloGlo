@@ -10,7 +10,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { financeChart } from "@/composables/financechart.js";
+import { financeChart } from "@/composables/financeChart.js";
 import { storeToRefs } from "pinia";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { IRecords } from "@/utils/interface";

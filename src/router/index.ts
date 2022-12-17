@@ -1,9 +1,9 @@
 import { useUserStore } from "@/stores/auth";
 import { createRouter, createWebHistory } from "vue-router";
 
-const DashboardView = () => import("@/views/DashboardView.vue");
+const DashboardView = () => import("@/views/dashboard/dashboardView.vue");
 const LoginView = () => import("@/views/LoginView.vue");
-const CategoriesView = () => import("@/views/CategoriesView.vue");
+const CategoriesView = () => import("@/views/categories/categoriesView.vue");
 const SettingsView = () => import("@/views/SettingsView.vue");
 
 const router = createRouter({

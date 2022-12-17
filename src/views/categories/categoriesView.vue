@@ -3,9 +3,9 @@ import { defineAsyncComponent } from "vue";
 import { useFinanceStore } from "@/stores/finance";
 
 const finance = useFinanceStore();
-const Header = defineAsyncComponent(() => import("@/components/HeaderBar.vue"));
-const CategoryPanel = defineAsyncComponent(
-  () => import("@/components/CategoryPanel.vue")
+const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
+const categoryPanel = defineAsyncComponent(
+  () => import("@/views/categories/components/categoryPanel.vue")
 );
 </script>
 
@@ -14,5 +14,5 @@ const CategoryPanel = defineAsyncComponent(
     :msg="'You have total of ' + finance.categories.length + ' categories'"
   ></Header>
 
-  <CategoryPanel />
+  <category-panel />
 </template>
