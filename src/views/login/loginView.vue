@@ -36,7 +36,7 @@ onUnmounted(() => {
         <img class="login__shape-right" src="@/assets/images/shape2.png" />
         <div class="login__logo">
           <Logo></Logo>
-          <p class="login__logo-title">modern ledger</p>
+          <p class="login__logo-title">finance assistance</p>
         </div>
         <button class="login__button" type="button" @click="singInWithGoogle">
           <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
@@ -77,6 +77,7 @@ onUnmounted(() => {
     margin: 0 0 50px 0;
     &-title {
       margin: 10px 0 0 0;
+      color: $white;
     }
   }
   &__box {
