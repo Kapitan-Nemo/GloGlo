@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import Header from "@/components/headerBar.vue";
-import icon from "@/components/avatarIcon.vue";
+import icon from "@/components/dynamicIcon.vue";
 import { ref } from "vue";
 
-//TODO: refactor
 const avatars = import.meta.glob("@/assets/icons/avatars/*.svg");
 const avatarsArray = Object.keys(avatars).map((avatar) =>
   avatar.replace("/src/assets/icons/avatars/", "").replace(".svg", "")
 );
 
-console.log(avatarsArray);
 const currentAvatar = ref("avatar-1"); //TODO: get from api call
 const activeAvatar = (avatar: string) => {
   currentAvatar.value = avatar;
@@ -19,14 +17,13 @@ const activeAvatar = (avatar: string) => {
 <template>
   <Header msg="Select your fighter"></Header>
   <div class="avatars">
-    <!-- //TODO: refactor -->
     <div
       class="avatars__single"
       @click="activeAvatar(avatar)"
       v-for="avatar in avatarsArray"
       :key="avatar"
     >
-      <icon class="avatars__single-photo" :name="avatar" />
+      <icon class="avatars__single-photo" path="avatars" :name="avatar" />
       <p class="avatars__single-active" v-if="currentAvatar == avatar">
         Active
       </p>

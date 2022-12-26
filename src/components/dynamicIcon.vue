@@ -10,10 +10,13 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  path: {
+    type: String,
+    required: true,
+  },
 });
 
 const icon = defineAsyncComponent(
-  () => import(`@/assets/icons/avatars/${props.name}.svg?component`)
+  () => import(`@/assets/icons/${props.path}/${props.name}.svg?component`)
 );
-console.log(icon);
 </script>
