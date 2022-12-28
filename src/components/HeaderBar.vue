@@ -1,21 +1,35 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/auth";
 import { getAuth, signOut } from "firebase/auth";
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useSettingsStore } from "@/stores/settings";
 import router from "@/router";
 
-import AvatarIcon from "@/assets/icons/avatars/avatar-1.svg?component";
+import icon from "@/components/dynamicIcon.vue";
 import CalendarIcon from "@/assets/icons/other/calendar.svg?component";
 import LogoutIcon from "@/assets/icons/actions/logout.svg?component";
 import NotifyIcon from "@/assets/icons/actions/notification.svg?component";
 import UserIcon from "@/assets/icons/other/settings-color.svg?component";
+import { storeToRefs } from "pinia";
+
+const user = useUserStore();
+const auth = getAuth();
+const showAccount = ref(false);
+const settings = useSettingsStore();
+const { currentAvatar } = storeToRefs(settings);
+const componentKey = ref(0);
+
+watch(
+  () => currentAvatar.value,
+  () => {
+    componentKey.value += 1;
+  }
+);
 
 defineProps<{
   msg: string;
 }>();
-const user = useUserStore();
-const auth = getAuth();
-const showAccount = ref(false);
+
 function singOutGoogle() {
   signOut(auth)
     .then(() => {
@@ -34,10 +48,13 @@ function singOutGoogle() {
       <div class="header__buttons">
         <CalendarIcon class="header__buttons-calendar"></CalendarIcon>
         <NotifyIcon class="header__buttons-notify"></NotifyIcon>
-        <AvatarIcon
+        <icon
+          :key="componentKey"
           @click="showAccount = !showAccount"
           class="header__buttons-avatar"
-        ></AvatarIcon>
+          path="avatars"
+          :name="currentAvatar"
+        />
       </div>
     </div>
     <p class="header__subtitle">{{ msg }}</p>

@@ -1,16 +1,30 @@
 <script setup lang="ts">
 import Header from "@/components/headerBar.vue";
 import icon from "@/components/dynamicIcon.vue";
-import { ref } from "vue";
+
+import { useUserStore } from "@/stores/auth";
+import { useFireStore } from "@/stores/firestore";
+import { useSettingsStore } from "@/stores/settings";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+
+const user = useUserStore();
+const firestore = useFireStore();
+const settings = useSettingsStore();
 
 const avatars = import.meta.glob("@/assets/icons/avatars/*.svg");
 const avatarsArray = Object.keys(avatars).map((avatar) =>
   avatar.replace("/src/assets/icons/avatars/", "").replace(".svg", "")
 );
 
-const currentAvatar = ref("avatar-1"); //TODO: get from api call
+onSnapshot(doc(firestore.db, "users", user.userId), (doc) => {
+  settings.$patch({ currentAvatar: doc.data()?.currentAvatar });
+});
+
 const activeAvatar = (avatar: string) => {
-  currentAvatar.value = avatar;
+  settings.$patch({ currentAvatar: avatar });
+  setDoc(doc(firestore.db, "users", user.userId), {
+    currentAvatar: settings.currentAvatar,
+  });
 };
 </script>
 
@@ -24,7 +38,7 @@ const activeAvatar = (avatar: string) => {
       :key="avatar"
     >
       <icon class="avatars__single-photo" path="avatars" :name="avatar" />
-      <p class="avatars__single-active" v-if="currentAvatar == avatar">
+      <p class="avatars__single-active" v-if="settings.currentAvatar == avatar">
         Active
       </p>
     </div>
