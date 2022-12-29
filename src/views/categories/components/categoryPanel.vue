@@ -246,8 +246,8 @@ const addCategory = () => {
 
   &__edit {
     width: 380px;
-    min-height: 262px;
-    background-color: #1e1f25;
+    max-height: 530px;
+    background-color: $bg-secondary;
     padding: 25px;
     border-radius: 10px;
     margin: 0 30px 0 0;
@@ -256,12 +256,12 @@ const addCategory = () => {
     flex-flow: column;
   }
   &__input {
-    border-bottom: solid 1px #00dee2;
+    border-bottom: solid 1px $primary;
     border-left: none;
     border-top: none;
     border-right: none;
     background: transparent;
-    color: #fff;
+    color: $white;
     font-size: 25px;
     max-width: 200px;
     padding: 0 0 5px 0;
@@ -287,27 +287,31 @@ const addCategory = () => {
   }
 
   &__row {
-    border: solid 1px #292d39;
+    border-top: solid 1px $gray;
+    border-bottom: solid 1px $gray;
+    border-left: none;
+    border-right: none;
+
     margin: 0 0 25px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: #fff;
+    color: $white;
     &__active {
       opacity: 1 !important;
       pointer-events: all !important;
     }
     &-badge {
-      border-radius: 20px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      border-radius: 15px;
+      text-align: center;
+      padding: 5px 10px 5px 10px;
+      margin: 0 auto;
       font-size: 20px;
       color: $white;
       width: 140px;
-      min-height: 40px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 0 0 15px;
     }
     &-actions {
       display: flex;
@@ -336,9 +340,7 @@ const addCategory = () => {
     scrollbar-width: none; /* Firefox */
     width: 380px;
     height: auto;
-    max-height: 521px;
     background-color: $bg-secondary;
-    padding: 25px;
     border-radius: 10px;
     margin: 0 30px 0 0;
     &__active {
@@ -348,7 +350,7 @@ const addCategory = () => {
       }
     }
     &-header {
-      margin: 0 0 25px 0;
+      padding: 25px;
       display: flex;
       align-items: center;
       justify-content: space-between;

@@ -48,13 +48,15 @@ function singOutGoogle() {
       <div class="header__buttons">
         <CalendarIcon class="header__buttons-calendar"></CalendarIcon>
         <NotifyIcon class="header__buttons-notify"></NotifyIcon>
-        <icon
-          :key="componentKey"
-          @click="showAccount = !showAccount"
-          class="header__buttons-avatar"
-          path="avatars"
-          :name="currentAvatar"
-        />
+        <Transition name="fade" mode="out-in">
+          <icon
+            :key="componentKey"
+            @click="showAccount = !showAccount"
+            class="header__buttons-avatar"
+            path="avatars"
+            :name="currentAvatar"
+          />
+        </Transition>
       </div>
     </div>
     <p class="header__subtitle">{{ msg }}</p>
@@ -72,25 +74,23 @@ function singOutGoogle() {
 </template>
 
 <style lang="scss">
-.header {
-  position: relative;
-  margin: 0 0 50px 0;
-  .v-enter-active,
-  .v-leave-active {
-    transition: opacity 0.5s ease;
-  }
-  .v-enter-from,
-  .v-leave-to {
-    opacity: 0;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.header {
+  margin: 0 0 50px 0;
   &__subtitle {
     margin: 0;
   }
   &__wrap {
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
   &__account {
     width: 210px;
@@ -126,18 +126,19 @@ function singOutGoogle() {
     }
   }
   &__buttons {
-    display: flex;
-    align-items: center;
     &-calendar {
       margin: 0 30px 0 0;
+      // display: flex;
     }
     &-notify {
-      margin: 0 50px 0 0;
+      margin: 0 30px 0 0;
+      // display: flex;
     }
     &-avatar {
+      // display: flex;
       cursor: pointer;
-      width: 51px;
-      height: 68px;
+      width: 50px;
+      height: 50px;
     }
   }
 }

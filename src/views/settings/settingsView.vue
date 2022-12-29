@@ -12,9 +12,11 @@ const firestore = useFireStore();
 const settings = useSettingsStore();
 
 const avatars = import.meta.glob("@/assets/icons/avatars/*.svg");
+console.log(avatars);
 const avatarsArray = Object.keys(avatars).map((avatar) =>
   avatar.replace("/src/assets/icons/avatars/", "").replace(".svg", "")
 );
+console.log(avatarsArray);
 
 onSnapshot(doc(firestore.db, "users", user.userId), (doc) => {
   settings.$patch({ currentAvatar: doc.data()?.currentAvatar });
