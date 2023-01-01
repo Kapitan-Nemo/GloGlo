@@ -36,7 +36,6 @@ onUnmounted(() => {
         <img class="login__shape-right" src="@/assets/images/shape2.png" />
         <div class="login__logo">
           <Logo></Logo>
-          <p class="login__logo-title">finance assistance</p>
         </div>
         <button class="login__button" type="button" @click="singInWithGoogle">
           <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
