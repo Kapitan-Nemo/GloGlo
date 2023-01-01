@@ -105,6 +105,7 @@ function singOutGoogle() {
     display: flex;
     justify-content: center;
     flex-flow: column;
+    box-shadow: 1px 1px 15px 5px #131517;
     .menu__active {
       border: none;
     }
