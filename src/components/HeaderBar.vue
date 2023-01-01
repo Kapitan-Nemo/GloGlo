@@ -50,8 +50,8 @@ function singOutGoogle() {
         <NotifyIcon class="header__buttons-notify"></NotifyIcon>
         <Transition name="fade" mode="out-in">
           <icon
-            :key="componentKey"
             @click="showAccount = !showAccount"
+            :key="componentKey"
             class="header__buttons-avatar"
             path="avatars"
             :name="currentAvatar"
@@ -60,11 +60,13 @@ function singOutGoogle() {
       </div>
     </div>
     <p class="header__subtitle">{{ msg }}</p>
-    <Transition>
+    <Transition name="fade" mode="out-in">
       <div v-if="showAccount" class="header__account">
-        <p class="header__account-action">
-          <UserIcon class="header__account-action-icon"></UserIcon>Settings
-        </p>
+        <router-link to="/settings">
+          <p class="header__account-action">
+            <UserIcon class="header__account-action-icon"></UserIcon>Settings
+          </p>
+        </router-link>
         <p class="header__account-action" @click="singOutGoogle">
           <LogoutIcon class="header__account-action-icon"></LogoutIcon>Logout
         </p>
@@ -96,13 +98,16 @@ function singOutGoogle() {
     width: 210px;
     height: 150px;
     position: absolute;
-    right: 0;
-    bottom: -170px;
+    right: 35px;
+    top: 125px;
     background: $bg-secondary;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     flex-flow: column;
+    .menu__active {
+      border: none;
+    }
     &-action {
       transition: all 0.6s ease;
       display: flex;
