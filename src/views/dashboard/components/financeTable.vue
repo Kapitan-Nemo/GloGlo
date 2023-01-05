@@ -254,10 +254,14 @@ const fetchRecords = async () => {
       color: $white;
       width: 140px;
       height: 40px;
-      display: flex;
-      justify-content: center;
-      border-radius: 20px;
-      align-items: center;
+
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      text-align: center;
+      padding: 5px 10px 5px 10px;
+      margin: 0 auto;
+      border-radius: 15px;
       font-size: 20px;
     }
     &-cell {

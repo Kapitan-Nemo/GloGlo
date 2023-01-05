@@ -291,7 +291,6 @@ const addCategory = () => {
     border-bottom: solid 1px $gray;
     border-left: none;
     border-right: none;
-
     margin: 0 0 25px 0;
     display: flex;
     align-items: center;
