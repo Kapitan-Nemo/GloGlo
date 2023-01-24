@@ -33,10 +33,9 @@ const categoriesCost = (item: ICategories) => {
   const searchFinanceRecords = finance.records.filter(
     (element) => element.category.text == item.text
   );
-
-  const dataCost = searchFinanceRecords.map((data) => data.cost);
-  const sumCategoriesCost = dataCost.reduce((a, b) => a + b, 0);
-  dataChart.value.push(sumCategoriesCost);
+  dataChart.value.push(
+    searchFinanceRecords.map((data) => data.cost).reduce((a, b) => a + b, 0)
+  );
 };
 
 watch(

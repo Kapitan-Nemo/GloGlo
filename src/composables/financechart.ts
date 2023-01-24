@@ -1,7 +1,8 @@
 import { computed } from "vue";
 import { useFinanceStore } from "@/stores/finance";
-const finance = useFinanceStore();
+//TODO: refactor
 
+const finance = useFinanceStore();
 export function financeChart() {
   const financeLabels = computed(() => {
     return finance.categories.map((data) => data.text);

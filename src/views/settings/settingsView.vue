@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Header from "@/components/headerBar.vue";
+import headerBar from "@/components/headerBar.vue";
 import icon from "@/components/dynamicIcon.vue";
 
 import { useUserStore } from "@/stores/auth";
@@ -12,11 +12,9 @@ const firestore = useFireStore();
 const settings = useSettingsStore();
 
 const avatars = import.meta.glob("@/assets/icons/avatars/*.svg");
-console.log(avatars);
 const avatarsArray = Object.keys(avatars).map((avatar) =>
   avatar.replace("/src/assets/icons/avatars/", "").replace(".svg", "")
 );
-console.log(avatarsArray);
 
 onSnapshot(doc(firestore.db, "users", user.userId), (doc) => {
   settings.$patch({ currentAvatar: doc.data()?.currentAvatar });
@@ -31,7 +29,7 @@ const activeAvatar = (avatar: string) => {
 </script>
 
 <template>
-  <Header msg="Select your fighter"></Header>
+  <header-bar msg="Select your fighter" />
   <div class="avatars">
     <div
       class="avatars__single"

@@ -70,10 +70,10 @@ watch(
 
   <div class="dashboard">
     <div class="dashboard__wrapper">
-      <finance-panels />
+      <!-- <finance-panels /> -->
       <finance-table />
     </div>
-    <finance-chart />
+    <!-- <finance-chart /> -->
   </div>
 </template>
 

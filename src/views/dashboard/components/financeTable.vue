@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -13,9 +13,10 @@ import {
 import { financeChart } from "@/composables/financeChart.js";
 import { storeToRefs } from "pinia";
 import "@vuepic/vue-datepicker/dist/main.css";
-import type { IRecords } from "@/utils/interface";
+import type { ICategories, IRecords } from "@/utils/interface";
 import Datepicker from "@vuepic/vue-datepicker";
 
+import icon from "@/components/dynamicIcon.vue";
 import Add from "@/assets/icons/actions/add.svg?component";
 import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
@@ -26,6 +27,7 @@ const firestore = useFireStore();
 const finance = useFinanceStore();
 const { dateSelected, records } = storeToRefs(firestore);
 
+const dataChart = ref<Array<number>>([]);
 const newRecordCost = ref(0);
 const newRecordCategory = ref({
   color: "",
@@ -33,33 +35,62 @@ const newRecordCategory = ref({
   id: "",
 });
 
+const financeColor = computed(() => {
+  const arr = finance.records.map((data) => data.category.color);
+  return [...new Map(arr.map((item) => [item, item])).values()];
+});
+
+const financeLabel = computed(() => {
+  const arr = finance.records.map((data) => data.category.text);
+  return [...new Map(arr.map((item) => [item, item])).values()];
+});
+
+const categoriesCost = (item: ICategories) => {
+  const searchFinanceRecords = finance.records.filter(
+    (element) => element.category.text == item.text
+  );
+  dataChart.value.push(
+    searchFinanceRecords.map((data) => data.cost).reduce((a, b) => a + b, 0)
+  );
+};
+
+const searchCategories = [
+  ...new Map(
+    finance.records.map((data) => data.category).map((item) => [item.id, item])
+  ).values(),
+];
+searchCategories.forEach(categoriesCost);
+
+//combine financeColor and financeLabel and dataChart into one array
+const recordsDataCombine = computed(() => {
+  const arr = [];
+  for (let i = 0; i < financeLabel.value.length; i++) {
+    arr.push({
+      label: financeLabel.value[i],
+      color: financeColor.value[i],
+      cost: dataChart.value[i],
+    });
+  }
+  return arr;
+});
+
 onMounted(() => {
   financeChart();
   fetchRecords();
 });
 
-const addRecord = () => {
-  newRecordCategory.value = {
-    color: finance.categories[0].color,
-    text: finance.categories[0].text,
-    id: finance.categories[0].id,
-  };
+const saveNewRecord = () => {
   addDoc(collection(firestore.db, "users", user.userId, "records"), {
     cost: newRecordCost.value,
     category: newRecordCategory.value,
-    editMode: true,
+    editMode: false,
     date: Date.now(),
     month: dateSelected.value.month,
     year: dateSelected.value.year,
   });
   newRecordCost.value = 0;
+  addNewRecord.value = false;
   fetchRecords();
-};
-
-const deleteRecord = (id: string) => {
-  finance.records = finance.records.filter((record) => record.id !== id);
-  deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
-  financeChart();
 };
 
 const saveRecord = async (id: string) => {
@@ -77,6 +108,12 @@ const saveRecord = async (id: string) => {
   } else if (finance.records[index].cost <= 0) {
     alert("Cost must be greater than 0! ");
   }
+  financeChart();
+};
+
+const deleteRecord = (id: string) => {
+  finance.records = finance.records.filter((record) => record.id !== id);
+  deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
   financeChart();
 };
 
@@ -100,6 +137,27 @@ const fetchRecords = async () => {
   });
   finance.records = newRecords.value;
 };
+
+const show = ref(false);
+const addNewRecord = ref(false);
+const currentIndex = ref(0);
+const currentCategory = ref("");
+const showMore = async (
+  show: boolean,
+  currentIndex: number,
+  currentCategory: string
+) => {
+  console.log("test");
+  console.log(show);
+  console.log(currentIndex);
+  console.log(currentCategory);
+};
+
+const filterRecords = computed(() => {
+  return finance.records.filter(
+    (record) => record.category.text == currentCategory.value
+  );
+});
 </script>
 
 <template>
@@ -108,7 +166,7 @@ const fetchRecords = async () => {
       <button
         :disabled="finance.categories.length == 0"
         class="finance__button"
-        @click="addRecord()"
+        @click="addNewRecord = !addNewRecord"
       >
         Add expense <Add />
       </button>
@@ -121,81 +179,111 @@ const fetchRecords = async () => {
         :clearable="false"
       ></Datepicker>
     </div>
-    <div v-if="finance.categories.length == 0" class="finance__empty">
-      <p>Whoops… There is no categories!</p>
-      <RouterLink class="d-flex" to="/categories"
-        >Add categories first!</RouterLink
-      >
-    </div>
-    <div
-      v-if="finance.records.length == 0 && finance.categories.length > 0"
-      class="finance__empty"
-    >
-      <p>Whoops… There is no data!</p>
-    </div>
-
-    <div
-      v-else
-      class="finance__row"
-      v-for="(record, index) in finance.records"
-      :key="index"
-    >
-      <div class="finance__row-data">
-        <span class="finance__row-cell">{{ index }}#</span>
-        <!-- <span class="finance__row-cell"
-          >{{ record.month }}#{{ record.year }}</span
-        > -->
-        <span v-if="!record.editMode" class="finance__row-cell"
-          >{{ record.cost }} $</span
-        >
-        <span v-else class="finance__row-cell"
-          ><input
-            type="number"
-            class="finance__row-input"
-            v-model="record.cost"
-          />
-        </span>
-        <span class="finance__row-cell" v-if="!record.editMode"
-          ><small
-            :style="{ 'background-color': record.category.color }"
-            class="finance__row-category"
-            >{{ record.category.text }}</small
-          ></span
-        >
-        <span class="finance__row-cell" v-else>
-          <select class="finance__row-select" v-model="record.category">
-            <option
-              v-for="(category, index) in finance.categories"
-              :key="index"
-              v-bind:value="{
-                color: category.color,
-                text: category.text,
-                id: category.id,
-              }"
-            >
-              {{ category.text }}
-            </option>
-          </select>
-        </span>
+    <div v-for="(record, index) in recordsDataCombine" :key="index">
+      <div v-if="index == 0 && addNewRecord">
+        <div class="finance__row">
+          <div class="finance__row-data">
+            <span class="finance__row-cell">
+              <input
+                v-model="newRecordCost"
+                type="number"
+                class="finance__row-input"
+                placeholder="Cost"
+              />
+            </span>
+            <span class="finance__row-cell">
+              <select
+                v-model="newRecordCategory"
+                class="finance__row-select"
+                name="category"
+              >
+                <option
+                  v-for="category in finance.categories"
+                  :key="category.id"
+                  :value="category"
+                >
+                  {{ category.text }}
+                </option>
+              </select>
+            </span>
+          </div>
+          <div class="finance__row-actions">
+            <button class="finance__row-button" @click="saveNewRecord">
+              <Save />
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="finance__row-actions">
-        <button
-          v-if="!record.editMode"
-          class="finance__row-button"
-          @click="editRecord(record.id)"
-        >
-          <Edit></Edit>
-        </button>
-        <button
-          v-else
-          class="finance__row-button"
-          @click="saveRecord(record.id)"
-        >
-          <Save></Save>
-        </button>
-        <button class="finance__row-button" @click="deleteRecord(record.id)">
-          <Delete></Delete>
-        </button>
+      <div class="finance__row">
+        <div class="finance__row-data">
+          <span class="finance__row-cell">{{ index }}#</span>
+          <span class="finance__row-cell">{{ record.cost }}$</span>
+          <span class="finance__row-cell"
+            ><small
+              :style="{ 'background-color': record.color }"
+              class="finance__row-category"
+              >{{ record.label }}</small
+            ></span
+          >
+        </div>
+        <div class="finance__row-actions">
+          <button
+            class="finance__row-button"
+            @click="
+              showMore(
+                (show = !show),
+                (currentIndex = index),
+                (currentCategory = record.label)
+              )
+            "
+          >
+            <icon
+              :class="show && index == currentIndex ? 'rotate' : ''"
+              path="actions"
+              name="more"
+            />
+          </button>
+        </div>
+      </div>
+      <div v-if="show && index == currentIndex">
+        <div v-for="(record, index) in filterRecords" :key="index">
+          <div class="finance__row">
+            <div class="finance__row-data">
+              <span v-if="!record.editMode" class="finance__row-cell"
+                >{{ record.cost }} $</span
+              >
+              <span v-else class="finance__row-cell"
+                ><input
+                  type="number"
+                  class="finance__row-input"
+                  v-model="record.cost"
+                />
+              </span>
+            </div>
+            <div class="finance__row-actions">
+              <button
+                v-if="!record.editMode"
+                class="finance__row-button"
+                @click="editRecord(record.id)"
+              >
+                <Edit></Edit>
+              </button>
+              <button
+                v-else
+                class="finance__row-button"
+                @click="saveRecord(record.id)"
+              >
+                <Save></Save>
+              </button>
+              <button
+                class="finance__row-button"
+                @click="deleteRecord(record.id)"
+              >
+                <Delete></Delete>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -208,6 +296,13 @@ const fetchRecords = async () => {
   width: 922px;
   height: 585px;
   overflow: auto;
+  svg {
+    transition: 0.3s ease-in-out;
+  }
+  .rotate {
+    transform: rotate(180deg);
+    transition: 0.3s ease-in-out;
+  }
   &::-webkit-scrollbar {
     display: none; /* Chrome and Safari */
   }
