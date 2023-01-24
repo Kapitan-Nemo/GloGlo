@@ -29,11 +29,8 @@ const { dateSelected, records } = storeToRefs(firestore);
 
 const dataChart = ref<Array<number>>([]);
 const newRecordCost = ref(0);
-const newRecordCategory = ref({
-  color: "",
-  text: "",
-  id: "",
-});
+const newRecordCategory = ref(finance.categories[0]);
+console.log(finance.categories);
 
 const financeColor = computed(() => {
   const arr = finance.records.map((data) => data.category.color);
@@ -75,22 +72,24 @@ const recordsDataCombine = computed(() => {
 });
 
 onMounted(() => {
-  financeChart();
   fetchRecords();
 });
 
 const saveNewRecord = () => {
-  addDoc(collection(firestore.db, "users", user.userId, "records"), {
-    cost: newRecordCost.value,
-    category: newRecordCategory.value,
-    editMode: false,
-    date: Date.now(),
-    month: dateSelected.value.month,
-    year: dateSelected.value.year,
-  });
-  newRecordCost.value = 0;
-  addNewRecord.value = false;
-  fetchRecords();
+  if (newRecordCost.value > 0) {
+    addDoc(collection(firestore.db, "users", user.userId, "records"), {
+      cost: newRecordCost.value,
+      category: newRecordCategory.value,
+      editMode: false,
+      date: Date.now(),
+      month: dateSelected.value.month,
+      year: dateSelected.value.year,
+    });
+    newRecordCost.value = 0;
+    addNewRecord.value = false;
+  } else {
+    alert("Please enter a valid cost");
+  }
 };
 
 const saveRecord = async (id: string) => {
@@ -103,12 +102,9 @@ const saveRecord = async (id: string) => {
       editMode: false,
     });
     finance.records[index].editMode = false;
-  } else if (finance.records[index].category.text == undefined || null) {
-    alert("You must choose category! ");
-  } else if (finance.records[index].cost <= 0) {
-    alert("Cost must be greater than 0! ");
+  } else {
+    alert("Please enter a valid cost");
   }
-  financeChart();
 };
 
 const deleteRecord = (id: string) => {
@@ -208,6 +204,9 @@ const filterRecords = computed(() => {
             </span>
           </div>
           <div class="finance__row-actions">
+            <button class="finance__row-button" @click="addNewRecord = false">
+              <Delete></Delete>
+            </button>
             <button class="finance__row-button" @click="saveNewRecord">
               <Save />
             </button>
