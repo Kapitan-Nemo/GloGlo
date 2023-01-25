@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useFireStore } from "@/stores/firestore";
 import {
   collection,
@@ -10,7 +10,6 @@ import {
   deleteDoc,
   where,
   getDocs,
-  onSnapshot,
 } from "firebase/firestore";
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
@@ -20,12 +19,11 @@ import Edit from "@/assets/icons/actions/edit.svg?component";
 import Delete from "@/assets/icons/actions/delete.svg?component";
 import Save from "@/assets/icons/actions/save.svg?component";
 import type { ICategories } from "@/utils/interface";
-import { storeToRefs } from "pinia";
 
 const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
-const { categories } = storeToRefs(firestore);
+
 const colorNew = ref("#000000");
 
 const newCategory = ref<Array<ICategories>>([
@@ -51,22 +49,6 @@ function newCategoryColor(eventData: { cssColor: string }) {
 function updateCategoryColor(eventData: { cssColor: string }) {
   kurwidlo.value.color = eventData.cssColor;
 }
-
-onMounted(async () => {
-  onSnapshot(await categories.value, (querySnapshot) => {
-    const newCategories = ref<ICategories[]>([]);
-    querySnapshot.forEach((doc) => {
-      const category = {
-        id: doc.id,
-        text: doc.data().text,
-        color: doc.data().color,
-        date: doc.data().date,
-      };
-      newCategories.value.push(category);
-    });
-    finance.categories = newCategories.value;
-  });
-});
 
 const editCategory = (index: number, category: ICategories) => {
   showOptions.value = !showOptions.value;

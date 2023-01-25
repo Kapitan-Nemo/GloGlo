@@ -22,14 +22,14 @@ export const useFireStore = defineStore("firebaseStore", {
     };
   },
   getters: {
-    records: async (state) =>
-      await getDocs(
+    records: (state) =>
+      getDocs(
         query(
           collection(state.db, "users", useUserStore().userId, "records"),
           where("month", "==", state.dateSelected.month)
         )
       ),
-    categories: async (state) =>
+    categories: (state) =>
       query(
         collection(state.db, "users", useUserStore().userId, "categories"),
         orderBy("date", "desc")
