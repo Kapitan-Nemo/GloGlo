@@ -1,62 +1,20 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import { ref } from "vue";
 import { useFinanceStore } from "@/stores/finance";
-import { useFireStore } from "@/stores/firestore";
-
-import type { ICategories, IRecords } from "@/utils/interface";
-import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 
 import Logo from "@/assets/icons/logo/logo.svg?component";
 import Home from "@/assets/icons/other/home.svg?component";
 import Categories from "@/assets/icons/other/categories.svg?component";
 import Settings from "@/assets/icons/other/settings.svg?component";
-
 import "@/scss/app.scss";
-import { onMounted } from "vue";
-import { onSnapshot } from "@firebase/firestore";
 
-const firestore = useFireStore();
 const finance = useFinanceStore();
-const { records, categories } = storeToRefs(firestore);
-
-const fetchRecords = async () => {
-  //Fetch records from firestore and add them to the store
-  const newRecords = ref<IRecords[]>([]);
-  (await records.value).forEach(async (doc) => {
-    const record = {
-      id: doc.id,
-      cost: doc.data().cost,
-      category: doc.data().category,
-      editMode: doc.data().editMode,
-      month: doc.data().month,
-      year: doc.data().year,
-    };
-    newRecords.value.push(record);
-  });
-  finance.records = newRecords.value;
-};
-
-const fetchCategories = async () => {
-  //Fetch categories from firestore and add them to the store
-  onSnapshot(categories.value, (querySnapshot) => {
-    const newCategories = ref<ICategories[]>([]);
-    querySnapshot.forEach((doc) => {
-      const category = {
-        id: doc.id,
-        text: doc.data().text,
-        color: doc.data().color,
-        date: doc.data().date,
-      };
-      newCategories.value.push(category);
-    });
-    finance.categories = newCategories.value;
-  });
-};
 
 onMounted(() => {
-  fetchRecords();
-  fetchCategories();
+  finance.fetchRecords();
+  finance.fetchCategories();
+
   console.log("Odpalam records", finance.records);
   console.log("Odpalam categories", finance.categories);
 });

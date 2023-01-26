@@ -18,3 +18,9 @@ export interface ICategories {
   color: string;
   date: number;
 }
+
+export interface IGroupRecords {
+  label: string;
+  color: string;
+  cost: number;
+}

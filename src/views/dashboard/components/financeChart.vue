@@ -1,51 +1,37 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 import { useFinanceStore } from "@/stores/finance";
-import type { ICategories } from "@/utils/interface";
+import { financeCosts } from "@/composables/useCosts.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const finance = useFinanceStore();
-const dataChart = ref<Array<number>>([]);
-
-const financeColor = computed(() => {
-  const arr = finance.records.map((data) => data.category.color);
-  return [...new Map(arr.map((item) => [item, item])).values()];
+onMounted(async () => {
+  financeCosts();
 });
-
-const financeLabel = computed(() => {
-  const arr = finance.records.map((data) => data.category.text);
-  return [...new Map(arr.map((item) => [item, item])).values()];
-});
-
-const getValues = () => {
-  // Search Categories used in finance table
-  const arr = finance.records.map((data) => data.category);
-  // Filter duplicate Categories
-  const searchCategories = [
-    ...new Map(arr.map((item) => [item.id, item])).values(),
-  ];
-  searchCategories.forEach(categoriesCost);
-};
-
-const categoriesCost = (item: ICategories) => {
-  const searchFinanceRecords = finance.records.filter(
-    (element) => element.category.text == item.text
-  );
-  dataChart.value.push(
-    searchFinanceRecords.map((data) => data.cost).reduce((a, b) => a + b, 0)
-  );
-};
 
 watch(
   () => finance.records,
   () => {
-    dataChart.value = [];
-    getValues();
+    financeCosts();
   },
   { deep: true }
 );
+
+const chartData = computed(() => ({
+  labels: finance.getChartLabels,
+  datasets: [
+    {
+      data: finance.chartCosts,
+      backgroundColor: finance.getChartColors,
+      borderWidth: 0,
+      borderRadius: 15,
+      spacing: 10,
+      cutout: "90%",
+    },
+  ],
+}));
 
 const options = ref({
   plugins: {
@@ -67,20 +53,6 @@ const options = ref({
     },
   },
 });
-
-const chartData = computed(() => ({
-  labels: financeLabel.value,
-  datasets: [
-    {
-      data: dataChart.value,
-      backgroundColor: financeColor.value,
-      borderWidth: 0,
-      borderRadius: 15,
-      spacing: 10,
-      cutout: "90%",
-    },
-  ],
-}));
 </script>
 
 <template>

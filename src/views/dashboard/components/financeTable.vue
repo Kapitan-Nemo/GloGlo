@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -10,10 +10,8 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { financeChart } from "@/composables/financeChart.js";
-import { storeToRefs } from "pinia";
 import "@vuepic/vue-datepicker/dist/main.css";
-import type { ICategories, IRecords } from "@/utils/interface";
+import { storeToRefs } from "pinia";
 import Datepicker from "@vuepic/vue-datepicker";
 
 import icon from "@/components/dynamicIcon.vue";
@@ -25,54 +23,21 @@ import Save from "@/assets/icons/actions/save.svg?component";
 const user = useUserStore();
 const firestore = useFireStore();
 const finance = useFinanceStore();
-const { dateSelected, records } = storeToRefs(firestore);
+const { dateSelected } = storeToRefs(firestore);
 
-const dataChart = ref<Array<number>>([]);
 const newRecordCost = ref(0);
 const newRecordCategory = ref(finance.categories[0]);
-console.log(finance.categories);
 
-const financeColor = computed(() => {
-  const arr = finance.records.map((data) => data.category.color);
-  return [...new Map(arr.map((item) => [item, item])).values()];
-});
-
-const financeLabel = computed(() => {
-  const arr = finance.records.map((data) => data.category.text);
-  return [...new Map(arr.map((item) => [item, item])).values()];
-});
-
-const categoriesCost = (item: ICategories) => {
-  const searchFinanceRecords = finance.records.filter(
-    (element) => element.category.text == item.text
-  );
-  dataChart.value.push(
-    searchFinanceRecords.map((data) => data.cost).reduce((a, b) => a + b, 0)
-  );
-};
-
-const searchCategories = [
-  ...new Map(
-    finance.records.map((data) => data.category).map((item) => [item.id, item])
-  ).values(),
-];
-searchCategories.forEach(categoriesCost);
-
-//combine financeColor and financeLabel and dataChart into one array
 const recordsDataCombine = computed(() => {
   const arr = [];
-  for (let i = 0; i < financeLabel.value.length; i++) {
+  for (let i = 0; i < finance.getChartLabels.length; i++) {
     arr.push({
-      label: financeLabel.value[i],
-      color: financeColor.value[i],
-      cost: dataChart.value[i],
+      label: finance.getChartLabels[i],
+      color: finance.getChartColors[i],
+      cost: finance.chartCosts[i],
     });
   }
   return arr;
-});
-
-onMounted(() => {
-  fetchRecords();
 });
 
 const saveNewRecord = () => {
@@ -110,7 +75,6 @@ const saveRecord = async (id: string) => {
 const deleteRecord = (id: string) => {
   finance.records = finance.records.filter((record) => record.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
-  financeChart();
 };
 
 const editRecord = (id: string) => {
@@ -118,42 +82,21 @@ const editRecord = (id: string) => {
   finance.records[index].editMode = true;
 };
 
-const fetchRecords = async () => {
-  const newRecords = ref<IRecords[]>([]);
-  (await records.value).forEach(async (doc) => {
-    const record = {
-      id: doc.id,
-      cost: doc.data().cost,
-      category: doc.data().category,
-      editMode: doc.data().editMode,
-      month: doc.data().month,
-      year: doc.data().year,
-    };
-    newRecords.value.unshift(record);
-  });
-  finance.records = newRecords.value;
-};
-
 const show = ref(false);
 const addNewRecord = ref(false);
 const currentIndex = ref(0);
+console.log("finance categories", finance.categories);
 const currentCategory = ref("");
-const showMore = async (
-  show: boolean,
-  currentIndex: number,
-  currentCategory: string
-) => {
-  console.log("test");
-  console.log(show);
-  console.log(currentIndex);
-  console.log(currentCategory);
-};
 
 const filterRecords = computed(() => {
   return finance.records.filter(
     (record) => record.category.text == currentCategory.value
   );
 });
+
+setTimeout(() => {
+  currentCategory.value = finance.categories[0].text;
+}, 1000);
 </script>
 
 <template>
@@ -167,7 +110,7 @@ const filterRecords = computed(() => {
         Add expense <Add />
       </button>
       <Datepicker
-        @closed="fetchRecords"
+        @closed="finance.fetchRecords()"
         autoApply
         dark
         v-model="dateSelected"
@@ -229,11 +172,9 @@ const filterRecords = computed(() => {
           <button
             class="finance__row-button"
             @click="
-              showMore(
-                (show = !show),
+              (show = !show),
                 (currentIndex = index),
                 (currentCategory = record.label)
-              )
             "
           >
             <icon
