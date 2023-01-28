@@ -4,16 +4,16 @@ import type { ICategories } from "@/utils/interface";
 const finance = useFinanceStore();
 
 export function financeCosts() {
-  finance.chartCosts = [];
-  console.log("Odpalam finance Costs");
+  finance.costs = [];
   const categoriesCost = (item: ICategories) => {
-    finance.chartCosts.push(
+    finance.costs.push(
       finance.records
         .filter((element) => element.category.text == item.text)
         .map((data) => data.cost)
         .reduce((a, b) => a + b, 0)
     );
   };
+
   // Filter duplicate Categories
   const searchCategories = [
     ...new Map(
@@ -22,6 +22,5 @@ export function financeCosts() {
         .map((item) => [item.id, item])
     ).values(),
   ];
-  const value = searchCategories.forEach(categoriesCost);
-  return value;
+  return searchCategories.forEach(categoriesCost);
 }

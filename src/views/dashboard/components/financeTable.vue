@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -28,18 +28,6 @@ const { dateSelected } = storeToRefs(firestore);
 const newRecordCost = ref(0);
 const newRecordCategory = ref(finance.categories[0]);
 
-const recordsDataCombine = computed(() => {
-  const arr = [];
-  for (let i = 0; i < finance.getChartLabels.length; i++) {
-    arr.push({
-      label: finance.getChartLabels[i],
-      color: finance.getChartColors[i],
-      cost: finance.chartCosts[i],
-    });
-  }
-  return arr;
-});
-
 const saveNewRecord = () => {
   if (newRecordCost.value > 0) {
     addDoc(collection(firestore.db, "users", user.userId, "records"), {
@@ -52,6 +40,8 @@ const saveNewRecord = () => {
     });
     newRecordCost.value = 0;
     addNewRecord.value = false;
+    finance.fetchRecords();
+    console.log("new record added");
   } else {
     alert("Please enter a valid cost");
   }
@@ -85,13 +75,25 @@ const editRecord = (id: string) => {
 const show = ref(false);
 const addNewRecord = ref(false);
 const currentIndex = ref(0);
-console.log("finance categories", finance.categories);
+
 const currentCategory = ref("");
 
 const filterRecords = computed(() => {
   return finance.records.filter(
     (record) => record.category.text == currentCategory.value
   );
+});
+
+const recordsDataCombine = computed(() => {
+  const arr = [];
+  for (let i = 0; i < finance.getChartLabels.length; i++) {
+    arr.push({
+      label: finance.getChartLabels[i],
+      color: finance.getChartColors[i],
+      cost: finance.costs[i],
+    });
+  }
+  return arr;
 });
 
 setTimeout(() => {
@@ -147,11 +149,11 @@ setTimeout(() => {
             </span>
           </div>
           <div class="finance__row-actions">
-            <button class="finance__row-button" @click="addNewRecord = false">
-              <Delete></Delete>
-            </button>
             <button class="finance__row-button" @click="saveNewRecord">
               <Save />
+            </button>
+            <button class="finance__row-button" @click="addNewRecord = false">
+              <Delete></Delete>
             </button>
           </div>
         </div>

@@ -1,16 +1,13 @@
 import { defineStore } from "pinia";
 import { onSnapshot } from "@firebase/firestore";
 import { useFireStore } from "@/stores/firestore";
-import type { ICategories, IRecords, IGroupRecords } from "@/utils/interface";
+import type { ICategories, IRecords } from "@/utils/interface";
 
 export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
     categories: [] as ICategories[],
     records: [] as IRecords[],
-    groupRecords: [] as IGroupRecords[],
-    chartLabels: [""],
-    chartColors: [""],
-    chartCosts: [0],
+    costs: [] as number[],
   }),
   getters: {
     getChartColors: (state) => {
@@ -21,27 +18,6 @@ export const useFinanceStore = defineStore("financeStore", {
       const arr = state.records.map((data) => data.category.text);
       return [...new Map(arr.map((item) => [item, item])).values()];
     },
-    // getChartCosts: (state) => {
-    //   console.log("Odpalam finance Costs");
-    //   const categoriesCost = (item: ICategories) => {
-    //     state.chartCosts.push(
-    //       state.records
-    //         .filter((element) => element.category.text == item.text)
-    //         .map((data) => data.cost)
-    //         .reduce((a, b) => a + b, 0)
-    //     );
-    //   };
-    //   // Filter duplicate Categories
-    //   const searchCategories = [
-    //     ...new Map(
-    //       state.records
-    //         .map((data) => data.category)
-    //         .map((item) => [item.id, item])
-    //     ).values(),
-    //   ];
-    //   const test = searchCategories.forEach(categoriesCost);
-    //   return test;
-    // },
   },
 
   actions: {
@@ -74,9 +50,6 @@ export const useFinanceStore = defineStore("financeStore", {
           this.categories.push(category);
         });
       });
-    },
-    async fetchGroupRecords() {
-      console.log("fetchGroupRecords");
     },
   },
   persist: true,

@@ -15,8 +15,8 @@ onMounted(() => {
   finance.fetchRecords();
   finance.fetchCategories();
 
-  console.log("Odpalam records", finance.records);
-  console.log("Odpalam categories", finance.categories);
+  // console.log("Odpalam records", finance.records);
+  // console.log("Odpalam categories", finance.categories);
 });
 </script>
 

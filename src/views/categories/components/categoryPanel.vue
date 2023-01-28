@@ -43,6 +43,8 @@ const kurwidlo = ref({
   date: Date.now(),
 });
 
+console.log("categories:", finance.categories);
+
 function newCategoryColor(eventData: { cssColor: string }) {
   colorNew.value = eventData.cssColor;
 }
@@ -61,6 +63,7 @@ const editCategory = (index: number, category: ICategories) => {
 
 const updateCategory = async (id: string) => {
   // Update current category
+  finance.categories = [];
   await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
     text: kurwidlo.value.text,
     color: kurwidlo.value.color,
@@ -89,21 +92,21 @@ const updateCategory = async (id: string) => {
 const deleteCategory = (id: string) => {
   finance.categories.filter((category) => category.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "categories", id));
+  finance.categories = [];
   showOptions.value = false;
   currentIndex.value = undefined;
 };
 
 const addCategory = () => {
-  if (newCategory.value[0].text == "" || colorNew.value == "") {
-    alert("Name can't be empty!");
-  } else {
-    addDoc(collection(firestore.db, "users", user.userId, "categories"), {
-      text: newCategory.value[0].text,
-      color: colorNew.value,
-      date: Date.now(),
-    });
-    newCategory.value[0].text = "";
-  }
+  console.log("save record");
+  addDoc(collection(firestore.db, "users", user.userId, "categories"), {
+    text: newCategory.value[0].text,
+    color: colorNew.value,
+    date: Date.now(),
+  });
+  finance.categories = [];
+
+  newCategory.value[0].text = "";
 };
 </script>
 
@@ -320,7 +323,7 @@ const addCategory = () => {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     width: 380px;
-    height: auto;
+    height: 62vh;
     background-color: $bg-secondary;
     border-radius: 10px;
     margin: 0 30px 0 0;

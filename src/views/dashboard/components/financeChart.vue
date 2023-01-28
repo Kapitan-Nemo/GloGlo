@@ -3,15 +3,18 @@ import { computed, onMounted, ref, watch } from "vue";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 import { useFinanceStore } from "@/stores/finance";
-import { financeCosts } from "@/composables/useCosts.js";
+import { financeCosts } from "@/composables/useCosts";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const finance = useFinanceStore();
-onMounted(async () => {
-  financeCosts();
+onMounted(() => {
+  setTimeout(() => {
+    financeCosts();
+  }, 1000);
 });
 
 watch(
+  //TODO:improve watcher
   () => finance.records,
   () => {
     financeCosts();
@@ -23,7 +26,7 @@ const chartData = computed(() => ({
   labels: finance.getChartLabels,
   datasets: [
     {
-      data: finance.chartCosts,
+      data: finance.costs,
       backgroundColor: finance.getChartColors,
       borderWidth: 0,
       borderRadius: 15,
