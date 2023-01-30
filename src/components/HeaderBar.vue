@@ -6,10 +6,10 @@ import { useSettingsStore } from "@/stores/settings";
 import router from "@/router";
 
 import icon from "@/components/dynamicIcon.vue";
-import CalendarIcon from "@/assets/icons/other/calendar.svg?component";
-import LogoutIcon from "@/assets/icons/actions/logout.svg?component";
-import NotifyIcon from "@/assets/icons/actions/notification.svg?component";
-import UserIcon from "@/assets/icons/other/settings-color.svg?component";
+// import CalendarIcon from "@/assets/icons/other/calendar.svg?component";
+// import LogoutIcon from "@/assets/icons/actions/logout.svg?component";
+// import NotifyIcon from "@/assets/icons/actions/notification.svg?component";
+// import UserIcon from "@/assets/icons/other/settings-color.svg?component";
 import { storeToRefs } from "pinia";
 
 const user = useUserStore();
@@ -46,17 +46,23 @@ function singOutGoogle() {
     <div class="header__wrap">
       <h1>Hi, {{ user.userName }}!</h1>
       <div class="header__buttons">
-        <CalendarIcon class="header__buttons-calendar"></CalendarIcon>
-        <NotifyIcon class="header__buttons-notify"></NotifyIcon>
-        <Transition name="fade" mode="out-in">
+        <div>
+          <icon class="header__buttons-calendar" path="other" name="calendar" />
+        </div>
+        <div>
           <icon
-            @click="showAccount = !showAccount"
-            :key="componentKey"
-            class="header__buttons-avatar"
+            class="header__buttons-notify"
+            path="actions"
+            name="notification"
+          />
+        </div>
+        <div @click="showAccount = !showAccount">
+          <icon
             path="avatars"
             :name="currentAvatar"
+            class="header__buttons-avatar"
           />
-        </Transition>
+        </div>
       </div>
     </div>
     <p class="header__subtitle">{{ msg }}</p>
@@ -64,11 +70,21 @@ function singOutGoogle() {
       <div v-if="showAccount" class="header__account">
         <router-link to="/settings">
           <p class="header__account-action">
-            <UserIcon class="header__account-action-icon"></UserIcon>Settings
+            <icon
+              class="header__account-action-icon"
+              path="other"
+              name="settings"
+            />
+            Settings
           </p>
         </router-link>
         <p class="header__account-action" @click="singOutGoogle">
-          <LogoutIcon class="header__account-action-icon"></LogoutIcon>Logout
+          <icon
+            class="header__account-action-icon"
+            path="actions"
+            name="logout"
+          />
+          Logout
         </p>
       </div>
     </Transition>
@@ -132,16 +148,15 @@ function singOutGoogle() {
     }
   }
   &__buttons {
+    display: flex;
+    align-items: center;
     &-calendar {
       margin: 0 30px 0 0;
-      // display: flex;
     }
     &-notify {
       margin: 0 30px 0 0;
-      // display: flex;
     }
     &-avatar {
-      // display: flex;
       cursor: pointer;
       width: 50px;
       height: 50px;

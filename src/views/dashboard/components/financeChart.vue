@@ -78,8 +78,7 @@ const options = ref({
     background: #1e1f25;
     border-radius: 10px;
     width: 100%;
-
-    padding: 25px;
+    // padding: 25px;
   }
   &__chart {
     display: flex;
