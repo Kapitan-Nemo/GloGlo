@@ -28,7 +28,8 @@ const { dateSelected } = storeToRefs(firestore);
 const newRecordCost = ref(0);
 const newRecordCategory = ref(finance.categories[0]);
 
-const saveNewRecord = () => {
+const createRecord = () => {
+  console.log("tworzy nowy rekord");
   if (newRecordCost.value > 0) {
     addDoc(collection(firestore.db, "users", user.userId, "records"), {
       cost: newRecordCost.value,
@@ -48,6 +49,7 @@ const saveNewRecord = () => {
 };
 
 const saveRecord = async (id: string) => {
+  console.log("save record");
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
   if (finance.records[index].cost > 0) {
@@ -74,6 +76,7 @@ const editRecord = (id: string) => {
 
 const show = ref(false);
 const addNewRecord = ref(false);
+
 const currentIndex = ref(0);
 
 const currentCategory = ref("");
@@ -120,44 +123,42 @@ setTimeout(() => {
         :clearable="false"
       ></Datepicker>
     </div>
-    <div v-for="(record, index) in recordsDataCombine" :key="index">
-      <div v-if="index == 0 && addNewRecord">
-        <div class="finance__row">
-          <div class="finance__row-data">
-            <span class="finance__row-cell">
-              <input
-                v-model="newRecordCost"
-                type="number"
-                class="finance__row-input"
-                placeholder="Cost"
-              />
-            </span>
-            <span class="finance__row-cell">
-              <select
-                v-model="newRecordCategory"
-                class="finance__row-select"
-                name="category"
-              >
-                <option
-                  v-for="category in finance.categories"
-                  :key="category.id"
-                  :value="category"
-                >
-                  {{ category.text }}
-                </option>
-              </select>
-            </span>
-          </div>
-          <div class="finance__row-actions">
-            <button class="finance__row-button" @click="saveNewRecord">
-              <Save />
-            </button>
-            <button class="finance__row-button" @click="addNewRecord = false">
-              <Delete></Delete>
-            </button>
-          </div>
-        </div>
+    <div v-if="addNewRecord" class="finance__row">
+      <div class="finance__row-data">
+        <span class="finance__row-cell">
+          <input
+            v-model="newRecordCost"
+            type="number"
+            class="finance__row-input"
+            placeholder="Cost"
+          />
+        </span>
+        <span class="finance__row-cell">
+          <select
+            v-model="newRecordCategory"
+            class="finance__row-select"
+            name="category"
+          >
+            <option
+              v-for="category in finance.categories"
+              :key="category.id"
+              :value="category"
+            >
+              {{ category.text }}
+            </option>
+          </select>
+        </span>
       </div>
+      <div class="finance__row-actions">
+        <button class="finance__row-button" @click="createRecord">
+          <Save />
+        </button>
+        <button class="finance__row-button" @click="addNewRecord = false">
+          <Delete></Delete>
+        </button>
+      </div>
+    </div>
+    <div v-for="(record, index) in recordsDataCombine" :key="index">
       <div class="finance__row">
         <div class="finance__row-data">
           <span class="finance__row-cell">{{ index }}#</span>
