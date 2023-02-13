@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -25,31 +25,41 @@ const firestore = useFireStore();
 const finance = useFinanceStore();
 const { dateSelected } = storeToRefs(firestore);
 
-const newRecordCost = ref(0);
-const newRecordCategory = ref(finance.categories[0]);
+const newRecord = reactive({
+  cost: 0,
+  category: {},
+  show: false,
+});
+
+const input = ref();
+
+const addNewRecordMode = () => {
+  newRecord.show = !newRecord.show;
+  newRecord.category = finance.categories[0];
+  setTimeout(() => {
+    input.value.focus();
+  }, 100);
+};
 
 const createRecord = () => {
-  console.log("tworzy nowy rekord");
-  if (newRecordCost.value > 0) {
+  if (newRecord.cost > 0) {
     addDoc(collection(firestore.db, "users", user.userId, "records"), {
-      cost: newRecordCost.value,
-      category: newRecordCategory.value,
+      cost: newRecord.cost,
+      category: newRecord.category,
       editMode: false,
       date: Date.now(),
       month: dateSelected.value.month,
       year: dateSelected.value.year,
     });
-    newRecordCost.value = 0;
-    addNewRecord.value = false;
+    newRecord.cost = 0;
+    newRecord.show = false;
     finance.fetchRecords();
-    console.log("new record added");
   } else {
     alert("Please enter a valid cost");
   }
 };
 
-const saveRecord = async (id: string) => {
-  console.log("save record");
+const updateRecord = async (id: string) => {
   const index = finance.records.findIndex((record) => record.id === id);
   const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
   if (finance.records[index].cost > 0) {
@@ -75,10 +85,7 @@ const editRecord = (id: string) => {
 };
 
 const show = ref(false);
-const addNewRecord = ref(false);
-
 const currentIndex = ref(0);
-
 const currentCategory = ref("");
 
 const filterRecords = computed(() => {
@@ -110,7 +117,7 @@ setTimeout(() => {
       <button
         :disabled="finance.categories.length == 0"
         class="finance__button"
-        @click="addNewRecord = !addNewRecord"
+        @click="addNewRecordMode()"
       >
         Add expense <Add />
       </button>
@@ -123,19 +130,20 @@ setTimeout(() => {
         :clearable="false"
       ></Datepicker>
     </div>
-    <div v-if="addNewRecord" class="finance__row">
+    <div v-if="newRecord.show" class="finance__row">
       <div class="finance__row-data">
         <span class="finance__row-cell">
           <input
-            v-model="newRecordCost"
+            v-model="newRecord.cost"
             type="number"
             class="finance__row-input"
-            placeholder="Cost"
+            ref="input"
           />
+          $
         </span>
         <span class="finance__row-cell">
           <select
-            v-model="newRecordCategory"
+            v-model="newRecord.category"
             class="finance__row-select"
             name="category"
           >
@@ -153,7 +161,7 @@ setTimeout(() => {
         <button class="finance__row-button" @click="createRecord">
           <Save />
         </button>
-        <button class="finance__row-button" @click="addNewRecord = false">
+        <button class="finance__row-button" @click="newRecord.show = false">
           <Delete></Delete>
         </button>
       </div>
@@ -214,7 +222,7 @@ setTimeout(() => {
               <button
                 v-else
                 class="finance__row-button"
-                @click="saveRecord(record.id)"
+                @click="updateRecord(record.id)"
               >
                 <Save></Save>
               </button>
@@ -272,6 +280,8 @@ setTimeout(() => {
     &-input {
       border-bottom: solid 1px $primary;
       border-right: none;
+      border-left: none;
+      border-top: none;
       background: transparent;
       color: $white;
       font-size: 20px;
