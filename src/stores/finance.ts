@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
-import { onSnapshot } from "@firebase/firestore";
 import { useFireStore } from "@/stores/firestore";
-import type { ICategories, IRecords } from "@/utils/interface";
+import type { ICategories, INewRecord, IRecords } from "@/utils/interface";
 
 export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
     categories: [] as ICategories[],
     records: [] as IRecords[],
     costs: [] as number[],
+    newRecord: {} as INewRecord,
   }),
   getters: {
     getChartColors: (state) => {
@@ -37,10 +37,10 @@ export const useFinanceStore = defineStore("financeStore", {
       });
     },
     async fetchCategories() {
-      const fireStore = useFireStore();
-      this.categories = [];
-      onSnapshot(fireStore.categories, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+      try {
+        const fireStore = useFireStore();
+        this.categories = [];
+        (await fireStore.categories).forEach((doc) => {
           const category = {
             id: doc.id,
             text: doc.data().text,
@@ -49,7 +49,13 @@ export const useFinanceStore = defineStore("financeStore", {
           };
           this.categories.push(category);
         });
-      });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log("finally");
+        this.newRecord.category = this.categories[0];
+        console.log(this.newRecord.category);
+      }
     },
   },
   persist: true,

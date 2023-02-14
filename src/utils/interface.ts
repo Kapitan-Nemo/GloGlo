@@ -24,3 +24,9 @@ export interface IGroupRecords {
   color: string;
   cost: number;
 }
+
+export interface INewRecord {
+  cost: number;
+  category: ICategories;
+  show: boolean;
+}

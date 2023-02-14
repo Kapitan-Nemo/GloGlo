@@ -30,9 +30,11 @@ export const useFireStore = defineStore("firebaseStore", {
         )
       ),
     categories: (state) =>
-      query(
-        collection(state.db, "users", useUserStore().userId, "categories"),
-        orderBy("date", "desc")
+      getDocs(
+        query(
+          collection(state.db, "users", useUserStore().userId, "categories"),
+          orderBy("date", "desc")
+        )
       ),
   },
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
+import { ref, computed } from "vue";
 import { useUserStore } from "@/stores/auth";
 import { useFireStore } from "@/stores/firestore";
 import { useFinanceStore } from "@/stores/finance";
@@ -24,35 +24,38 @@ const user = useUserStore();
 const firestore = useFireStore();
 const finance = useFinanceStore();
 const { dateSelected } = storeToRefs(firestore);
+const { newRecord } = storeToRefs(finance);
 
-const newRecord = reactive({
-  cost: 0,
-  category: {},
-  show: false,
-});
+// const newRecord = reactive({
+//   cost: 0,
+//   category: {},
+//   show: false,
+// });
+
+console.log(finance.categories, finance.records);
 
 const input = ref();
 
 const addNewRecordMode = () => {
-  newRecord.show = !newRecord.show;
-  newRecord.category = finance.categories[0];
+  newRecord.value.show = !newRecord.value.show;
+  // newRecord.category = finance.categories[0];
   setTimeout(() => {
     input.value.focus();
   }, 100);
 };
 
 const createRecord = () => {
-  if (newRecord.cost > 0) {
+  if (newRecord.value.cost > 0) {
     addDoc(collection(firestore.db, "users", user.userId, "records"), {
-      cost: newRecord.cost,
-      category: newRecord.category,
+      cost: newRecord.value.cost,
+      category: newRecord.value.category,
       editMode: false,
       date: Date.now(),
       month: dateSelected.value.month,
       year: dateSelected.value.year,
     });
-    newRecord.cost = 0;
-    newRecord.show = false;
+    newRecord.value.cost = 0;
+    newRecord.value.show = false;
     finance.fetchRecords();
   } else {
     alert("Please enter a valid cost");
@@ -105,10 +108,6 @@ const recordsDataCombine = computed(() => {
   }
   return arr;
 });
-
-setTimeout(() => {
-  currentCategory.value = finance.categories[0].text;
-}, 1000);
 </script>
 
 <template>
@@ -130,7 +129,19 @@ setTimeout(() => {
         :clearable="false"
       ></Datepicker>
     </div>
-    <div v-if="newRecord.show" class="finance__row">
+    <p class="finance__empty" v-if="finance.categories.length <= 0">
+      <icon path="actions" name="add-category" />
+      <RouterLink to="/categories" class="finance__empty-link">
+        add categories</RouterLink
+      >
+    </p>
+    <div
+      v-if="
+        newRecord.show ||
+        (finance.records.length <= 0 && finance.categories.length > 0)
+      "
+      class="finance__row"
+    >
       <div class="finance__row-data">
         <span class="finance__row-cell">
           <input
@@ -263,11 +274,16 @@ setTimeout(() => {
     height: 420px;
   }
   &__empty {
+    min-height: 245px;
     display: flex;
     flex-flow: column;
     align-items: center;
-    &-text {
-      color: $white;
+    justify-content: center;
+    text-decoration: underline;
+    &-link {
+      color: $primary;
+      font-size: 20px;
+      margin: 15px 0 0 0px;
     }
   }
   &__row {
@@ -351,7 +367,7 @@ setTimeout(() => {
     font-size: 20px;
     cursor: pointer;
     &:disabled {
-      background: gray;
+      background: #80808030;
       cursor: not-allowed;
     }
   }
