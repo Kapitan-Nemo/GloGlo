@@ -26,19 +26,10 @@ const finance = useFinanceStore();
 const { dateSelected } = storeToRefs(firestore);
 const { newRecord } = storeToRefs(finance);
 
-// const newRecord = reactive({
-//   cost: 0,
-//   category: {},
-//   show: false,
-// });
-
-console.log(finance.categories, finance.records);
-
 const input = ref();
 
 const addNewRecordMode = () => {
   newRecord.value.show = !newRecord.value.show;
-  // newRecord.category = finance.categories[0];
   setTimeout(() => {
     input.value.focus();
   }, 100);
@@ -77,9 +68,13 @@ const updateRecord = async (id: string) => {
   }
 };
 
-const deleteRecord = (id: string) => {
+const deleteRecord = (id: string, categoryText: string) => {
   finance.records = finance.records.filter((record) => record.id !== id);
   deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
+  const categoryFound = finance.records.find(
+    (record) => record.category.text === categoryText
+  );
+  categoryFound === undefined ? (show.value = false) : null;
 };
 
 const editRecord = (id: string) => {
@@ -129,12 +124,14 @@ const recordsDataCombine = computed(() => {
         :clearable="false"
       ></Datepicker>
     </div>
+
     <p class="finance__empty" v-if="finance.categories.length <= 0">
       <icon path="actions" name="add-category" />
       <RouterLink to="/categories" class="finance__empty-link">
         add categories</RouterLink
       >
     </p>
+
     <div
       v-if="
         newRecord.show ||
@@ -172,11 +169,16 @@ const recordsDataCombine = computed(() => {
         <button class="finance__row-button" @click="createRecord">
           <Save />
         </button>
-        <button class="finance__row-button" @click="newRecord.show = false">
+        <button
+          v-if="finance.records.length > 0"
+          class="finance__row-button"
+          @click="newRecord.show = false"
+        >
           <Delete></Delete>
         </button>
       </div>
     </div>
+
     <div v-for="(record, index) in recordsDataCombine" :key="index">
       <div class="finance__row">
         <div class="finance__row-data">
@@ -220,6 +222,7 @@ const recordsDataCombine = computed(() => {
                   class="finance__row-input"
                   v-model="record.cost"
                 />
+                $
               </span>
             </div>
             <div class="finance__row-actions">
@@ -239,7 +242,7 @@ const recordsDataCombine = computed(() => {
               </button>
               <button
                 class="finance__row-button"
-                @click="deleteRecord(record.id)"
+                @click="deleteRecord(record.id, record.category.text)"
               >
                 <Delete></Delete>
               </button>
@@ -285,6 +288,9 @@ const recordsDataCombine = computed(() => {
       font-size: 20px;
       margin: 15px 0 0 0px;
     }
+  }
+  &__loader {
+    padding: 25px;
   }
   &__row {
     border: solid 1px $gray;

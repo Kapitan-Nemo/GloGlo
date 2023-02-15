@@ -8,6 +8,7 @@ export const useFinanceStore = defineStore("financeStore", {
     records: [] as IRecords[],
     costs: [] as number[],
     newRecord: {} as INewRecord,
+    isLoading: false,
   }),
   getters: {
     getChartColors: (state) => {
@@ -24,22 +25,29 @@ export const useFinanceStore = defineStore("financeStore", {
     async fetchRecords() {
       const fireStore = useFireStore();
       this.records = [];
-      (await fireStore.records).forEach(async (doc) => {
-        const record = {
-          id: doc.id,
-          cost: doc.data().cost,
-          category: doc.data().category,
-          editMode: doc.data().editMode,
-          month: doc.data().month,
-          year: doc.data().year,
-        };
-        this.records.push(record);
-      });
+      this.isLoading = true;
+      try {
+        (await fireStore.records).forEach(async (doc) => {
+          const record = {
+            id: doc.id,
+            cost: doc.data().cost,
+            category: doc.data().category,
+            editMode: doc.data().editMode,
+            month: doc.data().month,
+            year: doc.data().year,
+          };
+          this.records.push(record);
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isLoading = false;
+      }
     },
     async fetchCategories() {
+      const fireStore = useFireStore();
+      this.categories = [];
       try {
-        const fireStore = useFireStore();
-        this.categories = [];
         (await fireStore.categories).forEach((doc) => {
           const category = {
             id: doc.id,
@@ -52,9 +60,7 @@ export const useFinanceStore = defineStore("financeStore", {
       } catch (error) {
         console.log(error);
       } finally {
-        console.log("finally");
         this.newRecord.category = this.categories[0];
-        console.log(this.newRecord.category);
       }
     },
   },
