@@ -14,7 +14,7 @@ import { storeToRefs } from "pinia";
 const finance = useFinanceStore();
 const firestore = useFireStore();
 const { dateSelected } = storeToRefs(firestore);
-const allRecords = ref([] as IRecords[]);
+const allRecords = ref([] as IRecords[]); //TODO: move to pinia store
 
 const financeMonth = computed(() => {
   return allRecords.value
@@ -51,11 +51,13 @@ watch(
   () => {
     setTimeout(() => {
       fetchAllRecords();
-    }, 500);
+    }, 100);
+    //TODO: Improve watcher
   }
 );
 
 const fetchAllRecords = async () => {
+  allRecords.value = [];
   try {
     (
       await getDocs(
@@ -77,10 +79,7 @@ const fetchAllRecords = async () => {
   } catch (error) {
     console.log(error);
   } finally {
-    //remove duplicates from array
-    allRecords.value = allRecords.value.filter(
-      (v, i, a) => a.findIndex((t) => t.id === v.id) === i
-    );
+    console.log("odpalam finally");
   }
 };
 

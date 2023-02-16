@@ -30,9 +30,11 @@ const input = ref();
 
 const addNewRecordMode = () => {
   newRecord.value.show = !newRecord.value.show;
-  setTimeout(() => {
-    input.value.focus();
-  }, 100);
+  if (newRecord.value.show) {
+    setTimeout(() => {
+      input.value.focus();
+    }, 100);
+  }
 };
 
 const createRecord = () => {
@@ -143,6 +145,7 @@ const recordsDataCombine = computed(() => {
         <span class="finance__row-cell">
           <input
             v-model="newRecord.cost"
+            @keyup.enter="createRecord"
             type="number"
             class="finance__row-input"
             ref="input"
