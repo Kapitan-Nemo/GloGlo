@@ -1,43 +1,91 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useFinanceStore } from "@/stores/finance";
 
 import month from "@/assets/icons/cards/month.svg?component";
 import year from "@/assets/icons/cards/year.svg?component";
 import overall from "@/assets/icons/cards/overall.svg?component";
+import { collection, getDocs, query } from "@firebase/firestore";
+import { useFireStore } from "@/stores/firestore";
+import { useUserStore } from "@/stores/auth";
+import type { IRecords } from "@/utils/interface";
+import { storeToRefs } from "pinia";
 
-const date = new Date();
-const currentMonth = date.getMonth();
-const currentYear = date.getFullYear();
 const finance = useFinanceStore();
-const financeMonthFilter = computed(() => {
-  return finance.records.filter(
-    (n) => n.month == currentMonth && n.year == currentYear
-  );
-});
-const financeYearFilter = computed(() => {
-  return finance.records.filter((n) => n.year == currentYear);
-});
+const firestore = useFireStore();
+const { dateSelected } = storeToRefs(firestore);
+const allRecords = ref([] as IRecords[]);
+
 const financeMonth = computed(() => {
-  return financeMonthFilter.value.reduce(
-    (financeMonth: number, record: { cost: number }) =>
-      record.cost + financeMonth,
-    0
-  );
+  return allRecords.value
+    .filter(
+      (n) =>
+        n.month == dateSelected.value.month && n.year == dateSelected.value.year
+    )
+    .reduce(
+      (financeMonth: number, record: { cost: number }) =>
+        record.cost + financeMonth,
+      0
+    );
 });
+
 const financeYear = computed(() => {
-  return financeYearFilter.value.reduce(
-    (financeYear: number, record: { cost: number }) =>
-      record.cost + financeYear,
-    0
-  );
+  return allRecords.value
+    .filter((n) => n.year == dateSelected.value.year)
+    .reduce(
+      (financeYear: number, record: { cost: number }) =>
+        record.cost + financeYear,
+      0
+    );
 });
 const financeOverall = computed(() => {
-  return finance.records.reduce(
+  return allRecords.value.reduce(
     (financeOverall: number, record: { cost: number }) =>
       record.cost + financeOverall,
     0
   );
+});
+
+watch(
+  () => finance.records,
+  () => {
+    setTimeout(() => {
+      fetchAllRecords();
+    }, 500);
+  }
+);
+
+const fetchAllRecords = async () => {
+  try {
+    (
+      await getDocs(
+        query(
+          collection(firestore.db, "users", useUserStore().userId, "records")
+        )
+      )
+    ).forEach(async (doc) => {
+      const record = {
+        id: doc.id,
+        cost: doc.data().cost,
+        category: doc.data().category,
+        editMode: doc.data().editMode,
+        month: doc.data().month,
+        year: doc.data().year,
+      };
+      allRecords.value.push(record);
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    //remove duplicates from array
+    allRecords.value = allRecords.value.filter(
+      (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+    );
+  }
+};
+
+onMounted(() => {
+  fetchAllRecords();
 });
 </script>
 
