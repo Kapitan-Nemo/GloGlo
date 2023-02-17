@@ -6,18 +6,44 @@ export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
     categories: [] as ICategories[],
     records: [] as IRecords[],
+    allRecords: [] as IRecords[],
+    test: [] as IRecords[],
     costs: [] as number[],
     newRecord: {} as INewRecord,
     isLoading: false,
   }),
   getters: {
     getChartColors: (state) => {
-      const arr = state.records.map((data) => data.category.color);
-      return [...new Map(arr.map((item) => [item, item])).values()];
+      return [
+        ...new Map(
+          state.records
+            .map((data) => data.category.color)
+            .map((item) => [item, item])
+        ).values(),
+      ];
     },
     getChartLabels: (state) => {
-      const arr = state.records.map((data) => data.category.text);
-      return [...new Map(arr.map((item) => [item, item])).values()];
+      return [
+        ...new Map(
+          state.records
+            .map((data) => data.category.text)
+            .map((item) => [item, item])
+        ).values(),
+      ];
+    },
+    getFinanceMonth: (state) => {
+      const fireStore = useFireStore();
+      return state.allRecords
+        .filter(
+          (n) =>
+            n.month == fireStore.dateSelected.month &&
+            n.year == fireStore.dateSelected.year
+        )
+        .reduce(
+          (financeMonth: number, record: { cost: number }) =>
+            record.cost + financeMonth,
+          0
+        );
     },
   },
 
@@ -44,6 +70,31 @@ export const useFinanceStore = defineStore("financeStore", {
         this.isLoading = false;
       }
     },
+    async fetchAllRecords() {
+      const fireStore = useFireStore();
+      // this.allRecords = [];
+      this.test = [];
+      try {
+        (await fireStore.allRecords).forEach(async (doc) => {
+          const record = {
+            id: doc.id,
+            cost: doc.data().cost,
+            category: doc.data().category,
+            editMode: doc.data().editMode,
+            month: doc.data().month,
+            year: doc.data().year,
+          };
+          this.test.push(record);
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log("pokaz test", this.test);
+        console.log("pokaz allRecords", this.allRecords);
+        this.allRecords = this.test;
+      }
+    },
+
     async fetchCategories() {
       const fireStore = useFireStore();
       this.categories = [];

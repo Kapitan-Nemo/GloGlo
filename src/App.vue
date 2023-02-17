@@ -14,7 +14,7 @@ const finance = useFinanceStore();
 onMounted(() => {
   finance.fetchRecords();
   finance.fetchCategories();
-
+  finance.fetchAllRecords();
   // console.log("Odpalam records", finance.records);
   // console.log("Odpalam categories", finance.categories);
 });

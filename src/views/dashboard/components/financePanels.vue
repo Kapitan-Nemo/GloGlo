@@ -1,33 +1,17 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { useFinanceStore } from "@/stores/finance";
 
 import month from "@/assets/icons/cards/month.svg?component";
 import year from "@/assets/icons/cards/year.svg?component";
 import overall from "@/assets/icons/cards/overall.svg?component";
-import { collection, getDocs, query } from "@firebase/firestore";
 import { useFireStore } from "@/stores/firestore";
-import { useUserStore } from "@/stores/auth";
-import type { IRecords } from "@/utils/interface";
 import { storeToRefs } from "pinia";
 
 const finance = useFinanceStore();
 const firestore = useFireStore();
 const { dateSelected } = storeToRefs(firestore);
-const allRecords = ref([] as IRecords[]); //TODO: move to pinia store
-
-const financeMonth = computed(() => {
-  return allRecords.value
-    .filter(
-      (n) =>
-        n.month == dateSelected.value.month && n.year == dateSelected.value.year
-    )
-    .reduce(
-      (financeMonth: number, record: { cost: number }) =>
-        record.cost + financeMonth,
-      0
-    );
-});
+const { allRecords } = storeToRefs(finance);
 
 const financeYear = computed(() => {
   return allRecords.value
@@ -50,42 +34,10 @@ watch(
   () => finance.records,
   () => {
     setTimeout(() => {
-      fetchAllRecords();
-    }, 100);
-    //TODO: Improve watcher
+      finance.fetchAllRecords();
+    }, 1000);
   }
 );
-
-const fetchAllRecords = async () => {
-  allRecords.value = [];
-  try {
-    (
-      await getDocs(
-        query(
-          collection(firestore.db, "users", useUserStore().userId, "records")
-        )
-      )
-    ).forEach(async (doc) => {
-      const record = {
-        id: doc.id,
-        cost: doc.data().cost,
-        category: doc.data().category,
-        editMode: doc.data().editMode,
-        month: doc.data().month,
-        year: doc.data().year,
-      };
-      allRecords.value.push(record);
-    });
-  } catch (error) {
-    console.log(error);
-  } finally {
-    console.log("odpalam finally");
-  }
-};
-
-onMounted(() => {
-  fetchAllRecords();
-});
 </script>
 
 <template>
@@ -93,7 +45,7 @@ onMounted(() => {
     <div class="summary__panel">
       <h2 class="summary__title">This Month</h2>
 
-      <p class="summary__cost">{{ financeMonth.toLocaleString() }}$</p>
+      <p class="summary__cost">{{ finance.getFinanceMonth }}$</p>
       <month class="summary__icon"></month>
     </div>
     <div class="summary__panel">

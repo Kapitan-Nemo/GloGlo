@@ -29,6 +29,10 @@ export const useFireStore = defineStore("firebaseStore", {
           where("month", "==", state.dateSelected.month)
         )
       ),
+    allRecords: (state) =>
+      getDocs(
+        query(collection(state.db, "users", useUserStore().userId, "records"))
+      ),
     categories: (state) =>
       getDocs(
         query(
