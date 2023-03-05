@@ -135,6 +135,9 @@ function singOutGoogle() {
       cursor: pointer;
       margin: 0;
       padding: 20px;
+      svg {
+        fill: $primary;
+      }
       &:hover {
         transition: all 0.6s ease;
         color: $primary;

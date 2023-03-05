@@ -7,7 +7,7 @@ export const useFinanceStore = defineStore("financeStore", {
     categories: [] as ICategories[],
     records: [] as IRecords[],
     allRecords: [] as IRecords[],
-    test: [] as IRecords[],
+    allRecordsTemp: [] as IRecords[],
     costs: [] as number[],
     newRecord: {} as INewRecord,
     isLoading: false,
@@ -73,7 +73,7 @@ export const useFinanceStore = defineStore("financeStore", {
     async fetchAllRecords() {
       const fireStore = useFireStore();
       // this.allRecords = [];
-      this.test = [];
+      this.allRecordsTemp = [];
       try {
         (await fireStore.allRecords).forEach(async (doc) => {
           const record = {
@@ -84,14 +84,12 @@ export const useFinanceStore = defineStore("financeStore", {
             month: doc.data().month,
             year: doc.data().year,
           };
-          this.test.push(record);
+          this.allRecordsTemp.push(record);
         });
       } catch (error) {
         console.log(error);
       } finally {
-        console.log("pokaz test", this.test);
-        console.log("pokaz allRecords", this.allRecords);
-        this.allRecords = this.test;
+        this.allRecords = this.allRecordsTemp;
       }
     },
 

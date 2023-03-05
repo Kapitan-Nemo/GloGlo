@@ -35,7 +35,7 @@ watch(
   () => {
     setTimeout(() => {
       finance.fetchAllRecords();
-    }, 1000);
+    }, 250);
   }
 );
 </script>
