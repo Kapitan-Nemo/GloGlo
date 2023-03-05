@@ -118,6 +118,7 @@ const recordsDataCombine = computed(() => {
         Add expense <Add />
       </button>
       <Datepicker
+        class="finance__datepicker"
         @closed="finance.fetchRecords()"
         autoApply
         dark
@@ -264,13 +265,14 @@ const recordsDataCombine = computed(() => {
   width: 922px;
   height: 585px;
   overflow: auto;
-  svg {
-    transition: 0.3s ease-in-out;
-  }
   .rotate {
     transform: rotate(180deg);
     transition: 0.3s ease-in-out;
   }
+  svg {
+    transition: 0.3s ease-in-out;
+  }
+
   &::-webkit-scrollbar {
     display: none; /* Chrome and Safari */
   }
@@ -379,6 +381,9 @@ const recordsDataCombine = computed(() => {
       background: #80808030;
       cursor: not-allowed;
     }
+  }
+  &__datepicker {
+    width: 200px;
   }
   &__header {
     padding: 25px;
