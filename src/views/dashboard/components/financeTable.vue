@@ -125,7 +125,11 @@ const recordsDataCombine = computed(() => {
         v-model="dateSelected"
         monthPicker
         :clearable="false"
-      ></Datepicker>
+      >
+        <template #input-icon>
+          <icon path="other" name="calendar" />
+        </template>
+      </Datepicker>
     </div>
 
     <p class="finance__empty" v-if="finance.categories.length <= 0">
@@ -389,6 +393,39 @@ const recordsDataCombine = computed(() => {
     padding: 25px;
     display: flex;
     justify-content: space-between;
+  }
+}
+
+.dp__theme_dark {
+  --dp-background-color: #212121;
+  --dp-text-color: #ffffff;
+  --dp-hover-color: #484848;
+  --dp-hover-text-color: #ffffff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #005cb2;
+  --dp-primary-text-color: #ffffff;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-menu-border-color: #2d2d2d;
+  --dp-border-color-hover: #00dee2;
+  --dp-disabled-color: #737373;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-success-color-disabled: #428f59;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
+  --dp-highlight-color: rgba(0, 92, 178, 0.2);
+}
+
+.dp__input_icon_pad {
+  padding-left: 110px;
+}
+
+.dp__input_icon {
+  padding: 0 0 0 15px;
+  svg {
+    fill: $primary;
   }
 }
 </style>
