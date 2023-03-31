@@ -43,8 +43,6 @@ const kurwidlo = ref({
   date: Date.now(),
 });
 
-console.log("categories:", finance.categories);
-
 function newCategoryColor(eventData: { cssColor: string }) {
   colorNew.value = eventData.cssColor;
 }
@@ -62,8 +60,6 @@ const editCategory = (index: number, category: ICategories) => {
 };
 
 const updateCategory = async (id: string) => {
-  // Update current category
-  finance.categories = [];
   await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
     text: kurwidlo.value.text,
     color: kurwidlo.value.color,
@@ -90,22 +86,22 @@ const updateCategory = async (id: string) => {
 };
 
 const deleteCategory = (id: string) => {
-  finance.categories.filter((category) => category.id !== id);
+  finance.categories = finance.categories.filter(
+    (category) => category.id !== id
+  );
   deleteDoc(doc(firestore.db, "users", user.userId, "categories", id));
-  finance.categories = [];
+
   showOptions.value = false;
   currentIndex.value = undefined;
 };
 
 const addCategory = () => {
-  console.log("save record");
   addDoc(collection(firestore.db, "users", user.userId, "categories"), {
     text: newCategory.value[0].text,
     color: colorNew.value,
     date: Date.now(),
   });
-  finance.categories = [];
-
+  finance.fetchCategories();
   newCategory.value[0].text = "";
 };
 </script>

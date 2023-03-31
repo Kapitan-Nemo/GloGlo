@@ -72,7 +72,6 @@ export const useFinanceStore = defineStore("financeStore", {
     },
     async fetchAllRecords() {
       const fireStore = useFireStore();
-      // this.allRecords = [];
       this.allRecordsTemp = [];
       try {
         (await fireStore.allRecords).forEach(async (doc) => {
