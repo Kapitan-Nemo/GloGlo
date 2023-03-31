@@ -47,9 +47,6 @@ function singOutGoogle() {
       <h1>Hi, {{ user.userName }}!</h1>
       <div class="header__buttons">
         <div>
-          <icon class="header__buttons-calendar" path="other" name="calendar" />
-        </div>
-        <div>
           <icon
             class="header__buttons-notify"
             path="actions"

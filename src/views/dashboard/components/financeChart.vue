@@ -88,6 +88,7 @@ const options = ref({
     max-width: 500px;
   }
   &__title {
+    padding: 25px 25px 0 25px;
     margin: 0;
     font-size: 25px;
   }

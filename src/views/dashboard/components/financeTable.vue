@@ -402,7 +402,7 @@ const recordsDataCombine = computed(() => {
   --dp-hover-color: #484848;
   --dp-hover-text-color: #ffffff;
   --dp-hover-icon-color: #959595;
-  --dp-primary-color: #005cb2;
+  --dp-primary-color: #00dee2;
   --dp-primary-text-color: #ffffff;
   --dp-secondary-color: #a9a9a9;
   --dp-border-color: #2d2d2d;
