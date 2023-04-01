@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, onMounted } from "vue";
+import { useFinanceStore } from "@/stores/finance";
+
+const finance = useFinanceStore();
 
 const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
 const FinancePanels = defineAsyncComponent(
@@ -11,6 +14,12 @@ const FinanceTable = defineAsyncComponent(
 const FinanceChart = defineAsyncComponent(
   () => import("@/views/dashboard/components/financeChart.vue")
 );
+onMounted(() => {
+  console.log("jazda z kurwami");
+  finance.fetchRecords();
+  finance.fetchCategories();
+  finance.fetchAllRecords();
+});
 </script>
 
 <template>

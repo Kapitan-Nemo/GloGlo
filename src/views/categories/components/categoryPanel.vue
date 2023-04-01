@@ -65,7 +65,7 @@ const updateCategory = async (id: string) => {
     color: kurwidlo.value.color,
   });
 
-  // Search category in existed records and update
+  // Search Category in  records and update
   (
     await getDocs(
       query(

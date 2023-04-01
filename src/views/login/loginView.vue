@@ -10,7 +10,7 @@ function singInWithGoogle() {
   const provider = new GoogleAuthProvider();
   signInWithPopup(getAuth(), provider)
     .then(() => {
-      router.push("/");
+      router.push("/dashboard");
     })
     .catch((error) => {
       console.log(error);

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import { useFinanceStore } from "@/stores/finance";
+// import { useFinanceStore } from "@/stores/finance";
+import { useUserStore } from "@/stores/auth";
 import { onMounted } from "vue";
 
 import Logo from "@/assets/icons/logo/logo.svg?component";
@@ -8,25 +9,35 @@ import Home from "@/assets/icons/other/home.svg?component";
 import Categories from "@/assets/icons/other/categories.svg?component";
 import Settings from "@/assets/icons/other/settings.svg?component";
 import "@/scss/app.scss";
+import router from "./router";
 
-const finance = useFinanceStore();
+const auth = useUserStore();
+
+//TODO:HANDLE 404 PAGE
 
 onMounted(() => {
-  finance.fetchRecords();
-  finance.fetchCategories();
-  finance.fetchAllRecords();
-  // console.log("Odpalam records", finance.records);
-  // console.log("Odpalam categories", finance.categories);
+  console.log("app view...");
+  auth.onAuthStateChanged();
+  router.beforeEach((to) => {
+    if (to.meta.requiresAuth && !auth.logged) {
+      return {
+        path: "/",
+      };
+    }
+  });
+  console.log(auth.logged);
 });
 </script>
 
 <template>
-  <nav class="menu">
+  <nav v-show="auth.logged" class="menu">
     <div class="menu__logo">
       <Logo />
     </div>
 
-    <RouterLink class="menu__link" to="/"><Home />Dashboard</RouterLink>
+    <RouterLink class="menu__link" to="/dashboard"
+      ><Home />Dashboard</RouterLink
+    >
     <RouterLink class="menu__link" to="/categories"
       ><Categories />Categories</RouterLink
     >
