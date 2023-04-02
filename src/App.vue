@@ -35,9 +35,7 @@ onMounted(() => {
       <Logo />
     </div>
 
-    <RouterLink class="menu__link" to="/dashboard"
-      ><Home />Dashboard</RouterLink
-    >
+    <RouterLink class="menu__link" to="/"><Home />Dashboard</RouterLink>
     <RouterLink class="menu__link" to="/categories"
       ><Categories />Categories</RouterLink
     >

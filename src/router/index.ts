@@ -13,7 +13,7 @@ const router = createRouter({
   linkActiveClass: "menu__active",
   routes: [
     {
-      path: "/dashboard",
+      path: "/",
       name: "dashboard",
       component: DashboardView,
       meta: { requiresAuth: true },
@@ -36,7 +36,12 @@ const router = createRouter({
       component: SettingsView,
       meta: { requiresAuth: true },
     },
-    { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: NotFound,
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

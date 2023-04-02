@@ -6,7 +6,7 @@ const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
 
 <template>
   <Header msg="Page not found - return to dashboard!"></Header>
-  <router-link to="/dashboard">
+  <router-link to="/">
     <button class="notfound__button">
       Back to live <icon name="arrow-down" path="actions"></icon>
     </button>
