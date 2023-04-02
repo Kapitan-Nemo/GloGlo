@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
-    userName: "",
+    userName: null as string | null,
     userId: "",
     logged: false,
   }),
@@ -13,7 +13,6 @@ export const useUserStore = defineStore("userStore", {
       const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          ///TODO: userName type
           this.userName = user.displayName;
           this.userId = user.uid;
           this.logged = true;
