@@ -32,8 +32,8 @@ defineProps<{
 
 function singOutGoogle() {
   signOut(auth)
-    .then(() => {
-      router.push("/");
+    .then(async () => {
+      await router.push("/login");
     })
     .catch((error) => {
       console.log(error);

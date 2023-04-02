@@ -12,15 +12,15 @@ const router = createRouter({
   linkActiveClass: "menu__active",
   routes: [
     {
-      path: "/",
-      name: "login",
-      component: LoginView,
-    },
-    {
       path: "/dashboard",
       name: "dashboard",
       component: DashboardView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView,
     },
 
     {

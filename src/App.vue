@@ -21,7 +21,7 @@ onMounted(() => {
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !auth.logged) {
       return {
-        path: "/",
+        path: "/login",
       };
     }
   });
