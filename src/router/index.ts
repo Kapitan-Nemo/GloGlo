@@ -4,6 +4,7 @@ const DashboardView = () => import("@/views/dashboard/dashboardView.vue");
 const LoginView = () => import("@/views/login/loginView.vue");
 const CategoriesView = () => import("@/views/categories/categoriesView.vue");
 const SettingsView = () => import("@/views/settings/settingsView.vue");
+const NotFound = () => import("@/views/notFound/notFoundView.vue");
 
 console.log("odpalam index router");
 
@@ -35,6 +36,7 @@ const router = createRouter({
       component: SettingsView,
       meta: { requiresAuth: true },
     },
+    { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFound },
   ],
 });
 
