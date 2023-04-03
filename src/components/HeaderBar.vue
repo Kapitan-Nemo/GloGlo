@@ -6,10 +6,6 @@ import { useSettingsStore } from "@/stores/settings";
 import router from "@/router";
 
 import icon from "@/components/dynamicIcon.vue";
-// import CalendarIcon from "@/assets/icons/other/calendar.svg?component";
-// import LogoutIcon from "@/assets/icons/actions/logout.svg?component";
-// import NotifyIcon from "@/assets/icons/actions/notification.svg?component";
-// import UserIcon from "@/assets/icons/other/settings-color.svg?component";
 import { storeToRefs } from "pinia";
 
 const user = useUserStore();

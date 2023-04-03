@@ -10,17 +10,16 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@vuepic/vue-datepicker": "^4.2.3",
+    "@vuepic/vue-datepicker": "^4.3.0",
     "chart.js": "^4.2.1",
-    "firebase": "^9.19.0",
-    "npm-check-updates": "^16.9.0",
+    "firebase": "^9.19.1",
+    "npm-check-updates": "^16.10.0",
     "pinia": "^2.0.33",
     "pinia-plugin-persistedstate": "^3.1.0",
     "sass": "^1.60.0",
     "vue": "^3.2.47",
     "vue-accessible-color-picker": "^4.1.2",
     "vue-chartjs": "^5.2.0",
-    "vue-content-loader": "^2.0.1",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

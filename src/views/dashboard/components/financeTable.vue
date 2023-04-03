@@ -29,6 +29,10 @@ const { newRecord } = storeToRefs(finance);
 const input = ref();
 
 const addNewRecordMode = () => {
+  if (finance.categories.length === 0) {
+    alert("Please add at least one category");
+    return;
+  }
   newRecord.value.show = !newRecord.value.show;
   if (newRecord.value.show) {
     setTimeout(() => {
@@ -110,11 +114,7 @@ const recordsDataCombine = computed(() => {
 <template>
   <div class="finance">
     <div class="finance__header">
-      <button
-        :disabled="finance.categories.length == 0"
-        class="finance__button"
-        @click="addNewRecordMode()"
-      >
+      <button class="finance__button" @click="addNewRecordMode()">
         Add expense <Add />
       </button>
       <Datepicker
@@ -132,12 +132,12 @@ const recordsDataCombine = computed(() => {
       </Datepicker>
     </div>
 
-    <p class="finance__empty" v-if="finance.categories.length <= 0">
+    <!-- <p class="finance__empty" v-if="finance.categories.length <= 0">
       <icon path="actions" name="add-category" />
       <RouterLink to="/categories" class="finance__empty-link">
         add categories</RouterLink
       >
-    </p>
+    </p> -->
 
     <div
       v-if="

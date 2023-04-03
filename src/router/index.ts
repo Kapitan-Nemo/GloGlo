@@ -6,8 +6,6 @@ const CategoriesView = () => import("@/views/categories/categoriesView.vue");
 const SettingsView = () => import("@/views/settings/settingsView.vue");
 const NotFound = () => import("@/views/notFound/notFoundView.vue");
 
-console.log("odpalam index router");
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: "menu__active",

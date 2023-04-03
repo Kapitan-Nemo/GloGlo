@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-// import { useFinanceStore } from "@/stores/finance";
 import { useUserStore } from "@/stores/auth";
 import { onMounted } from "vue";
-
-import Logo from "@/assets/icons/logo/logo.svg?component";
-import Home from "@/assets/icons/other/home.svg?component";
-import Categories from "@/assets/icons/other/categories.svg?component";
-import Settings from "@/assets/icons/other/settings.svg?component";
+import router from "@/router";
 import "@/scss/app.scss";
-import router from "./router";
+import icon from "@/components/dynamicIcon.vue";
 
 const auth = useUserStore();
 
-//TODO:HANDLE 404 PAGE
-
 onMounted(() => {
-  console.log("app view...");
   auth.onAuthStateChanged();
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !auth.logged) {
@@ -25,22 +17,23 @@ onMounted(() => {
       };
     }
   });
-  console.log(auth.logged);
 });
 </script>
 
 <template>
   <nav v-show="auth.logged" class="menu">
     <div class="menu__logo">
-      <Logo />
+      <icon name="logo" path="logo" />
     </div>
 
-    <RouterLink class="menu__link" to="/"><Home />Dashboard</RouterLink>
+    <RouterLink class="menu__link" to="/"
+      ><icon name="home" path="other" />Dashboard</RouterLink
+    >
     <RouterLink class="menu__link" to="/categories"
-      ><Categories />Categories</RouterLink
+      ><icon name="categories" path="other" />Categories</RouterLink
     >
     <RouterLink class="menu__link" to="/settings"
-      ><Settings />Settings</RouterLink
+      ><icon name="settings" path="other" />Settings</RouterLink
     >
   </nav>
   <main>

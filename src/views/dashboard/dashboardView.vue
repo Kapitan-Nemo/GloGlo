@@ -15,7 +15,6 @@ const FinanceChart = defineAsyncComponent(
   () => import("@/views/dashboard/components/financeChart.vue")
 );
 onMounted(() => {
-  console.log("jazda z kurwami");
   finance.fetchRecords();
   finance.fetchCategories();
   finance.fetchAllRecords();

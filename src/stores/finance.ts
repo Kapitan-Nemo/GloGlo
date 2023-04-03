@@ -5,7 +5,9 @@ import type { ICategories, INewRecord, IRecords } from "@/utils/interface";
 export const useFinanceStore = defineStore("financeStore", {
   state: () => ({
     categories: [] as ICategories[],
+    categoriesTemp: [] as ICategories[],
     records: [] as IRecords[],
+    recordsTemp: [] as IRecords[],
     allRecords: [] as IRecords[],
     allRecordsTemp: [] as IRecords[],
     costs: [] as number[],
@@ -50,7 +52,8 @@ export const useFinanceStore = defineStore("financeStore", {
   actions: {
     async fetchRecords() {
       const fireStore = useFireStore();
-      this.records = [];
+      // this.records = [];
+      this.recordsTemp = [];
       this.isLoading = true;
       try {
         (await fireStore.records).forEach(async (doc) => {
@@ -62,12 +65,13 @@ export const useFinanceStore = defineStore("financeStore", {
             month: doc.data().month,
             year: doc.data().year,
           };
-          this.records.push(record);
+          this.recordsTemp.push(record);
         });
       } catch (error) {
         console.log(error);
       } finally {
         this.isLoading = false;
+        this.records = this.recordsTemp;
       }
     },
     async fetchAllRecords() {
@@ -94,7 +98,7 @@ export const useFinanceStore = defineStore("financeStore", {
 
     async fetchCategories() {
       const fireStore = useFireStore();
-      this.categories = [];
+      this.categoriesTemp = [];
       try {
         (await fireStore.categories).forEach((doc) => {
           const category = {
@@ -103,11 +107,12 @@ export const useFinanceStore = defineStore("financeStore", {
             color: doc.data().color,
             date: doc.data().date,
           };
-          this.categories.push(category);
+          this.categoriesTemp.push(category);
         });
       } catch (error) {
         console.log(error);
       } finally {
+        this.categories = this.categoriesTemp;
         this.newRecord.category = this.categories[0];
       }
     },

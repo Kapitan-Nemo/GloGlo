@@ -14,17 +14,23 @@ import {
 import { useUserStore } from "@/stores/auth";
 import { ColorPicker } from "vue-accessible-color-picker";
 import { useFinanceStore } from "@/stores/finance";
-import Add from "@/assets/icons/actions/add.svg?component";
-import Edit from "@/assets/icons/actions/edit.svg?component";
-import Delete from "@/assets/icons/actions/delete.svg?component";
-import Save from "@/assets/icons/actions/save.svg?component";
+
 import type { ICategories } from "@/utils/interface";
+import icon from "@/components/dynamicIcon.vue";
 
 const firestore = useFireStore();
 const user = useUserStore();
 const finance = useFinanceStore();
 
-const colorNew = ref("#000000");
+const colorNew = ref("#00dee2");
+
+const category = {
+  new: {
+    text: "",
+    color: "",
+    date: Date.now(),
+  },
+};
 
 const newCategory = ref<Array<ICategories>>([
   { id: "", text: "", color: "", date: Date.now() },
@@ -65,7 +71,7 @@ const updateCategory = async (id: string) => {
     color: kurwidlo.value.color,
   });
 
-  // Search Category in  records and update
+  // Search Category in records and update
   (
     await getDocs(
       query(
@@ -89,6 +95,7 @@ const deleteCategory = (id: string) => {
   finance.categories = finance.categories.filter(
     (category) => category.id !== id
   );
+
   deleteDoc(doc(firestore.db, "users", user.userId, "categories", id));
 
   showOptions.value = false;
@@ -101,7 +108,9 @@ const addCategory = () => {
     color: colorNew.value,
     date: Date.now(),
   });
+
   finance.fetchCategories();
+
   newCategory.value[0].text = "";
 };
 </script>
@@ -141,20 +150,20 @@ const addCategory = () => {
             class="categories__row-button"
             @click="editCategory(index, category)"
           >
-            <Edit></Edit>
+            <icon name="edit" path="actions" />
           </button>
           <button
             v-if="index == currentIndex && showOptions"
             class="categories__row-button"
             @click="updateCategory(category.id)"
           >
-            <Save></Save>
+            <icon name="save" path="actions" />
           </button>
           <button
             class="categories__row-button"
             @click="deleteCategory(category.id)"
           >
-            <Delete></Delete>
+            <icon name="delete" path="actions" />
           </button>
         </div>
       </div>
@@ -191,7 +200,7 @@ const addCategory = () => {
         </template>
       </ColorPicker>
       <button class="categories__save" @click="addCategory()">
-        Add new <Add></Add>
+        Add new <icon name="add" path="actions"></icon>
       </button>
     </div>
   </div>
