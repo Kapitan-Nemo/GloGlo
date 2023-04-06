@@ -42,7 +42,7 @@ const currentEdited = {
   text: "",
   color: "",
 };
-const kurwidlo = ref({
+const category = ref({
   id: "",
   text: "",
   color: "",
@@ -53,13 +53,13 @@ function newCategoryColor(eventData: { cssColor: string }) {
   colorNew.value = eventData.cssColor;
 }
 function updateCategoryColor(eventData: { cssColor: string }) {
-  kurwidlo.value.color = eventData.cssColor;
+  category.value.color = eventData.cssColor;
 }
 
 const editCategory = (index: number, category: ICategories) => {
   showOptions.value = !showOptions.value;
   currentIndex.value = index;
-  kurwidlo.value = category;
+  category.value = category;
 
   currentEdited.color = category.color;
   currentEdited.text = category.text;
@@ -67,8 +67,8 @@ const editCategory = (index: number, category: ICategories) => {
 
 const updateCategory = async (id: string) => {
   await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
-    text: kurwidlo.value.text,
-    color: kurwidlo.value.color,
+    text: category.value.text,
+    color: category.value.color,
   });
 
   // Search Category in records and update
@@ -82,8 +82,8 @@ const updateCategory = async (id: string) => {
     )
   ).forEach(async (doc) => {
     await updateDoc(doc.ref, {
-      "category.text": kurwidlo.value.text,
-      "category.color": kurwidlo.value.color,
+      "category.text": category.value.text,
+      "category.color": category.value.color,
     });
   });
 
@@ -169,12 +169,12 @@ const addCategory = () => {
       </div>
     </div>
     <div v-if="showOptions" class="categories__edit">
-      <input class="categories__input" v-model="kurwidlo.text" />
+      <input class="categories__input" v-model="category.text" />
       <ColorPicker
         id="update_category"
         :visible-formats="['hex']"
         default-format="hex"
-        :color="kurwidlo.color"
+        :color="category.color"
         @color-change="updateCategoryColor"
       >
         <template v-slot:copy-button>
