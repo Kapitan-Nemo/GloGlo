@@ -1,27 +1,27 @@
-import { defineStore } from "pinia";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { defineStore } from 'pinia'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
-export const useUserStore = defineStore("userStore", {
+export const useUserStore = defineStore('userStore', {
   state: () => ({
     userName: null as string | null,
-    userId: "",
-    logged: false,
+    userId: '',
+    logged: false
   }),
 
   actions: {
     onAuthStateChanged() {
-      const auth = getAuth();
+      const auth = getAuth()
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          this.userName = user.displayName;
-          this.userId = user.uid;
-          this.logged = true;
+          this.userName = user.displayName
+          this.userId = user.uid
+          this.logged = true
         } else {
-          this.logged = false;
-          this.userId = "";
+          this.logged = false
+          this.userId = ''
         }
-      });
-    },
+      })
+    }
   },
-  persist: true,
-});
+  persist: true
+})

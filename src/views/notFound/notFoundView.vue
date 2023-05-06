@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-import icon from "@/components/dynamicIcon.vue";
-const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
+import { defineAsyncComponent } from 'vue'
+import icon from '@/components/dynamicIcon.vue'
+const Header = defineAsyncComponent(() => import('@/components/headerBar.vue'))
 </script>
 
 <template>

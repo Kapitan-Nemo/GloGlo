@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import { useUserStore } from "@/stores/auth";
-import { onMounted } from "vue";
-import router from "@/router";
-import "@/scss/app.scss";
-import icon from "@/components/dynamicIcon.vue";
+import { RouterLink, RouterView } from 'vue-router'
+import { useUserStore } from '@/stores/auth'
+import { onMounted } from 'vue'
+import router from '@/router'
+import '@/scss/app.scss'
+import icon from '@/components/dynamicIcon.vue'
 
-const auth = useUserStore();
+const auth = useUserStore()
 
 onMounted(() => {
-  auth.onAuthStateChanged();
+  auth.onAuthStateChanged()
   router.beforeEach((to) => {
     if (to.meta.requiresAuth && !auth.logged) {
       return {
-        path: "/login",
-      };
+        path: '/login'
+      }
     }
-  });
-});
+  })
+})
 </script>
 
 <template>
@@ -26,9 +26,7 @@ onMounted(() => {
       <icon name="logo" path="logo" />
     </div>
 
-    <RouterLink class="menu__link" to="/"
-      ><icon name="home" path="other" />Dashboard</RouterLink
-    >
+    <RouterLink class="menu__link" to="/"><icon name="home" path="other" />Dashboard</RouterLink>
     <RouterLink class="menu__link" to="/categories"
       ><icon name="categories" path="other" />Categories</RouterLink
     >

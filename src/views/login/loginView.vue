@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { onMounted, onUnmounted } from "vue";
-import router from "@/router";
-import Logo from "@/assets/icons/logo/logo.svg?component";
-import LoginCharacter from "@/assets/icons/other/login-character.svg?component";
-import GoogleIcon from "@/assets/icons/social/google.svg?component";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { onMounted, onUnmounted } from 'vue'
+import router from '@/router'
+import Logo from '@/assets/icons/logo/logo.svg?component'
+import LoginCharacter from '@/assets/icons/other/login-character.svg?component'
+import GoogleIcon from '@/assets/icons/social/google.svg?component'
 
 function singInWithGoogle() {
-  const provider = new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider()
   signInWithPopup(getAuth(), provider)
     .then(() => {
-      router.push("/");
+      router.push('/')
     })
     .catch((error) => {
-      console.log(error);
-    });
+      console.log(error)
+    })
 }
 
 onMounted(() => {
-  document.body.classList.add("login");
-});
+  document.body.classList.add('login')
+})
 onUnmounted(() => {
-  document.body.classList.remove("login");
-});
+  document.body.classList.remove('login')
+})
 </script>
 
 <template>
@@ -38,8 +38,7 @@ onUnmounted(() => {
           <Logo></Logo>
         </div>
         <button class="login__button" type="button" @click="singInWithGoogle">
-          <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span
-          >Sign in with Google
+          <span class="login__button-wrapper"><GoogleIcon></GoogleIcon></span>Sign in with Google
         </button>
       </div>
     </div>

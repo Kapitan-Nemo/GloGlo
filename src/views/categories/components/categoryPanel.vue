@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useFireStore } from "@/stores/firestore";
+import { ref } from 'vue'
+import { reactive } from 'vue'
+import { useFireStore } from '@/stores/firestore'
 import {
   collection,
   query,
@@ -9,110 +10,108 @@ import {
   addDoc,
   deleteDoc,
   where,
-  getDocs,
-} from "firebase/firestore";
-import { useUserStore } from "@/stores/auth";
-import { ColorPicker } from "vue-accessible-color-picker";
-import { useFinanceStore } from "@/stores/finance";
+  getDocs
+} from 'firebase/firestore'
+import { useUserStore } from '@/stores/auth'
+import { ColorPicker } from 'vue-accessible-color-picker'
+import { useFinanceStore } from '@/stores/finance'
 
-import type { ICategories } from "@/utils/interface";
-import icon from "@/components/dynamicIcon.vue";
+import type { ICategories } from '@/utils/interface'
+import icon from '@/components/dynamicIcon.vue'
 
-const firestore = useFireStore();
-const user = useUserStore();
-const finance = useFinanceStore();
+const firestore = useFireStore()
+const user = useUserStore()
+const finance = useFinanceStore()
 
-const colorNew = ref("#00dee2");
-
-const category = {
-  new: {
-    text: "",
-    color: "",
-    date: Date.now(),
+const category = reactive({
+  current: {
+    text: '',
+    color: ''
   },
-};
+  updated: {
+    text: '',
+    color: ''
+  }
+})
 
-const newCategory = ref<Array<ICategories>>([
-  { id: "", text: "", color: "", date: Date.now() },
-]);
+const colorNew = ref('#00dee2')
 
-const showOptions = ref(false);
-const currentIndex = ref();
-const currentEdited = {
-  text: "",
-  color: "",
-};
-const category = ref({
-  id: "",
-  text: "",
-  color: "",
-  date: Date.now(),
-});
+const newCategory = ref<Array<ICategories>>([{ id: '', text: '', color: '', date: Date.now() }])
+
+const showOptions = ref(false)
+const currentIndex = ref()
 
 function newCategoryColor(eventData: { cssColor: string }) {
-  colorNew.value = eventData.cssColor;
+  colorNew.value = eventData.cssColor
 }
 function updateCategoryColor(eventData: { cssColor: string }) {
-  category.value.color = eventData.cssColor;
+  category.current.color = eventData.cssColor
 }
 
-const editCategory = (index: number, category: ICategories) => {
-  showOptions.value = !showOptions.value;
-  currentIndex.value = index;
-  category.value = category;
+const editCategory = (index: number, cat: ICategories) => {
+  showOptions.value = !showOptions.value
+  currentIndex.value = index
+  //assign cat to category.current
+  category.current.text = cat.text
+  category.current.color = cat.color
 
-  currentEdited.color = category.color;
-  currentEdited.text = category.text;
-};
+  console.log('category current - EDIT', category.current.text)
+  console.log('category current - EDIT', category.current.color)
+
+  // category.value.updated.text = cat.text;
+  // category.value.updated.color = cat.color;
+}
 
 const updateCategory = async (id: string) => {
-  await updateDoc(doc(firestore.db, "users", user.userId, "categories", id), {
-    text: category.value.text,
-    color: category.value.color,
-  });
+  category.updated.text = category.current.text
+  category.updated.color = category.current.color
+  console.log(category.updated.text)
+  console.log(category.updated.color)
+  await updateDoc(doc(firestore.db, 'users', user.userId, 'categories', id), {
+    text: category.updated.text,
+    color: category.updated.color
+  })
 
-  // Search Category in records and update
-  (
+  // Search existing  category in records and update
+  ;(
     await getDocs(
       query(
-        collection(firestore.db, "users", user.userId, "records"),
-        where("category.text", "==", currentEdited.text) ||
-          where("category.color", "==", currentEdited.color)
+        collection(firestore.db, 'users', user.userId, 'records'),
+        where('category.text', '==', category.current.text) ||
+          where('category.color', '==', category.current.color)
       )
     )
   ).forEach(async (doc) => {
     await updateDoc(doc.ref, {
-      "category.text": category.value.text,
-      "category.color": category.value.color,
-    });
-  });
+      'category.text': category.updated.text,
+      'category.color': category.updated.color
+    })
+  })
 
-  showOptions.value = false;
-  currentIndex.value = undefined;
-};
+  showOptions.value = false
+  currentIndex.value = undefined
+  finance.fetchCategories()
+}
 
 const deleteCategory = (id: string) => {
-  finance.categories = finance.categories.filter(
-    (category) => category.id !== id
-  );
+  finance.categories = finance.categories.filter((category) => category.id !== id)
+  deleteDoc(doc(firestore.db, 'users', user.userId, 'categories', id))
 
-  deleteDoc(doc(firestore.db, "users", user.userId, "categories", id));
-
-  showOptions.value = false;
-  currentIndex.value = undefined;
-};
+  showOptions.value = false
+  currentIndex.value = undefined
+}
 
 const addCategory = () => {
-  addDoc(collection(firestore.db, "users", user.userId, "categories"), {
+  addDoc(collection(firestore.db, 'users', user.userId, 'categories'), {
     text: newCategory.value[0].text,
     color: colorNew.value,
-    date: Date.now(),
-  });
+    date: Date.now()
+  })
 
-  finance.fetchCategories();
+  finance.fetchCategories()
 
-  newCategory.value[0].text = "";
-};
+  newCategory.value[0].text = ''
+}
 </script>
 
 <template>
@@ -120,7 +119,7 @@ const addCategory = () => {
     <div
       class="categories__collection"
       :class="{
-        categories__collection__active: showOptions,
+        categories__collection__active: showOptions
       }"
     >
       <div class="categories__collection-header">
@@ -134,18 +133,16 @@ const addCategory = () => {
         :key="index"
         class="categories__row"
         :class="{
-          categories__row__active: index === currentIndex,
+          categories__row__active: index === currentIndex
         }"
       >
-        <span
-          :style="{ background: category.color }"
-          class="categories__row-badge"
-          >{{ category.text }}</span
-        >
+        <span :style="{ background: category.color }" class="categories__row-badge">{{
+          category.text
+        }}</span>
         <div class="categories__row-actions">
           <button
             :class="{
-              categories__hide: index === currentIndex,
+              categories__hide: index === currentIndex
             }"
             class="categories__row-button"
             @click="editCategory(index, category)"
@@ -159,22 +156,21 @@ const addCategory = () => {
           >
             <icon name="save" path="actions" />
           </button>
-          <button
-            class="categories__row-button"
-            @click="deleteCategory(category.id)"
-          >
+          <button class="categories__row-button" @click="deleteCategory(category.id)">
             <icon name="delete" path="actions" />
           </button>
         </div>
       </div>
     </div>
     <div v-if="showOptions" class="categories__edit">
-      <input class="categories__input" v-model="category.text" />
+      <p>AKTUALIZACJA</p>
+      <input class="categories__input" v-model="category.current.text" />
+
       <ColorPicker
         id="update_category"
         :visible-formats="['hex']"
         default-format="hex"
-        :color="category.color"
+        :color="category.current.color"
         @color-change="updateCategoryColor"
       >
         <template v-slot:copy-button>
@@ -183,11 +179,7 @@ const addCategory = () => {
       </ColorPicker>
     </div>
     <div v-else class="categories__edit">
-      <input
-        placeholder="Category name"
-        class="categories__input"
-        v-model="newCategory[0].text"
-      />
+      <input placeholder="Category name" class="categories__input" v-model="newCategory[0].text" />
       <ColorPicker
         id="new_category"
         :visible-formats="['hex']"

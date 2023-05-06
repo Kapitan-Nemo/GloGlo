@@ -1,43 +1,38 @@
 <script lang="ts" setup>
-import { computed, watch } from "vue";
-import { useFinanceStore } from "@/stores/finance";
+import { computed, watch } from 'vue'
+import { useFinanceStore } from '@/stores/finance'
 
-import month from "@/assets/icons/cards/month.svg?component";
-import year from "@/assets/icons/cards/year.svg?component";
-import overall from "@/assets/icons/cards/overall.svg?component";
-import { useFireStore } from "@/stores/firestore";
-import { storeToRefs } from "pinia";
+import month from '@/assets/icons/cards/month.svg?component'
+import year from '@/assets/icons/cards/year.svg?component'
+import overall from '@/assets/icons/cards/overall.svg?component'
+import { useFireStore } from '@/stores/firestore'
+import { storeToRefs } from 'pinia'
 
-const finance = useFinanceStore();
-const firestore = useFireStore();
-const { dateSelected } = storeToRefs(firestore);
-const { allRecords } = storeToRefs(finance);
+const finance = useFinanceStore()
+const firestore = useFireStore()
+const { dateSelected } = storeToRefs(firestore)
+const { allRecords } = storeToRefs(finance)
 
 const financeYear = computed(() => {
   return allRecords.value
     .filter((n) => n.year == dateSelected.value.year)
-    .reduce(
-      (financeYear: number, record: { cost: number }) =>
-        record.cost + financeYear,
-      0
-    );
-});
+    .reduce((financeYear: number, record: { cost: number }) => record.cost + financeYear, 0)
+})
 const financeOverall = computed(() => {
   return allRecords.value.reduce(
-    (financeOverall: number, record: { cost: number }) =>
-      record.cost + financeOverall,
+    (financeOverall: number, record: { cost: number }) => record.cost + financeOverall,
     0
-  );
-});
+  )
+})
 
 watch(
   () => finance.records,
   () => {
     setTimeout(() => {
-      finance.fetchAllRecords();
-    }, 250);
+      finance.fetchAllRecords()
+    }, 250)
   }
-);
+)
 </script>
 
 <template>
@@ -71,11 +66,7 @@ watch(
     padding: 25px;
     margin: 0 25px 25px 0;
     border-radius: 10px;
-    background: linear-gradient(
-      135deg,
-      rgb(30 31 37) 68%,
-      rgba(64, 66, 76, 1) 120%
-    );
+    background: linear-gradient(135deg, rgb(30 31 37) 68%, rgba(64, 66, 76, 1) 120%);
     word-break: break-all;
   }
   &__title {

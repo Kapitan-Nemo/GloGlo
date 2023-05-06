@@ -1,44 +1,36 @@
-import { defineStore } from "pinia";
-import { getFirestore } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import {
-  where,
-  collection,
-  query,
-  getDocs,
-  orderBy,
-} from "@firebase/firestore";
-import { useUserStore } from "@/stores/auth";
-import { FIREBASE_CONFIG } from "@/utils/constants";
+import { defineStore } from 'pinia'
+import { getFirestore } from 'firebase/firestore'
+import { initializeApp } from 'firebase/app'
+import { where, collection, query, getDocs, orderBy } from '@firebase/firestore'
+import { useUserStore } from '@/stores/auth'
+import { FIREBASE_CONFIG } from '@/utils/constants'
 
-export const useFireStore = defineStore("firebaseStore", {
+export const useFireStore = defineStore('firebaseStore', {
   state: () => {
     return {
       db: getFirestore(initializeApp(FIREBASE_CONFIG)),
       dateSelected: {
         month: new Date().getMonth(),
-        year: new Date().getFullYear(),
-      },
-    };
+        year: new Date().getFullYear()
+      }
+    }
   },
   getters: {
     records: (state) =>
       getDocs(
         query(
-          collection(state.db, "users", useUserStore().userId, "records"),
-          where("month", "==", state.dateSelected.month)
+          collection(state.db, 'users', useUserStore().userId, 'records'),
+          where('month', '==', state.dateSelected.month)
         )
       ),
     allRecords: (state) =>
-      getDocs(
-        query(collection(state.db, "users", useUserStore().userId, "records"))
-      ),
+      getDocs(query(collection(state.db, 'users', useUserStore().userId, 'records'))),
     categories: (state) =>
       getDocs(
         query(
-          collection(state.db, "users", useUserStore().userId, "categories"),
-          orderBy("date", "desc")
+          collection(state.db, 'users', useUserStore().userId, 'categories'),
+          orderBy('date', 'desc')
         )
-      ),
-  },
-});
+      )
+  }
+})

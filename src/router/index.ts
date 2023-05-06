@@ -1,46 +1,46 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
 
-const DashboardView = () => import("@/views/dashboard/dashboardView.vue");
-const LoginView = () => import("@/views/login/loginView.vue");
-const CategoriesView = () => import("@/views/categories/categoriesView.vue");
-const SettingsView = () => import("@/views/settings/settingsView.vue");
-const NotFound = () => import("@/views/notFound/notFoundView.vue");
+const DashboardView = () => import('@/views/dashboard/dashboardView.vue')
+const LoginView = () => import('@/views/login/loginView.vue')
+const CategoriesView = () => import('@/views/categories/categoriesView.vue')
+const SettingsView = () => import('@/views/settings/settingsView.vue')
+const NotFound = () => import('@/views/notFound/notFoundView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  linkActiveClass: "menu__active",
+  linkActiveClass: 'menu__active',
   routes: [
     {
-      path: "/",
-      name: "dashboard",
+      path: '/',
+      name: 'dashboard',
       component: DashboardView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true }
     },
     {
-      path: "/login",
-      name: "login",
-      component: LoginView,
+      path: '/login',
+      name: 'login',
+      component: LoginView
     },
 
     {
-      path: "/categories",
-      name: "categories",
+      path: '/categories',
+      name: 'categories',
       component: CategoriesView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true }
     },
     {
-      path: "/settings",
-      name: "settings",
+      path: '/settings',
+      name: 'settings',
       component: SettingsView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true }
     },
     {
-      path: "/:pathMatch(.*)*",
-      name: "NotFound",
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
       component: NotFound,
-      meta: { requiresAuth: true },
-    },
-  ],
-});
+      meta: { requiresAuth: true }
+    }
+  ]
+})
 
-export default router;
+export default router

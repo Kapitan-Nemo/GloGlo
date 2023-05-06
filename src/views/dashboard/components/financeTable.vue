@@ -1,122 +1,110 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { useUserStore } from "@/stores/auth";
-import { useFireStore } from "@/stores/firestore";
-import { useFinanceStore } from "@/stores/finance";
-import {
-  doc,
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import "@vuepic/vue-datepicker/dist/main.css";
-import { storeToRefs } from "pinia";
-import Datepicker from "@vuepic/vue-datepicker";
+import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores/auth'
+import { useFireStore } from '@/stores/firestore'
+import { useFinanceStore } from '@/stores/finance'
+import { doc, collection, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import '@vuepic/vue-datepicker/dist/main.css'
+import { storeToRefs } from 'pinia'
+import Datepicker from '@vuepic/vue-datepicker'
 
-import icon from "@/components/dynamicIcon.vue";
-import Add from "@/assets/icons/actions/add.svg?component";
-import Edit from "@/assets/icons/actions/edit.svg?component";
-import Delete from "@/assets/icons/actions/delete.svg?component";
-import Save from "@/assets/icons/actions/save.svg?component";
+import icon from '@/components/dynamicIcon.vue'
+import Add from '@/assets/icons/actions/add.svg?component'
+import Edit from '@/assets/icons/actions/edit.svg?component'
+import Delete from '@/assets/icons/actions/delete.svg?component'
+import Save from '@/assets/icons/actions/save.svg?component'
 
-const user = useUserStore();
-const firestore = useFireStore();
-const finance = useFinanceStore();
-const { dateSelected } = storeToRefs(firestore);
-const { newRecord } = storeToRefs(finance);
+const user = useUserStore()
+const firestore = useFireStore()
+const finance = useFinanceStore()
+const { dateSelected } = storeToRefs(firestore)
+const { newRecord } = storeToRefs(finance)
 
-const input = ref();
+const input = ref()
 
 const addNewRecordMode = () => {
   if (finance.categories.length === 0) {
-    alert("Please add at least one category");
-    return;
+    alert('Please add at least one category')
+    return
   }
-  newRecord.value.show = !newRecord.value.show;
+  newRecord.value.show = !newRecord.value.show
   if (newRecord.value.show) {
     setTimeout(() => {
-      input.value.focus();
-    }, 100);
+      input.value.focus()
+    }, 100)
   }
-};
+}
 
 const createRecord = () => {
   if (newRecord.value.cost > 0) {
-    addDoc(collection(firestore.db, "users", user.userId, "records"), {
+    addDoc(collection(firestore.db, 'users', user.userId, 'records'), {
       cost: newRecord.value.cost,
       category: newRecord.value.category,
       editMode: false,
       date: Date.now(),
       month: dateSelected.value.month,
-      year: dateSelected.value.year,
-    });
-    newRecord.value.cost = 0;
-    newRecord.value.show = false;
-    finance.fetchRecords();
+      year: dateSelected.value.year
+    })
+    newRecord.value.cost = 0
+    newRecord.value.show = false
+    finance.fetchRecords()
   } else {
-    alert("Please enter a valid cost");
+    alert('Please enter a valid cost')
   }
-};
+}
 
 const updateRecord = async (id: string) => {
-  const index = finance.records.findIndex((record) => record.id === id);
-  const updateDocRef = doc(firestore.db, "users", user.userId, "records", id);
+  const index = finance.records.findIndex((record) => record.id === id)
+  const updateDocRef = doc(firestore.db, 'users', user.userId, 'records', id)
   if (finance.records[index].cost > 0) {
     updateDoc(updateDocRef, {
       cost: finance.records[index].cost,
       category: finance.records[index].category,
-      editMode: false,
-    });
-    finance.records[index].editMode = false;
+      editMode: false
+    })
+    finance.records[index].editMode = false
   } else {
-    alert("Please enter a valid cost");
+    alert('Please enter a valid cost')
   }
-};
+}
 
 const deleteRecord = (id: string, categoryText: string) => {
-  finance.records = finance.records.filter((record) => record.id !== id);
-  deleteDoc(doc(firestore.db, "users", user.userId, "records", id));
-  const categoryFound = finance.records.find(
-    (record) => record.category.text === categoryText
-  );
-  categoryFound === undefined ? (show.value = false) : null;
-};
+  finance.records = finance.records.filter((record) => record.id !== id)
+  deleteDoc(doc(firestore.db, 'users', user.userId, 'records', id))
+  const categoryFound = finance.records.find((record) => record.category.text === categoryText)
+  categoryFound === undefined ? (show.value = false) : null
+}
 
 const editRecord = (id: string) => {
-  const index = finance.records.findIndex((record) => record.id === id);
-  finance.records[index].editMode = true;
-};
+  const index = finance.records.findIndex((record) => record.id === id)
+  finance.records[index].editMode = true
+}
 
-const show = ref(false);
-const currentIndex = ref(0);
-const currentCategory = ref("");
+const show = ref(false)
+const currentIndex = ref(0)
+const currentCategory = ref('')
 
 const filterRecords = computed(() => {
-  return finance.records.filter(
-    (record) => record.category.text == currentCategory.value
-  );
-});
+  return finance.records.filter((record) => record.category.text == currentCategory.value)
+})
 
 const recordsDataCombine = computed(() => {
-  const arr = [];
+  const arr = []
   for (let i = 0; i < finance.getChartLabels.length; i++) {
     arr.push({
       label: finance.getChartLabels[i],
       color: finance.getChartColors[i],
-      cost: finance.costs[i],
-    });
+      cost: finance.costs[i]
+    })
   }
-  return arr;
-});
+  return arr
+})
 </script>
 
 <template>
   <div class="finance">
     <div class="finance__header">
-      <button class="finance__button" @click="addNewRecordMode()">
-        Add expense <Add />
-      </button>
+      <button class="finance__button" @click="addNewRecordMode()">Add expense <Add /></button>
       <Datepicker
         class="finance__datepicker"
         @closed="finance.fetchRecords()"
@@ -140,10 +128,7 @@ const recordsDataCombine = computed(() => {
     </p> -->
 
     <div
-      v-if="
-        newRecord.show ||
-        (finance.records.length <= 0 && finance.categories.length > 0)
-      "
+      v-if="newRecord.show || (finance.records.length <= 0 && finance.categories.length > 0)"
       class="finance__row"
     >
       <div class="finance__row-data">
@@ -158,16 +143,8 @@ const recordsDataCombine = computed(() => {
           $
         </span>
         <span class="finance__row-cell">
-          <select
-            v-model="newRecord.category"
-            class="finance__row-select"
-            name="category"
-          >
-            <option
-              v-for="category in finance.categories"
-              :key="category.id"
-              :value="category"
-            >
+          <select v-model="newRecord.category" class="finance__row-select" name="category">
+            <option v-for="category in finance.categories" :key="category.id" :value="category">
               {{ category.text }}
             </option>
           </select>
@@ -193,21 +170,15 @@ const recordsDataCombine = computed(() => {
           <span class="finance__row-cell">{{ index }}#</span>
           <span class="finance__row-cell">{{ record.cost }}$</span>
           <span class="finance__row-cell"
-            ><small
-              :style="{ 'background-color': record.color }"
-              class="finance__row-category"
-              >{{ record.label }}</small
-            ></span
+            ><small :style="{ 'background-color': record.color }" class="finance__row-category">{{
+              record.label
+            }}</small></span
           >
         </div>
         <div class="finance__row-actions">
           <button
             class="finance__row-button"
-            @click="
-              (show = !show),
-                (currentIndex = index),
-                (currentCategory = record.label)
-            "
+            @click=";(show = !show), (currentIndex = index), (currentCategory = record.label)"
           >
             <icon
               :class="show && index == currentIndex ? 'rotate' : ''"
@@ -221,15 +192,9 @@ const recordsDataCombine = computed(() => {
         <div v-for="(record, index) in filterRecords" :key="index">
           <div class="finance__row">
             <div class="finance__row-data">
-              <span v-if="!record.editMode" class="finance__row-cell"
-                >{{ record.cost }} $</span
-              >
+              <span v-if="!record.editMode" class="finance__row-cell">{{ record.cost }} $</span>
               <span v-else class="finance__row-cell"
-                ><input
-                  type="number"
-                  class="finance__row-input"
-                  v-model="record.cost"
-                />
+                ><input type="number" class="finance__row-input" v-model="record.cost" />
                 $
               </span>
             </div>
@@ -241,11 +206,7 @@ const recordsDataCombine = computed(() => {
               >
                 <Edit></Edit>
               </button>
-              <button
-                v-else
-                class="finance__row-button"
-                @click="updateRecord(record.id)"
-              >
+              <button v-else class="finance__row-button" @click="updateRecord(record.id)">
                 <Save></Save>
               </button>
               <button

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "vue-chartjs";
-import { useFinanceStore } from "@/stores/finance";
-import { financeCosts } from "@/composables/useCosts";
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { computed, onMounted, ref, watch } from 'vue'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
+import { useFinanceStore } from '@/stores/finance'
+import { financeCosts } from '@/composables/useCosts'
+ChartJS.register(ArcElement, Tooltip, Legend)
 
-const finance = useFinanceStore();
+const finance = useFinanceStore()
 onMounted(() => {
   setTimeout(() => {
-    financeCosts();
-  }, 1000);
-});
+    financeCosts()
+  }, 1000)
+})
 
 watch(
   //TODO:improve watcher
   () => finance.records,
   () => {
-    financeCosts();
+    financeCosts()
   },
   { deep: true }
-);
+)
 
 const chartData = computed(() => ({
   labels: finance.getChartLabels,
@@ -31,43 +31,38 @@ const chartData = computed(() => ({
       borderWidth: 0,
       borderRadius: 15,
       spacing: 10,
-      cutout: "90%",
-    },
-  ],
-}));
+      cutout: '90%'
+    }
+  ]
+}))
 
 const options = ref({
   plugins: {
     legend: {
       display: true,
-      position: "bottom",
+      position: 'bottom',
       labels: {
         usePointStyle: true,
-        pointStyle: "rectRounded",
+        pointStyle: 'rectRounded',
         boxWidth: 25,
         boxHeight: 25,
         padding: 25,
-        color: "#7F8091",
+        color: '#7F8091',
         borderRadius: 20,
         font: {
-          size: 12,
-        },
-      },
-    },
-  },
-});
+          size: 12
+        }
+      }
+    }
+  }
+})
 </script>
 
 <template>
   <div class="donutchart__wrap">
     <h2 class="donutchart__title">Categories</h2>
     <div class="donutchart__chart">
-      <Doughnut
-        :width="300"
-        :height="300"
-        :data="chartData"
-        :options="options"
-      />
+      <Doughnut :width="300" :height="300" :data="chartData" :options="options" />
     </div>
   </div>
 </template>

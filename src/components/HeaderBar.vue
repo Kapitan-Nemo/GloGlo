@@ -1,39 +1,39 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/auth";
-import { getAuth, signOut } from "firebase/auth";
-import { ref, watch } from "vue";
-import { useSettingsStore } from "@/stores/settings";
-import router from "@/router";
+import { useUserStore } from '@/stores/auth'
+import { getAuth, signOut } from 'firebase/auth'
+import { ref, watch } from 'vue'
+import { useSettingsStore } from '@/stores/settings'
+import router from '@/router'
 
-import icon from "@/components/dynamicIcon.vue";
-import { storeToRefs } from "pinia";
+import icon from '@/components/dynamicIcon.vue'
+import { storeToRefs } from 'pinia'
 
-const user = useUserStore();
-const auth = getAuth();
-const showAccount = ref(false);
-const settings = useSettingsStore();
-const { currentAvatar } = storeToRefs(settings);
-const componentKey = ref(0);
+const user = useUserStore()
+const auth = getAuth()
+const showAccount = ref(false)
+const settings = useSettingsStore()
+const { currentAvatar } = storeToRefs(settings)
+const componentKey = ref(0)
 
 watch(
   () => currentAvatar.value,
   () => {
-    componentKey.value += 1;
+    componentKey.value += 1
   }
-);
+)
 
 defineProps<{
-  msg: string;
-}>();
+  msg: string
+}>()
 
 function singOutGoogle() {
   signOut(auth)
     .then(async () => {
-      await router.push("/login");
+      await router.push('/login')
     })
     .catch((error) => {
-      console.log(error);
-    });
+      console.log(error)
+    })
 }
 </script>
 
@@ -43,18 +43,10 @@ function singOutGoogle() {
       <h1>Hi, {{ user.userName }}!</h1>
       <div class="header__buttons">
         <div>
-          <icon
-            class="header__buttons-notify"
-            path="actions"
-            name="notification"
-          />
+          <icon class="header__buttons-notify" path="actions" name="notification" />
         </div>
         <div @click="showAccount = !showAccount">
-          <icon
-            path="avatars"
-            :name="currentAvatar"
-            class="header__buttons-avatar"
-          />
+          <icon path="avatars" :name="currentAvatar" class="header__buttons-avatar" />
         </div>
       </div>
     </div>
@@ -63,20 +55,12 @@ function singOutGoogle() {
       <div v-if="showAccount" class="header__account">
         <router-link to="/settings">
           <p class="header__account-action">
-            <icon
-              class="header__account-action-icon"
-              path="other"
-              name="settings"
-            />
+            <icon class="header__account-action-icon" path="other" name="settings" />
             Settings
           </p>
         </router-link>
         <p class="header__account-action" @click="singOutGoogle">
-          <icon
-            class="header__account-action-icon"
-            path="actions"
-            name="logout"
-          />
+          <icon class="header__account-action-icon" path="actions" name="logout" />
           Logout
         </p>
       </div>

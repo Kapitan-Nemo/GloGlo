@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
-export const useSettingsStore = defineStore("settingsStore", {
+export const useSettingsStore = defineStore('settingsStore', {
   state: () => ({
-    currentAvatar: "avatar-1",
+    currentAvatar: 'avatar-1'
   }),
-  persist: true,
-});
+  persist: true
+})

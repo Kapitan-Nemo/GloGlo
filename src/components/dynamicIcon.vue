@@ -3,20 +3,20 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent } from 'vue'
 
 const props = defineProps({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   path: {
     type: String,
-    required: true,
-  },
-});
+    required: true
+  }
+})
 
 const icon = defineAsyncComponent(
   () => import(`@/assets/icons/${props.path}/${props.name}.svg?component`)
-);
+)
 </script>

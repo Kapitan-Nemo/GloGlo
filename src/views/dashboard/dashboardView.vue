@@ -1,30 +1,28 @@
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted } from "vue";
-import { useFinanceStore } from "@/stores/finance";
+import { defineAsyncComponent, onMounted } from 'vue'
+import { useFinanceStore } from '@/stores/finance'
 
-const finance = useFinanceStore();
+const finance = useFinanceStore()
 
-const Header = defineAsyncComponent(() => import("@/components/headerBar.vue"));
+const Header = defineAsyncComponent(() => import('@/components/headerBar.vue'))
 const FinancePanels = defineAsyncComponent(
-  () => import("@/views/dashboard/components/financePanels.vue")
-);
+  () => import('@/views/dashboard/components/financePanels.vue')
+)
 const FinanceTable = defineAsyncComponent(
-  () => import("@/views/dashboard/components/financeTable.vue")
-);
+  () => import('@/views/dashboard/components/financeTable.vue')
+)
 const FinanceChart = defineAsyncComponent(
-  () => import("@/views/dashboard/components/financeChart.vue")
-);
+  () => import('@/views/dashboard/components/financeChart.vue')
+)
 onMounted(() => {
-  finance.fetchRecords();
-  finance.fetchCategories();
-  finance.fetchAllRecords();
-});
+  finance.fetchRecords()
+  finance.fetchCategories()
+  finance.fetchAllRecords()
+})
 </script>
 
 <template>
-  <Header
-    msg="Today the overall efficiency is 153%. Otherwise, there is nothing new."
-  ></Header>
+  <Header msg="Today the overall efficiency is 153%. Otherwise, there is nothing new."></Header>
 
   <div class="dashboard">
     <div class="dashboard__wrapper">
