@@ -1,33 +1,16 @@
 <script setup lang="ts">
-import { onMounted, provide, ref, watch } from 'vue'
 import ApplianceHero from './ApplianceHero.vue'
-import ApplianceNew from './ApplianceNew.vue'
-import ApplianceSummary from './ApplianceSummary.vue'
+import { useAppliance } from '@/stores/appliance'
 
-const showModal = ref(false)
-const showSummary = ref(false)
-const showEditOptions = ref(false)
-const Appliances = ref([])
+const appliance = useAppliance()
 
-provide('Appliances', Appliances)
-provide('showModal', showModal)
+// const showModal = ref(false)
+// const showSummary = ref(false)
+// const showEditOptions = ref(false)
 
-function openModal() {
-  document.body.classList.add('overflow-hidden')
-  return (showModal.value = true)
-}
-function closeModal() {
-  document.body.classList.remove('overflow-hidden')
-  return (showModal.value = false)
-}
-
-function closeSummary() {
-  return (showSummary.value = false)
-}
-
-function showEdit() {
-  showEditOptions.value = !showEditOptions.value
-}
+// function showEdit() {
+//   showEditOptions.value = !showEditOptions.value
+// }
 
 // function removeAppliance(Appliance) {
 //   Appliances.value = Appliances.value.filter((t) => t !== Appliance);
@@ -36,42 +19,41 @@ function showEdit() {
 //   }
 // }
 
-function getAppliance() {
-  if (localStorage.getItem('appliances_list'))
-    Appliances.value = JSON.parse(localStorage.getItem('appliances_list'))
-}
+// function getAppliance() {
+//   if (localStorage.getItem('appliances_list'))
+//     Appliances.value = JSON.parse(localStorage.getItem('appliances_list'))
+// }
 
-watch(
-  () => Appliances.value,
-  (updatedList) => {
-    localStorage.setItem('appliances_list', JSON.stringify(updatedList))
-  },
-  { deep: true },
-)
+// watch(
+//   () => Appliances.value,
+//   (updatedList) => {
+//     localStorage.setItem('appliances_list', JSON.stringify(updatedList))
+//   },
+//   { deep: true },
+// )
 
-onMounted(() => {
-  getAppliance()
-})
+// onMounted(() => {
+//   getAppliance()
+// })
 </script>
 
 <template>
-  <ApplianceHero @openModal="openModal" />
-  <transition name="modal">
-    <ApplianceNew v-if="showModal" @closeModal="closeModal" />
-  </transition>
+  <ApplianceHero />
+  <!-- <transition name="modal">
+    <ApplianceNew v-if="showModal" />
+  </transition> -->
 
-  <transition name="modal">
+  <!-- <transition name="modal">
     <ApplianceSummary
       v-if="showSummary"
-      @closeSummary="closeSummary"
     />
-  </transition>
+  </transition> -->
 
   <TransitionGroup>
-    <section v-if="Appliances[0] == null" class="hero__empty">
+    <!-- <section v-if="Appliances[0] == null" class="hero__empty">
       <div class="container-fluid">
         <h2 class="hero__empty-title">
-          Whoops! You haven’t added any<br>
+          Whoops! You haven't added any<br>
           appliances yet.
         </h2>
         <img
@@ -81,15 +63,15 @@ onMounted(() => {
           src="@/assets/svg/hero/empty.svg"
         >
       </div>
-    </section>
+    </section> -->
 
-    <section v-else class="appliance">
+    <section class="appliance">
       <div class="container-fluid">
         <div class="appliance__title-wrap">
           <h2 class="appliance__title">
             Your appliances:
           </h2>
-          <div class="appliance__button-wrap">
+          <!-- <div class="appliance__button-wrap">
             <button
               v-if="Appliances.length > 1"
               class="appliance__button-summary"
@@ -119,16 +101,16 @@ onMounted(() => {
                   height="40"
                 ></span>
             </button>
-          </div>
+          </div> -->
         </div>
         <div class="appliance__card-wrapper">
           <TransitionGroup name="list">
             <div
-              v-for="Appliance in Appliances"
-              :key="Appliance.id"
+              v-for="item in appliance"
+              :key="item.id"
               class="appliance__card"
             >
-              <transition>
+              <!-- <transition>
                 <div v-if="showEditOptions" class="appliance__options">
                   <button
                     class="appliance__options-delete"
@@ -141,35 +123,35 @@ onMounted(() => {
                     Delete
                   </button>
                 </div>
-              </transition>
+              </transition> -->
 
               <div class="appliance__card__header">
                 <p class="appliance__card__header-title">
-                  {{ Appliance.device }}
+                  {{ item.device }}
                 </p>
                 <img
-                  v-if="Appliance.device == 'TV'"
+                  v-if="item.device === 'TV'"
                   class="appliance__card__header-image"
                   src="@/assets/svg/devices/tv.svg"
                   width="64"
                   height="50"
                 >
                 <img
-                  v-if="Appliance.device == 'Washing machine'"
+                  v-if="item.device === 'Washing machine'"
                   class="appliance__card__header-image"
                   src="@/assets/svg/devices/washing-machine.svg"
                   width="51"
                   height="61"
                 >
                 <img
-                  v-if="Appliance.device == 'Fridge'"
+                  v-if="item.device === 'Fridge'"
                   class="appliance__card__header-image"
                   src="@/assets/svg/devices/fridge.svg"
                   width="38"
                   height="56"
                 >
                 <img
-                  v-if="Appliance.device == 'Other'"
+                  v-if="item.device === 'Other'"
                   class="appliance__card__header-image"
                   src="@/assets/svg/devices/other.svg"
                   width="33"
@@ -189,7 +171,7 @@ onMounted(() => {
                       Wattage:
                     </p>
                   </div>
-                  <span class="appliance__card__body-badge">{{ Appliance.wattage }}W</span>
+                  <span class="appliance__card__body-badge">{{ item.wattage }}W</span>
                 </div>
                 <div class="appliance__card__body-item">
                   <div class="appliance__card__body-wrapper">
@@ -203,7 +185,7 @@ onMounted(() => {
                       Used per day:
                     </p>
                   </div>
-                  <span class="appliance__card__body-badge">{{ Appliance.time }}h</span>
+                  <span class="appliance__card__body-badge">{{ item.time }}h</span>
                 </div>
                 <div class="appliance__card__body-item">
                   <div class="appliance__card__body-wrapper">
@@ -218,14 +200,14 @@ onMounted(() => {
                     </p>
                   </div>
                   <span class="appliance__card__body-badge">{{
-                    (Appliance.wattage * 0.001 * Appliance.time).toFixed(2)
+                    (item.wattage * 0.001 * item.time).toFixed(2)
                   }}
                     kWh</span>
                 </div>
               </div>
               <div class="appliance__card__footer">
                 <p class="appliance__card__footer-title">
-                  {{ (Appliance.cost * 30).toFixed(2) }}
+                  {{ (item.cost * 30).toFixed(2) }}
                   $
                   <small>Per month</small>
                 </p>

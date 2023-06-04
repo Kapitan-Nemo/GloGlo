@@ -12,11 +12,7 @@
         </div>
         <div class="hero__center">
           <img
-            class="hero__logo"
-            width="251"
-            height="50"
-            alt="Logo Energy Meter"
-            src="@/assets/svg/hero/logo.svg"
+            class="hero__logo" width="251" height="50" alt="Logotype with name Glo Glo" src="@/assets/svg/hero/logo.svg"
           >
           <h1 class="hero__title">
             Calculate cost of home energy
@@ -26,12 +22,7 @@
           </button>
         </div>
         <div class="hero__right">
-          <img
-            height="480"
-            width="480"
-            class="hero__image"
-            src="@/assets/svg/hero/right.svg"
-          >
+          <img height="480" width="480" class="hero__image" src="@/assets/svg/hero/right.svg">
         </div>
       </div>
     </div>
