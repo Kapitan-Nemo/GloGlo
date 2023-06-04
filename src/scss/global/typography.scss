@@ -1,38 +1,31 @@
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: $white;
+h1, h2, h3, h4, h5, h6 {
+  color:$primary;
 }
 
-p,
-label {
+p, label  {
   color: $primary;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-weight: unset;
 }
 
 h1 {
-  font-size: 40px;
+  @include min-xl {
+    font-size: clamp(60px, 3vw + 16px, 90px);
+  }
 }
 
 h2 {
   font-size: 60px;
+  font-variation-settings: "wght" 600;
 }
 a {
-  color: $primary;
+  color:$primary;
 }
 
 p {
-  font-size: 20px;
-  color: $secondary;
+  font-size: 16px;
+  font-variation-settings: "wght" 600;
+  color:$primary;
 }
