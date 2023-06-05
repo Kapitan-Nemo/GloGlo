@@ -10,17 +10,10 @@ const { show } = storeToRefs(useModal())
     <div class="container-fluid">
       <div class="hero__wrapper">
         <div class="hero__left">
-          <img
-            height="480"
-            width="480"
-            class="hero__image"
-            src="@/assets/svg/hero/left.svg"
-          >
+          <img height="480" width="480" class="hero__image" src="@/assets/svg/hero/left.svg">
         </div>
         <div class="hero__center">
-          <img
-            class="hero__logo" width="251" height="50" alt="Logotype with name Glo Glo" src="@/assets/svg/hero/logo.svg"
-          >
+          <img class="hero__logo" width="251" height="50" alt="Logotype with name Glo Glo" src="@/assets/svg/hero/logo.svg">
           <h1 class="hero__title">
             Calculate cost of home energy
           </h1>
