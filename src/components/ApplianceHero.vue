@@ -17,7 +17,7 @@
           <h1 class="hero__title">
             Calculate cost of home energy
           </h1>
-          <button class="hero__button" @click="$emit('openModal')">
+          <button class="hero__button">
             Add appliance
           </button>
         </div>

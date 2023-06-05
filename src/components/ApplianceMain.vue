@@ -9,7 +9,7 @@ import { cards } from '@/common/constats'
 
 const dynamicUrl = new URL('@/assets/svg/controls/', import.meta.url).href
 const { applianceList } = storeToRefs(useAppliance())
-const showEditOptions = ref(false)
+const editable = ref(false)
 
 function removeAppliance(id: number) {
   applianceList.value = applianceList.value.filter(item => item.id !== id)
@@ -28,20 +28,14 @@ function removeAppliance(id: number) {
     />
   </transition> -->
 
-  <!-- <section v-if="Appliances[0] == null" class="hero__empty">
-      <div class="container-fluid">
-        <h2 class="hero__empty-title">
-          Whoops! You haven't added any<br>
-          appliances yet.
-        </h2>
-        <img
-          width="200"
-          height="200"
-          class="hero__empty-image"
-          src="@/assets/svg/hero/empty.svg"
-        >
-      </div>
-    </section> -->
+  <section v-if="applianceList.length === 0" class="hero__empty">
+    <div class="container-fluid">
+      <h2 class="hero__empty-title">
+        Whoops! You haven't added any<br> appliances yet.
+      </h2>
+      <img width="200" height="200" class="hero__empty-image" src="@/assets/svg/hero/empty.svg">
+    </div>
+  </section>
 
   <section class="appliance">
     <div class="container-fluid">
@@ -49,42 +43,23 @@ function removeAppliance(id: number) {
         <h2 class="appliance__title">
           Your appliances:
         </h2>
-        <!-- <div class="appliance__button-wrap">
-            <button
-              v-if="Appliances.length > 1"
-              class="appliance__button-summary"
-              @click="showSummary = true"
-            >
-              <span class="appliance__button-summary-wrap">Summary
-                <img
-                  width="26"
-                  height="36"
-                  src="@/assets/svg/buttons/summary.svg"
-                ></span>
-            </button>
-            <button class="appliance__button-setting" @click="showEdit">
-              <span
-                v-if="showEditOptions"
-                class="appliance__button-setting-wrap"
-              >Hide options
-                <img
-                  src="@/assets/svg/buttons/settings.svg"
-                  width="40"
-                  height="40"
-                ></span>
-              <span v-else class="appliance__button-setting-wrap">Show options
-                <img
-                  src="@/assets/svg/buttons/settings.svg"
-                  width="40"
-                  height="40"
-                ></span>
-            </button>
-          </div> -->
+        <div class="appliance__button-wrap">
+          <button v-if="applianceList.length > 1" class="appliance__button-summary">
+            <span class="appliance__button-summary-wrap">Summary
+              <img width="26" height="36" src="@/assets/svg/buttons/summary.svg">
+            </span>
+          </button>
+          <button class="appliance__button-setting" @click="editable = !editable">
+            <span class="appliance__button-setting-wrap">{{ editable ? 'Hide' : 'Show' }}
+              <img src="@/assets/svg/buttons/settings.svg" width="40" height="40">
+            </span>
+          </button>
+        </div>
       </div>
       <div class="appliance__card-wrapper">
         <div v-for="appliance in applianceList" :key="appliance.id" class="appliance__card">
           <transition>
-            <div v-if="showEditOptions" class="appliance__options">
+            <div v-if="editable" class="appliance__options">
               <button class="appliance__options-delete" @click="removeAppliance(appliance.id)">
                 <img class="appliance__options-delete-icon" src="@/assets/svg/controls/delete.svg">
                 Delete
