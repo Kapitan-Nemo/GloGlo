@@ -3,12 +3,12 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useAppliance } from '@/stores/appliance.js'
+import { dynamicSVG } from '@/composables/dynamicSVG'
+import { cards } from '@/common/constans.js'
 import ApplianceHero from '@/components/ApplianceHero.vue'
+import ApplianceNew from '@/components/ApplianceNew.vue'
 
-import { cards } from '@/common/constats'
-
-const dynamicUrl = new URL('@/assets/svg/controls/', import.meta.url).href
-const { applianceList } = storeToRefs(useAppliance())
+const { applianceList, kwhCost } = storeToRefs(useAppliance())
 const editable = ref(false)
 
 function removeAppliance(id: number) {
@@ -18,9 +18,9 @@ function removeAppliance(id: number) {
 
 <template>
   <ApplianceHero />
-  <!-- <transition name="modal">
-    <ApplianceNew v-if="showModal" />
-  </transition> -->
+  <transition name="modal">
+    <ApplianceNew />
+  </transition>
 
   <!-- <transition name="modal">
     <ApplianceSummary
@@ -37,7 +37,7 @@ function removeAppliance(id: number) {
     </div>
   </section>
 
-  <section class="appliance">
+  <section v-else class="appliance">
     <div class="container-fluid">
       <div class="appliance__title-wrap">
         <h2 class="appliance__title">
@@ -71,22 +71,24 @@ function removeAppliance(id: number) {
             <p class="appliance__card__header-title">
               {{ appliance.device }}
             </p>
-            <img class="appliance__card__header-image" src="@/assets/svg/devices/tv.svg" width="64" height="50">
+            <img class="appliance__card__header-image" :src="dynamicSVG + appliance.icon" width="64" height="50">
           </div>
           <div class="appliance__card__body">
             <div v-for="card in cards" :key="card.id" class="appliance__card__body-item">
               <div class="appliance__card__body-wrapper">
-                <img class="modal__body-icon" :src="dynamicUrl + card.icon" width="30" height="30">
+                <img class="appliance__card__body-icon" :src="dynamicSVG + card.icon" width="30" height="30">
                 <p class="appliance__card__body-title">
                   {{ card.title }}
                 </p>
               </div>
-              <span class="appliance__card__body-badge">{{ appliance.wattage }}W</span>
+              <span v-if="card.id === 1" class="appliance__card__body-badge">{{ appliance.wattage }} W</span>
+              <span v-if="card.id === 2" class="appliance__card__body-badge">{{ appliance.time }} H</span>
+              <span v-if="card.id === 3" class="appliance__card__body-badge">{{ appliance.kwh }} kwh</span>
             </div>
           </div>
           <div class="appliance__card__footer">
             <p class="appliance__card__footer-title">
-              {{ (appliance.cost * 30).toFixed(2) }} $ <small>Per month</small>
+              {{ (appliance.kwh * appliance.time * kwhCost * 30).toFixed(2) }} zł <small>Per month</small>
             </p>
           </div>
         </div>
@@ -273,11 +275,15 @@ function removeAppliance(id: number) {
           max-height: 50px;
         }
       }
+
     }
     &__body {
       padding: 0px 25px 0px 25px;
       @include max-lg {
         padding: 0px 15px 0px 15px;
+      }
+      &-icon {
+        margin: 0 30px 0 0px;
       }
       &-item {
         display: flex;

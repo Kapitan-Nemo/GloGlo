@@ -1,13 +1,13 @@
 export const cards = [{
   id: 1,
   title: 'Wattage',
-  icon: '/wattage.svg',
+  icon: '/controls/wattage.svg',
 }, {
   id: 2,
   title: 'Used per day',
-  icon: '/time.svg',
+  icon: '/controls/time.svg',
 }, {
   id: 3,
   title: 'Power consumption',
-  icon: '/power.svg',
+  icon: '/controls/power.svg',
 }]
