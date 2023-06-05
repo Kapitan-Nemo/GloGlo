@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
+
 import { useAppliance } from '@/stores/appliance.js'
 import ApplianceHero from '@/components/ApplianceHero.vue'
+
+import { cards } from '@/common/constats'
 
 const dynamicUrl = new URL('@/assets/svg/controls/', import.meta.url).href
 const { applianceList } = storeToRefs(useAppliance())
@@ -11,20 +14,6 @@ const showEditOptions = ref(false)
 function removeAppliance(id: number) {
   applianceList.value = applianceList.value.filter(item => item.id !== id)
 }
-
-const cards = [{
-  id: 1,
-  title: 'Wattage',
-  icon: '/wattage.svg',
-}, {
-  id: 2,
-  title: 'Used per day',
-  icon: '/time.svg',
-}, {
-  id: 3,
-  title: 'Power consumption',
-  icon: '/power.svg',
-}]
 </script>
 
 <template>
