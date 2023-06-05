@@ -4,7 +4,9 @@
       <div class="modal__wrapper">
         <div class="modal__container">
           <div class="modal__header">
-            <slot name="header">Default Header Text</slot>
+            <slot name="header">
+              Default Header Text
+            </slot>
           </div>
           <slot name="body">
             <p>Default Body Text</p>
@@ -240,15 +242,6 @@
     }
   }
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .overflow-hidden {
   overflow: hidden;

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import { useAppliance } from '@/stores/appliance.js'
+import { useAppliance } from '@/stores/appliance'
 import { dynamicSVG } from '@/composables/dynamicSVG'
 import { cards } from '@/common/constans.js'
 import ApplianceHero from '@/components/ApplianceHero.vue'

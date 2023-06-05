@@ -1,25 +1,30 @@
 <script setup lang="ts">
-import { inject, ref, watch } from 'vue'
-import ApplianceForm from './Modal/ModalTemplate.vue'
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useModal } from '@/stores/modal'
+import { useAppliance } from '@/stores/appliance'
+import modal from '@/components/Modal/ModalTemplate.vue'
 
-let id = 0
-const Appliances = inject('Appliances')
-const showModal = inject('showModal')
-const newWattage = ref('')
-const newTime = ref('')
+const { applianceList, kwhCost } = storeToRefs(useAppliance())
+const { show } = storeToRefs(useModal())
+
+const newWattage = ref(0)
+const newTime = ref(0)
 const newDevice = ref('')
+
 const showModalError = ref(false)
 
 function addAppliance() {
-  Appliances.value.push({
-    id: id++,
+  applianceList.value.push({
+    id: applianceList.value.length + 1,
     wattage: newWattage.value,
     time: newTime.value,
     device: newDevice.value,
-    cost: newWattage.value * 0.001 * newTime.value * 0.7,
+    kwh: (newWattage.value * 0.001 * newTime.value * 0.7).toFixed(2) as unknown as number,
+    icon: 'test.svg',
   })
-  newWattage.value = ''
-  newTime.value = ''
+  newWattage.value = 0
+  newTime.value = 0
   newDevice.value = ''
 }
 
@@ -28,26 +33,21 @@ watch(newTime, () => {
     setTimeout(() => (newTime.value = 24), 2000)
 })
 
-function submitForm() {
-  if (
-    newWattage.value == ''
-    || newTime.value == ''
-    || newTime.value > 24
-    || newDevice.value == ''
-  ) {
-    setTimeout(() => (showModalError.value = false), 2000)
-    return (showModalError.value = true)
-  }
-  else {
-    addAppliance()
-    document.body.classList.remove('overflow-hidden')
-    return (showModalError.value = false), (showModal.value = false)
-  }
-}
+// function submitForm() {
+//   if (newWattage.value === '' || newTime.value === '' || newTime.value > 24 || newDevice.value === '') {
+//     setTimeout(() => (showModalError.value = false), 2000)
+//     return (showModalError.value = true)
+//   }
+//   else {
+//     addAppliance()
+//     document.body.classList.remove('overflow-hidden')
+//     show.value = false
+//   }
+// }
 </script>
 
 <template>
-  <ApplianceForm>
+  <modal v-show="show">
     <template #header>
       <h2 class="modal__title">
         Add new appliance
@@ -55,7 +55,7 @@ function submitForm() {
       <img
         class="modal__header-close"
         src="@/assets/svg/controls/close.svg"
-        @click="$emit('closeModal')"
+        @click="show = false"
       >
     </template>
     <template #body>
@@ -90,83 +90,81 @@ function submitForm() {
         </div>
       </transition>
 
-      <form>
-        <div class="modal__body">
-          <div class="modal__body-item">
+      <div class="modal__body">
+        <div class="modal__body-item">
+          <div class="modal__body-item-wrapper">
+            <img
+              class="modal__body-icon"
+              src="@/assets/svg/controls/device.svg"
+            >
+            <label class="modal__body-label">Choose device:</label>
+          </div>
+          <select v-model="newDevice" class="modal__body-select">
+            <option disabled value="">
+              Please Select
+            </option>
+            <option>Washing machine</option>
+            <option>Fridge</option>
+            <option>TV</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="modal__body-items-mobile">
+          <div class="modal__body-item modal__body-item-mobile">
             <div class="modal__body-item-wrapper">
               <img
                 class="modal__body-icon"
-                src="@/assets/svg/controls/device.svg"
+                src="@/assets/svg/controls/wattage.svg"
               >
-              <label class="modal__body-label">Choose device:</label>
+              <label class="modal__body-label">Wattage:</label>
             </div>
-            <select v-model="newDevice" class="modal__body-select">
-              <option disabled value="">
-                Please Select
-              </option>
-              <option>Washing machine</option>
-              <option>Fridge</option>
-              <option>TV</option>
-              <option>Other</option>
-            </select>
+            <div class="modal__body-item-wrapper">
+              <input
+                v-model="newWattage"
+                type="number"
+                inputmode="decimal"
+                class="modal__body-input"
+              >
+              <input
+                class="modal__body-input-placeholder"
+                type="text"
+                value="W"
+                disabled
+              >
+            </div>
           </div>
-          <div class="modal__body-items-mobile">
-            <div class="modal__body-item modal__body-item-mobile">
-              <div class="modal__body-item-wrapper">
-                <img
-                  class="modal__body-icon"
-                  src="@/assets/svg/controls/wattage.svg"
-                >
-                <label class="modal__body-label">Wattage:</label>
-              </div>
-              <div class="modal__body-item-wrapper">
-                <input
-                  v-model="newWattage"
-                  type="number"
-                  inputmode="decimal"
-                  class="modal__body-input"
-                >
-                <input
-                  class="modal__body-input-placeholder"
-                  type="text"
-                  value="W"
-                  disabled
-                >
-              </div>
-            </div>
-            <div class="modal__body-item modal__body-item-mobile">
-              <div class="modal__body-item-wrapper">
-                <img
-                  class="modal__body-icon"
-                  src="@/assets/svg/controls/time.svg"
-                >
-                <label class="modal__body-label">Used per day:</label>
-              </div>
-              <div
-                class="modal__body-item-wrapper modal__body-item-wrapper-mobile"
+          <div class="modal__body-item modal__body-item-mobile">
+            <div class="modal__body-item-wrapper">
+              <img
+                class="modal__body-icon"
+                src="@/assets/svg/controls/time.svg"
               >
-                <input
-                  v-model="newTime"
-                  type="number"
-                  inputmode="decimal"
-                  class="modal__body-input"
-                >
-                <input
-                  class="modal__body-input-placeholder"
-                  type="text"
-                  value="h"
-                  disabled
-                >
-              </div>
+              <label class="modal__body-label">Used per day:</label>
+            </div>
+            <div
+              class="modal__body-item-wrapper modal__body-item-wrapper-mobile"
+            >
+              <input
+                v-model="newTime"
+                type="number"
+                inputmode="decimal"
+                class="modal__body-input"
+              >
+              <input
+                class="modal__body-input-placeholder"
+                type="text"
+                value="h"
+                disabled
+              >
             </div>
           </div>
         </div>
-        <div class="modal__footer">
-          <button class="modal__footer-button" @click="submitForm">
-            Save
-          </button>
-        </div>
-      </form>
+      </div>
+      <div class="modal__footer">
+        <button class="modal__footer-button" @click="addAppliance">
+          Save
+        </button>
+      </div>
     </template>
-  </ApplianceForm>
+  </modal>
 </template>
