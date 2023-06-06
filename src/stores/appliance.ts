@@ -16,4 +16,5 @@ export const useAppliance = defineStore('appliance', {
       ],
     }
   },
+  persist: true,
 })
