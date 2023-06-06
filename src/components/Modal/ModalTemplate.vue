@@ -101,7 +101,6 @@
         border-radius: 50%;
         width: 38px;
         height: 38px;
-        padding: 5px;
       }
       @include max-lg {
         width: 25px;

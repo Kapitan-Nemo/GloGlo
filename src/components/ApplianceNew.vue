@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useModal } from '@/stores/modal'
 import { useAppliance } from '@/stores/appliance'
 import modal from '@/components/Modal/ModalTemplate.vue'
+import icon from '@/components/dynamicIcon.vue'
 
 const { applianceList, kwhCost } = storeToRefs(useAppliance())
 const { showAppliance } = storeToRefs(useModal())
@@ -23,7 +24,7 @@ function addAppliance() {
     return (showModalError.value = true)
   }
 
-  const newIcon = `/devices/${applianceForm.value.newDevice.toLocaleLowerCase().replace(/\s/g, '-')}.svg`
+  const newIcon = `${applianceForm.value.newDevice.toLocaleLowerCase().replace(/\s/g, '-')}`
 
   applianceList.value.push({
     id: applianceList.value.length + 1,
@@ -46,20 +47,13 @@ function addAppliance() {
       <h2 class="modal__title">
         Add new appliance
       </h2>
-      <img
-        class="modal__header-close"
-        src="@/assets/svg/controls/close.svg"
-        @click="showAppliance = false"
-      >
+      <icon path="controls" name="close" class="modal__header-close" @click="showAppliance = false" />
     </template>
     <template #body>
       <transition>
         <div v-if="showModalError" class="modal__error">
           <span class="modal__error-wrapper">
-            <img
-              class="modal__error-icon"
-              src="@/assets/svg/controls/warning.svg"
-            >
+            <icon path="controls" name="warning" class="modal__error-icon" />
             Error!
           </span>
 
@@ -71,7 +65,7 @@ function addAppliance() {
       <transition>
         <div v-if="applianceForm.newTime > 24" class="modal__error">
           <span class="modal__error-wrapper">
-            <img class="modal__error-icon" src="@/assets/svg/controls/warning.svg">
+            <icon path="controls" name="warning" class="modal__error-icon" />
             Error!
           </span>
 
@@ -84,7 +78,7 @@ function addAppliance() {
       <div class="modal__body">
         <div class="modal__body-item">
           <div class="modal__body-item-wrapper">
-            <img class="modal__body-icon" src="@/assets/svg/controls/device.svg">
+            <icon path="controls" name="device" class="modal__body-icon" />
             <label class="modal__body-label">Choose device:</label>
           </div>
           <select v-model="applianceForm.newDevice" class="modal__body-select">
@@ -100,7 +94,7 @@ function addAppliance() {
         <div class="modal__body-items-mobile">
           <div class="modal__body-item modal__body-item-mobile">
             <div class="modal__body-item-wrapper">
-              <img class="modal__body-icon" src="@/assets/svg/controls/wattage.svg">
+              <icon path="controls" name="wattage" class="modal__body-icon" />
               <label class="modal__body-label">Wattage:</label>
             </div>
             <div class="modal__body-item-wrapper">
@@ -110,7 +104,7 @@ function addAppliance() {
           </div>
           <div class="modal__body-item modal__body-item-mobile">
             <div class="modal__body-item-wrapper">
-              <img class="modal__body-icon" src="@/assets/svg/controls/time.svg">
+              <icon path="controls" name="time" class="modal__body-icon" />
               <label class="modal__body-label">Used per day:</label>
             </div>
             <div class="modal__body-item-wrapper modal__body-item-wrapper-mobile">

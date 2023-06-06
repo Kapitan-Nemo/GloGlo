@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useModal } from '@/stores/modal'
+import icon from '@/components/dynamicIcon.vue'
 
 const { showAppliance } = storeToRefs(useModal())
 </script>
@@ -10,10 +11,10 @@ const { showAppliance } = storeToRefs(useModal())
     <div class="container-fluid">
       <div class="hero__wrapper">
         <div class="hero__left">
-          <img height="480" width="480" class="hero__image" src="@/assets/svg/hero/left.svg">
+          <icon path="hero" name="left" height="480" width="480" class="hero__image" />
         </div>
         <div class="hero__center">
-          <img class="hero__logo" width="251" height="50" alt="Logotype with name Glo Glo" src="@/assets/svg/hero/logo.svg">
+          <icon path="hero" name="logo" class="hero__logo" width="251" height="50" alt="Logotype with name Glo Glo" />
           <h1 class="hero__title">
             Calculate cost of home energy
           </h1>
@@ -22,7 +23,7 @@ const { showAppliance } = storeToRefs(useModal())
           </button>
         </div>
         <div class="hero__right">
-          <img height="480" width="480" class="hero__image" src="@/assets/svg/hero/right.svg">
+          <icon path="hero" name="right" height="480" width="480" class="hero__image" />
         </div>
       </div>
     </div>

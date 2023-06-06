@@ -8,17 +8,9 @@ export const useAppliance = defineStore('appliance', {
       applianceList: [{
         id: 1,
         device: 'TV',
-        icon: '/devices/tv.svg',
+        icon: 'tv',
         wattage: 100,
         time: 2,
-        kwh: 0.2,
-      },
-      {
-        id: 2,
-        device: 'Fridge',
-        icon: '/devices/fridge.svg',
-        wattage: 20,
-        time: 10,
         kwh: 0.2,
       },
       ],

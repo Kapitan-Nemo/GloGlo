@@ -4,11 +4,11 @@ import { storeToRefs } from 'pinia'
 
 import { useAppliance } from '@/stores/appliance'
 import { useModal } from '@/stores/modal'
-import { dynamicSVG } from '@/composables/dynamicSVG'
 import { cards } from '@/common/constans'
 import ApplianceHero from '@/components/ApplianceHero.vue'
 import ApplianceNew from '@/components/ApplianceNew.vue'
 import ApplianceSummary from '@/components/ApplianceSummary.vue'
+import icon from '@/components/dynamicIcon.vue'
 
 const { applianceList, kwhCost } = storeToRefs(useAppliance())
 const { showSummary } = storeToRefs(useModal())
@@ -34,7 +34,7 @@ function removeAppliance(id: number) {
       <h2 class="hero__empty-title">
         Whoops! You haven't added any<br> appliances yet.
       </h2>
-      <img width="200" height="200" class="hero__empty-image" src="@/assets/svg/hero/empty.svg">
+      <icon name="empty" path="hero" width="200" height="200" class="hero__empty-image" />
     </div>
   </section>
 
@@ -47,12 +47,12 @@ function removeAppliance(id: number) {
         <div class="appliance__button-wrap">
           <button v-if="applianceList.length > 1" class="appliance__button-summary" @click="showSummary = true">
             <span class="appliance__button-summary-wrap">Summary
-              <img width="26" height="36" src="@/assets/svg/buttons/summary.svg">
+              <icon path="buttons" name="summary" width="26" height="36" />
             </span>
           </button>
           <button class="appliance__button-setting" @click="editable = !editable">
             <span class="appliance__button-setting-wrap">{{ editable ? 'Hide' : 'Show' }}
-              <img src="@/assets/svg/buttons/settings.svg" width="40" height="40">
+              <icon path="buttons" name="settings" width="40" height="40" />
             </span>
           </button>
         </div>
@@ -62,7 +62,7 @@ function removeAppliance(id: number) {
           <transition>
             <div v-if="editable" class="appliance__options">
               <button class="appliance__options-delete" @click="removeAppliance(appliance.id)">
-                <img class="appliance__options-delete-icon" src="@/assets/svg/controls/delete.svg">
+                <icon path="controls" name="delete" class="appliance__options-delete-icon" />
                 Delete
               </button>
             </div>
@@ -72,12 +72,12 @@ function removeAppliance(id: number) {
             <p class="appliance__card__header-title">
               {{ appliance.device }}
             </p>
-            <img class="appliance__card__header-image" :src="dynamicSVG + appliance.icon" width="64" height="50">
+            <icon class="appliance__card__header-image" path="devices" :name="appliance.icon" />
           </div>
           <div class="appliance__card__body">
             <div v-for="card in cards" :key="card.id" class="appliance__card__body-item">
               <div class="appliance__card__body-wrapper">
-                <img class="appliance__card__body-icon" :src="dynamicSVG + card.icon" width="30" height="30">
+                <icon path="controls" :name="card.icon" class="modal__body-icon" width="30" height="30" />
                 <p class="appliance__card__body-title">
                   {{ card.title }}
                 </p>
@@ -89,7 +89,7 @@ function removeAppliance(id: number) {
           </div>
           <div class="appliance__card__footer">
             <p class="appliance__card__footer-title">
-              {{ (appliance.kwh * appliance.time * kwhCost * 30).toFixed(2) }} zł <small>Per month</small>
+              {{ (appliance.kwh * appliance.time * kwhCost * 30).toFixed(2) }} PLN <small>Per month</small>
             </p>
           </div>
         </div>

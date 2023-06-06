@@ -5,6 +5,7 @@ import modal from './Modal/ModalTemplate.vue'
 
 import { useModal } from '@/stores/modal'
 import { useAppliance } from '@/stores/appliance'
+import icon from '@/components/dynamicIcon.vue'
 
 const { showSummary } = storeToRefs(useModal())
 const { applianceList, kwhCost } = storeToRefs(useAppliance())
@@ -22,44 +23,44 @@ const costSummary = computed(() => {
       <h2 class="modal__title">
         Summary
       </h2>
-      <img class="modal__header-close" src="@/assets/svg/controls/close.svg" @click="showSummary = false">
+      <icon name="close" path="controls" class="modal__header-close" @click="showSummary = false" />
     </template>
     <template #body>
-      <img class="modal__summary-icon" src="@/assets/svg/controls/cost.svg">
+      <icon name="cost" path="controls" class="modal__summary-icon" />
       <div class="modal__summary-body">
         <p class="modal__summary-title">
           Costs of all appliances
         </p>
         <div class="modal__body-item modal__summary-item">
           <div class="modal__body-item-wrapper">
-            <img class="modal__body-icon" src="@/assets/svg/controls/day.svg">
+            <icon name="day" path="controls" class="modal__body-icon" />
             <label class="modal__body-label">Per day:</label>
           </div>
           <div class="modal__body-item-wrapper">
             <p class="modal__summary-badge">
-              {{ costSummary.toFixed(2) }} $
+              {{ costSummary.toFixed(2) }} PLN
             </p>
           </div>
         </div>
         <div class="modal__body-item modal__summary-item">
           <div class="modal__body-item-wrapper">
-            <img class="modal__body-icon" src="@/assets/svg/controls/month.svg">
+            <icon name="month" path="controls" class="modal__body-icon" />
             <label class="modal__body-label">Per month:</label>
           </div>
           <div class="modal__body-item-wrapper">
             <p class="modal__summary-badge">
-              {{ (costSummary * 30).toFixed(2) }} $
+              {{ (costSummary * 30).toFixed(2) }} PLN
             </p>
           </div>
         </div>
         <div class="modal__body-item">
           <div class="modal__body-item-wrapper">
-            <img class="modal__body-icon" src="@/assets/svg/controls/year.svg">
+            <icon path="controls" name="year" class="modal__body-icon" />
             <label class="modal__body-label">Per year:</label>
           </div>
           <div class="modal__body-item-wrapper">
             <p class="modal__summary-badge">
-              {{ (costSummary * 365).toFixed(2) }} $
+              {{ (costSummary * 365).toFixed(2) }} PLN
             </p>
           </div>
         </div>
