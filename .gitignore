@@ -28,4 +28,5 @@ coverage
 *.sw?
 
 .firebaserc
+.firebase/
 firebase.json
