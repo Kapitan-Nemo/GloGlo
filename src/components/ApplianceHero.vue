@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useModal } from '@/stores/modal'
 
-const { show } = storeToRefs(useModal())
+const { showAppliance } = storeToRefs(useModal())
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const { show } = storeToRefs(useModal())
           <h1 class="hero__title">
             Calculate cost of home energy
           </h1>
-          <button class="hero__button" @click="show = true">
+          <button class="hero__button" @click="showAppliance = true">
             Add appliance
           </button>
         </div>

@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
-import ApplianceSummary from './Modal/ModalTemplate.vue'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import modal from './Modal/ModalTemplate.vue'
 
-const Appliances = inject('Appliances')
+import { useModal } from '@/stores/modal'
+import { useAppliance } from '@/stores/appliance'
+
+const { showSummary } = storeToRefs(useModal())
+const { applianceList, kwhCost } = storeToRefs(useAppliance())
 
 const costSummary = computed(() => {
-  return Appliances.value.reduce(
-    (costSummary, Appliance) => Appliance.cost + costSummary,
-    0,
-  )
+  return applianceList.value.reduce((acc, appliance) => {
+    return acc + appliance.kwh * appliance.time * kwhCost.value
+  }, 0)
 })
 </script>
 
 <template>
-  <ApplianceSummary>
+  <modal v-show="showSummary">
     <template #header>
       <h2 class="modal__title">
         Summary
       </h2>
-      <img
-        class="modal__header-close"
-        src="@/assets/svg/controls/close.svg"
-        @click="$emit('closeSummary')"
-      >
+      <img class="modal__header-close" src="@/assets/svg/controls/close.svg" @click="showSummary = false">
     </template>
     <template #body>
       <img class="modal__summary-icon" src="@/assets/svg/controls/cost.svg">
@@ -43,10 +43,7 @@ const costSummary = computed(() => {
         </div>
         <div class="modal__body-item modal__summary-item">
           <div class="modal__body-item-wrapper">
-            <img
-              class="modal__body-icon"
-              src="@/assets/svg/controls/month.svg"
-            >
+            <img class="modal__body-icon" src="@/assets/svg/controls/month.svg">
             <label class="modal__body-label">Per month:</label>
           </div>
           <div class="modal__body-item-wrapper">
@@ -57,10 +54,7 @@ const costSummary = computed(() => {
         </div>
         <div class="modal__body-item">
           <div class="modal__body-item-wrapper">
-            <img
-              class="modal__body-icon"
-              src="@/assets/svg/controls/year.svg"
-            >
+            <img class="modal__body-icon" src="@/assets/svg/controls/year.svg">
             <label class="modal__body-label">Per year:</label>
           </div>
           <div class="modal__body-item-wrapper">
@@ -76,7 +70,7 @@ const costSummary = computed(() => {
         </button>
       </div>
     </template>
-  </ApplianceSummary>
+  </modal>
 </template>
 
 <style lang="scss">

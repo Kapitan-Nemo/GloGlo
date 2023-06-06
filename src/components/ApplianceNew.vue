@@ -6,7 +6,7 @@ import { useAppliance } from '@/stores/appliance'
 import modal from '@/components/Modal/ModalTemplate.vue'
 
 const { applianceList, kwhCost } = storeToRefs(useAppliance())
-const { show } = storeToRefs(useModal())
+const { showAppliance } = storeToRefs(useModal())
 
 const applianceForm = ref({
   newWattage: 0,
@@ -36,12 +36,12 @@ function addAppliance() {
   applianceForm.value.newWattage = 0
   applianceForm.value.newTime = 0
   applianceForm.value.newDevice = ''
-  show.value = false
+  showAppliance.value = false
 }
 </script>
 
 <template>
-  <modal v-show="show">
+  <modal v-show="showAppliance">
     <template #header>
       <h2 class="modal__title">
         Add new appliance
@@ -49,7 +49,7 @@ function addAppliance() {
       <img
         class="modal__header-close"
         src="@/assets/svg/controls/close.svg"
-        @click="show = false"
+        @click="showAppliance = false"
       >
     </template>
     <template #body>

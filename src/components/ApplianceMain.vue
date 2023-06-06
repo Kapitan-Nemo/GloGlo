@@ -3,12 +3,15 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { useAppliance } from '@/stores/appliance'
+import { useModal } from '@/stores/modal'
 import { dynamicSVG } from '@/composables/dynamicSVG'
-import { cards } from '@/common/constans.js'
+import { cards } from '@/common/constans'
 import ApplianceHero from '@/components/ApplianceHero.vue'
 import ApplianceNew from '@/components/ApplianceNew.vue'
+import ApplianceSummary from '@/components/ApplianceSummary.vue'
 
 const { applianceList, kwhCost } = storeToRefs(useAppliance())
+const { showSummary } = storeToRefs(useModal())
 const editable = ref(false)
 
 function removeAppliance(id: number) {
@@ -22,11 +25,9 @@ function removeAppliance(id: number) {
     <ApplianceNew />
   </transition>
 
-  <!-- <transition name="modal">
-    <ApplianceSummary
-      v-if="showSummary"
-    />
-  </transition> -->
+  <transition name="modal">
+    <ApplianceSummary />
+  </transition>
 
   <section v-if="applianceList.length === 0" class="hero__empty">
     <div class="container-fluid">
@@ -44,7 +45,7 @@ function removeAppliance(id: number) {
           Your appliances:
         </h2>
         <div class="appliance__button-wrap">
-          <button v-if="applianceList.length > 1" class="appliance__button-summary">
+          <button v-if="applianceList.length > 1" class="appliance__button-summary" @click="showSummary = true">
             <span class="appliance__button-summary-wrap">Summary
               <img width="26" height="36" src="@/assets/svg/buttons/summary.svg">
             </span>
