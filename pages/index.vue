@@ -1,5 +1,5 @@
 <template>
-  <div>
-    <p>test</p>
-  </div>
+  <main class="container flex items-center justify-center p-4">
+    <img src="~/assets/img/rabbit.png" alt="Wake up Neo">
+  </main>
 </template>

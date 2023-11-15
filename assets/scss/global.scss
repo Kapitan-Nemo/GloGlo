@@ -1,28 +1,43 @@
+// @font-face {
+//     font-family: 'Montserrat';
+//     src: url('@/assets/fonts/Montserrat-Regular.eot');
+//     src: url('@/assets/fonts/Montserrat-Regular.eot?#iefix') format('embedded-opentype'),
+//         url('@/assets/fonts/Montserrat-Regular.woff2') format('woff2'),
+//         url('@/assets/fonts/Montserrat-Regular.woff') format('woff'),
+//         url('@/assets/fonts/Montserrat-Regular.ttf') format('truetype'),
+//         url('@/assets/fonts/Montserrat-Regular.svg#montserratregular') format('svg');
+//     font-weight: normal;
+//     font-style: normal;
+//     font-display: swap;
+// }
+
+// @font-face {
+//     font-family: 'Montserrat';
+//     src: url('@/assets/fonts/Montserrat-Bold.eot');
+//     src: url('@/assets/fonts/Montserrat-Bold.eot?#iefix') format('embedded-opentype'),
+//         url('@/assets/fonts/Montserrat-Bold.woff2') format('woff2'),
+//         url('@/assets/fonts/Montserrat-Bold.woff') format('woff'),
+//         url('@/assets/fonts/Montserrat-Bold.ttf') format('truetype'),
+//         url('@/assets/fonts/Montserrat-Bold.svg#montserratbold') format('svg');
+//     font-weight: bold;
+//     font-style: normal;
+//     font-display: swap;
+// }
+
+
 @font-face {
-    font-family: 'Montserrat';
-    src: url('@/assets/fonts/Montserrat-Regular.eot');
-    src: url('@/assets/fonts/Montserrat-Regular.eot?#iefix') format('embedded-opentype'),
-        url('@/assets/fonts/Montserrat-Regular.woff2') format('woff2'),
-        url('@/assets/fonts/Montserrat-Regular.woff') format('woff'),
-        url('@/assets/fonts/Montserrat-Regular.ttf') format('truetype'),
-        url('@/assets/fonts/Montserrat-Regular.svg#montserratregular') format('svg');
+    font-family: 'Windows Command Prompt';
+    src: url('@/assets/fonts/Windows-Command-Prompt.eot');
+    src: url('@/assets/fonts/Windows-Command-Prompt.eot?#iefix') format('embedded-opentype'),
+        url('@/assets/fonts/Windows-Command-Prompt.woff2') format('woff2'),
+        url('@/assets/fonts/Windows-Command-Prompt.woff') format('woff'),
+        url('@/assets/fonts/Windows-Command-Prompt.ttf') format('truetype'),
+        url('@/assets/fonts/Windows-Command-Prompt.svg#Windows-Command-Prompt') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
-}
+  }
+  
 
-@font-face {
-    font-family: 'Montserrat';
-    src: url('@/assets/fonts/Montserrat-Bold.eot');
-    src: url('@/assets/fonts/Montserrat-Bold.eot?#iefix') format('embedded-opentype'),
-        url('@/assets/fonts/Montserrat-Bold.woff2') format('woff2'),
-        url('@/assets/fonts/Montserrat-Bold.woff') format('woff'),
-        url('@/assets/fonts/Montserrat-Bold.ttf') format('truetype'),
-        url('@/assets/fonts/Montserrat-Bold.svg#montserratbold') format('svg');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
 
 @import '_toast';
-@import '_layout';

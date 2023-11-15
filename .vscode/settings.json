@@ -37,5 +37,10 @@
     "json",
     "jsonc",
     "yaml"
-  ]
+  ],
+  // Tailwind CSS IntelliSense
+  "tailwindCSS.experimental.configFile": ".nuxt/tailwind.config.d.ts",
+  "files.associations": { "*.css": "tailwindcss" },
+  "editor.quickSuggestions": { "strings": true },
+  "css.customData": [".vscode/tailwind.json"]
 }

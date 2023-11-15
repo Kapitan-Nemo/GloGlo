@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-// console.log('slug')
+const router = useRouter()
 </script>
 
 <template>
-  <div>
-    <h1>Slug: </h1>
-  </div>
+  <main class="container p-4">
+    {{ router.currentRoute.value.params.slug }}
+  </main>
 </template>

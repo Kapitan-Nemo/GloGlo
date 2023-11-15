@@ -1,5 +1,5 @@
-/** @type {import('tailwindcss').Config} */
 const defaultTheme = require('tailwindcss/defaultTheme')
+// /** @type {import('tailwindcss').Config} */
 
 export default {
   content: ['./components/**/*.{js,vue,ts}', './layouts/**/*.vue', './pages/**/*.vue', './plugins/**/*.{js,ts}', './nuxt.config.{js,ts}', './app.vue'],
@@ -10,11 +10,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        sans: ['Windows Command Prompt', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         primary: {
-          DEFAULT: '#ebb0b4',
+          DEFAULT: '#0B0C10',
           light: '#ebb0b437',
           dark: '#DC8085',
         },
@@ -27,5 +27,4 @@ export default {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
 }
