@@ -4,6 +4,8 @@ const router = useRouter()
 
 <template>
   <main class="container p-4">
-    {{ router.currentRoute.value.params.slug }}
+    <h1 class="text-4xl">
+      Dlaczego P24 to jebane gówno?
+    </h1>
   </main>
 </template>
