@@ -3,6 +3,8 @@ const show = useShowPost()
 const title = ref('')
 const content = ref('')
 const slug = ref('')
+const meta_title = ref('')
+const meta_description = ref('')
 
 watch(() => show.value.edit, (value) => {
   if (value) {
@@ -23,7 +25,7 @@ onMounted(async () => {
     <div class="border-b mb-4">
       <h1 class="inline-flex items-center mb-4 text-2xl text-white">
         <Icon size="30" class="text-red-300 mr-4" name="ion:ios-lightbulb-outline" />
-        {{ !show.create ? 'Aktaulizuj' : 'Stwórz' }} Wpis blogowy
+        {{ !show.create ? 'Edytuj' : 'Dodaj' }} Wpis
       </h1>
       <button type="button" class="text-white p-1.5 absolute top-2.5 right-2.5 inline-flex items-center" @click="(show.edit = !show.edit) && (show.create = !show.create)">
         <Icon size="40" name="ion:close-circle-outline" />
@@ -35,17 +37,27 @@ onMounted(async () => {
         <div class="w-full">
           <!-- Title  -->
           <label for="title" class="text-white text-xl">Tytuł wpisu</label>
-          <input id="title" v-model="title" name="title" required class="mb-3 p-4 w-full border-b border-white h-8  text-black focus:outline-none" type="textarea">
+          <input id="title" v-model="title" name="title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="textarea">
 
           <!-- Slug -->
           <label for="slug" class="text-white text-xl">Slug</label>
-          <input id="slug" v-model="slug" name="slug" required class="mb-3 p-4 w-full border-b border-white  h-8  text-black focus:outline-none" type="text">
+          <input id="slug" v-model="slug" name="slug" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
 
           <!-- Content  -->
           <label for="content" class="text-white text-xl">Treść wpisu</label>
-          <textarea id="content" v-model="content" name="content" required rows="3" cols="40" class="mb-3 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
+          <textarea id="content" v-model="content" name="content" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
 
-          <button class="bg-black border border-green-500 text-white py-2 px-4 flex items-center justify-center">
+          <!-- Meta Title -->
+          <label for="meta_title" class="text-white text-xl">Meta Tytuł</label>
+          <admin-progress-bar :value="meta_title.length" :max-value="60" />
+          <input id="meta_title" v-model="meta_title" name="meta_title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
+
+          <!-- Meta Description -->
+          <label for="meta_description" class="text-white text-xl">Meta Opis</label>
+          <admin-progress-bar :value="meta_description.length" :max-value="160" />
+          <textarea id="meta_description" v-model="meta_description" name="meta_description" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
+
+          <button class="bg-black border border-green-500 hover:bg-green-500 hover:text-black transition-colors text-white py-2 px-4 flex items-center justify-center">
             Zapisz <Icon class="ml-4" size="20" name="ion:ios-save" />
           </button>
         </div>

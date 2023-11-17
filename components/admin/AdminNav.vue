@@ -3,7 +3,7 @@ const auth = useAuth()
 </script>
 
 <template>
-  <nav class="w-full bg-dark-100">
+  <nav class="w-full">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center justify-start">
