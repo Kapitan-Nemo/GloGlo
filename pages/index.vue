@@ -1,10 +1,10 @@
 <script setup lang="ts">
-const { data: blog } = await useFetch('/api/blog')
+const { data: posts } = await useFetch('/api/posts')
 </script>
 
 <template>
   <main class="container flex items-center justify-center p-4">
-    {{ blog }}
+    {{ posts }}
     <!-- <img src="~/assets/img/rabbit.png" alt="Wake up Neo"> -->
   </main>
 </template>
