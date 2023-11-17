@@ -13,7 +13,7 @@ definePageMeta({
     <div class="flex bg-dark-100">
       <AdminAside class="border-r border-dark-200" />
       <div class="p-6 w-full">
-        <AdminPosts />
+        <AdminPostsList />
         <AdminAddPost />
       </div>
     </div>
