@@ -1,6 +1,8 @@
 <template>
   <header class="text-black text-2xl flex flex-row items-center justify-between bg-white">
-    <img src="~/assets/img/captain-nemo.png" alt="Captain Nemo">
+    <nuxt-link to="/">
+      <img src="~/assets/img/captain-nemo.png" alt="Captain Nemo">
+    </nuxt-link>
     <nuxt-link class="text-4xl" to="/">
       Glo Glo
     </nuxt-link>

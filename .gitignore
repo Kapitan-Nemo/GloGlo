@@ -29,3 +29,4 @@ logs
 firebase.json
 firebase-debug.log
 firebase-ssr.json
+service-account.json
