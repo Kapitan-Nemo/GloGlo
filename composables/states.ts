@@ -1,13 +1,13 @@
-interface stateProduct {
+interface statePost {
   edit: boolean
   create: boolean
 }
 
-export function useShowProduct() {
-  return useState <stateProduct> ('useShowProduct', () => {
+export function useShowPost() {
+  return useState <statePost> ('useShowPost', () => {
     return {
-      edit: true,
-      create: true,
+      edit: false,
+      create: false,
     }
   })
 }
