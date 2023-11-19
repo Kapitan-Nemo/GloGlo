@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { Timestamp, collection, getFirestore } from '@firebase/firestore'
+import { doc, setDoc, updateDoc } from 'firebase/firestore'
+import type { IPost } from '@/utils/interface'
+import DEFAULT_POST from '@/utils/constants'
+
 const show = useShowPost()
-const title = ref('')
-const content = ref('')
-const slug = ref('')
-const meta_title = ref('')
-const meta_description = ref('')
+const post = ref<IPost>(DEFAULT_POST)
 
 watch(() => show.value.edit, (value) => {
   if (value) {
@@ -16,8 +17,60 @@ watch(() => show.value.edit, (value) => {
 })
 
 onMounted(async () => {
-  createSlug(title, slug)
+  createSlug(post)
 })
+
+// function createPost() {
+//   // Prepare for create new product
+//   editPost.value = {
+//     id: '',
+//     title: '',
+//     slug: '',
+//     content: '',
+//     meta_title: '',
+//     meta_description: '',
+//   }
+// }
+
+async function saveProduct(id?: string) {
+  if (id) {
+    // Update post
+    await updateDoc(doc(getFirestore(), 'posts', id), {
+      ...post.value,
+    }).then(() => {
+      useToast('Product updated successfully', 'success')
+    }).catch((error) => {
+      console.error('Error updating document: ', error)
+      useToast('Error updating document', 'error')
+    })
+  }
+  else {
+    // Create new post
+    const posts = doc(collection(getFirestore(), 'posts'))
+    const data = {
+      ...post.value,
+    }
+    data.id = posts.id
+
+    data.created_at = Timestamp.fromDate(new Date()).toDate()
+    // Check if slug exists
+    // if (posts.value.find(product => product.slug === posts.value.slug)) {
+    //   useToast('Slug already exists', 'warning')
+    //   return
+    // }
+
+    await setDoc(posts, data)
+      .then(() => {
+        useToast('Opublikowano wpis blogowy', 'success')
+      })
+      .catch((error) => {
+        useToast(error, 'error')
+      })
+  }
+
+  // Close Drawer
+  show.value.edit = !show.value.edit
+}
 </script>
 
 <template>
@@ -33,29 +86,29 @@ onMounted(async () => {
     </div>
 
     <div class="flex flex-col">
-      <form id="save_product" class="flex" @submit.prevent="saveProduct(editProduct.id)">
+      <form id="save_product" class="flex" @submit.prevent="saveProduct()">
         <div class="w-full">
           <!-- Title  -->
           <label for="title" class="text-white text-xl">Tytuł wpisu</label>
-          <input id="title" v-model="title" name="title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="textarea">
+          <input id="title" v-model="post.title" name="title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="textarea">
 
           <!-- Slug -->
           <label for="slug" class="text-white text-xl">Slug</label>
-          <input id="slug" v-model="slug" name="slug" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
+          <input id="slug" v-model="post.slug" name="slug" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
 
           <!-- Content  -->
           <label for="content" class="text-white text-xl">Treść wpisu</label>
-          <textarea id="content" v-model="content" name="content" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
+          <textarea id="content" v-model="post.content" name="content" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
 
           <!-- Meta Title -->
           <label for="meta_title" class="text-white text-xl">Meta Tytuł</label>
-          <admin-progress-bar :value="meta_title.length" :max-value="60" />
-          <input id="meta_title" v-model="meta_title" name="meta_title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
+          <admin-progress-bar :value="post.meta_title.length" :max-value="60" />
+          <input id="meta_title" v-model="post.meta_title" name="meta_title" required class="my-4 p-4 w-full border-b border-white h-8 text-black focus:outline-none" type="text">
 
           <!-- Meta Description -->
           <label for="meta_description" class="text-white text-xl">Meta Opis</label>
-          <admin-progress-bar :value="meta_description.length" :max-value="160" />
-          <textarea id="meta_description" v-model="meta_description" name="meta_description" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
+          <admin-progress-bar :value="post.meta_description.length" :max-value="160" />
+          <textarea id="meta_description" v-model="post.meta_description" name="meta_description" required rows="3" cols="40" class="my-4 p-4 w-full border-b border-white bg-dark-200 text-black focus:outline-none" type="textarea" />
 
           <button class="bg-black border border-green-500 hover:bg-green-500 hover:text-black transition-colors text-white py-2 px-4 flex items-center justify-center">
             Zapisz <Icon class="ml-4" size="20" name="ion:ios-save" />

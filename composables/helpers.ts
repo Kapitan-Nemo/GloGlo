@@ -1,5 +1,5 @@
-export async function createSlug(title: Ref<string>, slug: Ref<string>) {
-  watch(title, (value: string) => {
+export async function createSlug(post: Ref<IPost>) {
+  watch(() => post.value.title, (value: string) => {
     const polishToEnglish: Record<string, string> = {
       ą: 'a',
       ć: 'c',
@@ -20,6 +20,6 @@ export async function createSlug(title: Ref<string>, slug: Ref<string>) {
       Ź: 'Z',
       Ż: 'Z',
     }
-    slug.value = value.toLowerCase().split('').map((char: string) => polishToEnglish[char] || char).join('').replace(/ /g, '-')
+    post.value.slug = value.toLowerCase().split('').map((char: string) => polishToEnglish[char] || char).join('').replace(/ /g, '-')
   })
 }

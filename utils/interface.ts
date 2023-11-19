@@ -1,9 +1,11 @@
 import type { Timestamp } from 'firebase-admin/firestore'
 
-export interface Blogs {
-  content: string
-  created_at: Timestamp
-  updated_at: Timestamp
-  slug: string
+export interface IPost {
+  id: string
   title: string
+  slug: string
+  content: string
+  meta_title: string
+  meta_description: string
+  created_at: Date
 }

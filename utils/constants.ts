@@ -1,15 +1,11 @@
-const DEFAULT_PRODUCT = {
+const DEFAULT_POST = {
   id: '',
-  stripeId: '',
   title: '',
   slug: '',
-  description: '',
-  image: '/placeholder-400x400.svg',
-  quantityInWarehouse: 0,
-  quantityInCart: 0,
-  price: 0,
-  featured: false,
-  link: '',
+  content: '',
+  meta_title: '',
+  meta_description: '',
+  created_at: new Date(),
 }
 
-export default DEFAULT_PRODUCT
+export default DEFAULT_POST
