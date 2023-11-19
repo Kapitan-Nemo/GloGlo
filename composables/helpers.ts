@@ -23,3 +23,8 @@ export async function createSlug(post: Ref<IPost>) {
     post.value.slug = value.toLowerCase().split('').map((char: string) => polishToEnglish[char] || char).join('').replace(/ /g, '-')
   })
 }
+
+export function convertTimestamp(timestamp: Timestamp): string {
+  const date = new Date(timestamp.seconds * 1000)
+  return date.toLocaleString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+}

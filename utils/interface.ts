@@ -7,3 +7,8 @@ export interface IPost {
   meta_description: string
   created_at: Date
 }
+
+export interface Timestamp {
+  seconds: number
+  nanoseconds: number
+}

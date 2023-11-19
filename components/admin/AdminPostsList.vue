@@ -2,9 +2,10 @@
 import { getFirestore } from '@firebase/firestore'
 import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
 import { useEditID } from '~/composables/states'
+import { convertTimestamp } from '@/composables/helpers'
 
 const loading = ref(true)
-const allPosts = ref<IPost[]>([])
+const allPosts = useAllPosts()
 const editID = useEditID()
 const show = useShowPost()
 
@@ -85,7 +86,7 @@ async function deleteOrder(id: string) {
             {{ p.meta_description }}
           </td>
           <td class="px-6 py-4">
-            {{ new Date(p.created_at._seconds * 1000).toLocaleDateString() }}
+            {{ convertTimestamp(p.created_at) }}
           </td>
           <td class="px-6 py-4 flex justify-between">
             <button class="" @click="editOrder(p.id), (show.create = true, show.edit = true)">

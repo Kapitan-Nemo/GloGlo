@@ -15,3 +15,7 @@ export function useShowPost() {
 export function useEditID() {
   return useState <string> ('useEditID', () => '')
 }
+
+export function useAllPosts() {
+  return useState <IPost[]> ('useAllPosts', () => [])
+}

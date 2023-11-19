@@ -6,7 +6,12 @@ import DEFAULT_POST from '@/utils/constants'
 
 const editID = useEditID()
 const show = useShowPost()
+const allPosts = useAllPosts()
 const post = ref<IPost>(DEFAULT_POST)
+
+onMounted(async () => {
+  createSlug(post)
+})
 
 watch(() => show.value.edit, (value) => {
   if (value) {
@@ -17,17 +22,12 @@ watch(() => show.value.edit, (value) => {
   }
 })
 
-onMounted(async () => {
-  createSlug(post)
-})
-
 watch(() => editID.value, async (value) => {
   if (value !== '' || null || undefined)
     await loadEditedPost()
 })
 
 async function loadEditedPost() {
-  console.log(editID.value)
   if (editID.value !== '' || null || undefined) {
     const postRef = doc(getFirestore(), 'posts', editID.value)
     const docSnap = await getDoc(postRef)
@@ -59,14 +59,12 @@ async function saveProduct() {
       ...post.value,
     }
     data.id = posts.id
-
     data.created_at = Timestamp.fromDate(new Date()).toDate()
     // Check if slug exists
-    // if (posts.value.find(product => product.slug === posts.value.slug)) {
-    //   useToast('Slug already exists', 'warning')
-    //   return
-    // }
-
+    if (allPosts.value.find(p => p.slug === data.slug)) {
+      useToast('Slug już istnieje', 'warning')
+      return
+    }
     await setDoc(posts, data)
       .then(() => {
         useToast('Opublikowano wpis blogowy', 'success')
@@ -75,7 +73,6 @@ async function saveProduct() {
         useToast(error, 'error')
       })
   }
-
   // Close Drawer
   show.value.edit = !show.value.edit
 }
