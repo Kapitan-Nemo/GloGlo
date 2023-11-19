@@ -11,3 +11,7 @@ export function useShowPost() {
     }
   })
 }
+
+export function useEditID() {
+  return useState <string> ('useEditID', () => '')
+}

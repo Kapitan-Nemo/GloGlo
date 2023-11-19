@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useShowPost } from '~/composables/states'
-
 const show = useShowPost()
 </script>
 

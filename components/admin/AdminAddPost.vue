@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Timestamp, collection, getFirestore } from '@firebase/firestore'
-import { doc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import type { IPost } from '@/utils/interface'
 import DEFAULT_POST from '@/utils/constants'
 
+const editID = useEditID()
 const show = useShowPost()
 const post = ref<IPost>(DEFAULT_POST)
 
@@ -20,29 +21,36 @@ onMounted(async () => {
   createSlug(post)
 })
 
-// function createPost() {
-//   // Prepare for create new product
-//   editPost.value = {
-//     id: '',
-//     title: '',
-//     slug: '',
-//     content: '',
-//     meta_title: '',
-//     meta_description: '',
-//   }
-// }
+watch(() => editID.value, async (value) => {
+  if (value !== '' || null || undefined)
+    await loadEditedPost()
+})
 
-async function saveProduct(id?: string) {
-  if (id) {
+async function loadEditedPost() {
+  console.log(editID.value)
+  if (editID.value !== '' || null || undefined) {
+    const postRef = doc(getFirestore(), 'posts', editID.value)
+    const docSnap = await getDoc(postRef)
+
+    if (docSnap.exists())
+      post.value = docSnap.data() as IPost
+
+    else
+      useToast('Nie znaleziono wpisu', 'error')
+  }
+}
+
+async function saveProduct() {
+  if (editID.value !== '' || null || undefined) {
     // Update post
-    await updateDoc(doc(getFirestore(), 'posts', id), {
+    await updateDoc(doc(getFirestore(), 'posts', editID.value), {
       ...post.value,
     }).then(() => {
       useToast('Product updated successfully', 'success')
     }).catch((error) => {
-      console.error('Error updating document: ', error)
-      useToast('Error updating document', 'error')
+      useToast(error, 'error')
     })
+    editID.value = ''
   }
   else {
     // Create new post

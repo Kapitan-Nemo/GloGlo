@@ -1,5 +1,3 @@
-import type { Timestamp } from 'firebase-admin/firestore'
-
 export interface IPost {
   id: string
   title: string
