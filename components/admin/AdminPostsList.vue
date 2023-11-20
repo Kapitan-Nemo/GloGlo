@@ -4,7 +4,6 @@ import { collection, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
 import { useEditID } from '~/composables/states'
 import { convertTimestamp } from '@/composables/helpers'
 
-const loading = ref(true)
 const allPosts = useAllPosts()
 const editID = useEditID()
 const show = useShowPost()
@@ -22,8 +21,8 @@ onMounted(async () => {
   try {
     await fetchPosts()
   }
-  finally {
-    loading.value = false
+  catch (error) {
+    useToast('Błąd pobierania wpisów', 'error')
   }
 })
 
@@ -46,50 +45,48 @@ async function deleteOrder(id: string) {
   </div> -->
 
   <div class="relative overflow-x-auto shadow-md">
-    <AppSpinner v-if="loading" />
-    <table v-else class="w-full text-sm text-left text-white">
+    <table class="w-full text-sm text-left text-white">
       <thead class="text-xs uppercase bg-dark-200 text-white">
         <tr>
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Tytuł
           </th>
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Slug
           </th>
-
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Meta tytuł
           </th>
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Meta Opis
           </th>
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Data
           </th>
-          <th scope="col" class="px-6 py-3">
+          <th scope="col" class="table-cell px-6 py-3">
             Akcja
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="p in allPosts" :key="p.created_at">
-          <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+          <th scope="row" class="table-cell px-6 py-4 font-medium whitespace-nowrap">
             {{ p.title }}
           </th>
-          <td class="px-6 py-4">
+          <td class="table-cell px-6 py-4">
             {{ p.slug }}
           </td>
-          <td class="px-6 py-4">
+          <td class="table-cell px-6 py-4">
             {{ p.meta_title }}
           </td>
-          <td class="px-6 py-4">
+          <td class="table-cell px-6 py-4">
             {{ p.meta_description }}
           </td>
-          <td class="px-6 py-4">
+          <td class="table-cell px-6 py-4">
             {{ convertTimestamp(p.created_at) }}
           </td>
-          <td class="px-6 py-4 flex justify-between">
-            <button class="" @click="editOrder(p.id), (show.create = true, show.edit = true)">
+          <td class="table-cell px-6 py-4">
+            <button class="mr-4" @click="editOrder(p.id), (show.drawer = true, show.edit = true)">
               <Icon class="text-red-300" size="30" name="ion:pencil-outline" />
             </button>
             <button @click="deleteOrder(p.id)">
@@ -101,3 +98,9 @@ async function deleteOrder(id: string) {
     </table>
   </div>
 </template>
+
+<style scoped>
+.table-cell {
+  width: 150px; /* Adjust this value to your liking */
+}
+</style>

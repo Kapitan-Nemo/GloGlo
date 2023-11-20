@@ -1,11 +1,7 @@
-interface statePost {
-  edit: boolean
-  create: boolean
-}
-
 export function useShowPost() {
   return useState <statePost> ('useShowPost', () => {
     return {
+      drawer: false,
       edit: false,
       create: false,
     }

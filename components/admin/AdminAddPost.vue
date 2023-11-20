@@ -17,7 +17,9 @@ watch(() => show.value.edit, (value) => {
   if (value) {
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape')
-        show.value.edit = false
+        show.value.drawer = false
+      show.value.edit = false
+      show.value.create = false
     })
   }
 })
@@ -73,19 +75,17 @@ async function saveProduct() {
         useToast(error, 'error')
       })
   }
-  // Close Drawer
-  show.value.edit = !show.value.edit
 }
 </script>
 
 <template>
-  <div :class="show.edit ? 'transform-none' : '-translate-x-full'" class="fixed w-1/2 top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-primary">
+  <div :class="show.drawer ? 'transform-none' : '-translate-x-full'" class="fixed w-1/2 top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-primary">
     <div class="border-b mb-4">
       <h1 class="inline-flex items-center mb-4 text-2xl text-white">
         <Icon size="30" class="text-red-300 mr-4" name="ion:ios-lightbulb-outline" />
         {{ !show.create ? 'Edytuj' : 'Dodaj' }} Wpis
       </h1>
-      <button type="button" class="text-white p-1.5 absolute top-2.5 right-2.5 inline-flex items-center" @click="(show.edit = !show.edit) && (show.create = !show.create)">
+      <button type="button" class="text-white p-1.5 absolute top-2.5 right-2.5 inline-flex items-center" @click="show.drawer = false, show.edit = false, show.create = false ">
         <Icon size="40" name="ion:close-circle-outline" />
       </button>
     </div>

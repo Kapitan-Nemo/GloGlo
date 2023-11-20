@@ -12,3 +12,8 @@ export interface Timestamp {
   seconds: number
   nanoseconds: number
 }
+
+export interface statePost {
+  edit: boolean
+  create: boolean
+}

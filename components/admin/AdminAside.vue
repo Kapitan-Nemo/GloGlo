@@ -12,7 +12,7 @@ const show = useShowPost()
             <span>Kokpit</span>
           </nuxt-link>
         </li>
-        <li class="flex items-center text-white cursor-pointer hover:text-red-300 transition-colors" @click="show.create = true, show.edit = true">
+        <li class="flex items-center text-white cursor-pointer hover:text-red-300 transition-colors" @click="show.drawer = true, show.create = true">
           <div class="gap-4 flex items-center">
             <Icon size="30" name="ion:add-circle-outline" />
             <span>Nowy wpis</span>
