@@ -1,5 +1,12 @@
 <script setup lang="ts">
 const show = useShowPost()
+const post = usePost()
+
+function createPost() {
+  show.value.drawer = true
+  show.value.create = true
+  post.value = cleanPost()
+}
 </script>
 
 <template>
@@ -12,7 +19,7 @@ const show = useShowPost()
             <span>Kokpit</span>
           </nuxt-link>
         </li>
-        <li class="flex items-center text-white cursor-pointer hover:text-red-300 transition-colors" @click="show.drawer = true, show.create = true">
+        <li class="flex items-center text-white cursor-pointer hover:text-red-300 transition-colors" @click="createPost()">
           <div class="gap-4 flex items-center">
             <Icon size="30" name="ion:add-circle-outline" />
             <span>Nowy wpis</span>

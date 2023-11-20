@@ -28,3 +28,26 @@ export function convertTimestamp(timestamp: Timestamp): string {
   const date = new Date(timestamp.seconds * 1000)
   return date.toLocaleString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
+
+export function cleanPost() {
+  return {
+    title: '',
+    slug: '',
+    meta_title: '',
+    meta_description: '',
+    created_at: '',
+  }
+}
+export function watchShowDrawer(show?: statePost) {
+  window.addEventListener('keydown', (e) => {
+    if (show.value && e.key === 'Escape') {
+      show.value.drawer = false
+      show.value.edit = false
+      show.value.create = false
+    }
+  })
+
+  watch(() => show.value, (value) => {
+    // You can still do something here when show.value changes if needed
+  })
+}

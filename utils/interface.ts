@@ -16,4 +16,5 @@ export interface Timestamp {
 export interface statePost {
   edit: boolean
   create: boolean
+  drawer: boolean
 }

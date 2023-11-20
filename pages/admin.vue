@@ -1,9 +1,15 @@
 <script setup lang="ts">
+const show = useShowPost()
+
 definePageMeta({
   layout: false,
   middleware: [
     'admin',
   ],
+})
+
+onMounted(() => {
+  watchShowDrawer(show)
 })
 </script>
 

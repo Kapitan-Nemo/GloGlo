@@ -3,25 +3,16 @@ import { Timestamp, collection, getFirestore } from '@firebase/firestore'
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import type { IPost } from '@/utils/interface'
 import DEFAULT_POST from '@/utils/constants'
+import { usePost } from '~/composables/states'
+import { cleanPost } from '~/composables/helpers'
 
 const editID = useEditID()
 const show = useShowPost()
 const allPosts = useAllPosts()
-const post = ref<IPost>(DEFAULT_POST)
+const post = usePost()
 
 onMounted(async () => {
   createSlug(post)
-})
-
-watch(() => show.value.edit, (value) => {
-  if (value) {
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape')
-        show.value.drawer = false
-      show.value.edit = false
-      show.value.create = false
-    })
-  }
 })
 
 watch(() => editID.value, async (value) => {
@@ -75,6 +66,9 @@ async function saveProduct() {
         useToast(error, 'error')
       })
   }
+  // Reset post and close drawer
+  post.value = cleanPost()
+  show.value.drawer = false
 }
 </script>
 

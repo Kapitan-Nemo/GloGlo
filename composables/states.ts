@@ -1,3 +1,5 @@
+import DEFAULT_POST from '~/utils/constants'
+
 export function useShowPost() {
   return useState <statePost> ('useShowPost', () => {
     return {
@@ -14,4 +16,8 @@ export function useEditID() {
 
 export function useAllPosts() {
   return useState <IPost[]> ('useAllPosts', () => [])
+}
+
+export function usePost() {
+  return useState <IPost> ('usePost', () => DEFAULT_POST)
 }

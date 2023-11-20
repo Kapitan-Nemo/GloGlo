@@ -1,5 +1,10 @@
 <script setup lang="ts">
 const auth = useAuth()
+const photo = ref()
+
+onMounted(() => {
+  photo.value = auth.userPhoto
+})
 </script>
 
 <template>
@@ -17,7 +22,7 @@ const auth = useAuth()
           </button>
 
           <div class="flex items-center ml-3">
-            <img class="w-8 h-8" :src="auth?.userPhoto || ''" alt="user photo">
+            <img class="w-8 h-8" :src="photo" alt="user photo">
           </div>
         </div>
       </div>
