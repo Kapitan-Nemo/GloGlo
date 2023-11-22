@@ -46,8 +46,4 @@ export function watchShowDrawer(show?: statePost) {
       show.value.create = false
     }
   })
-
-  watch(() => show.value, (value) => {
-    // You can still do something here when show.value changes if needed
-  })
 }
