@@ -10,6 +10,10 @@ export function useShowPost() {
   })
 }
 
+export function useShowMedia() {
+  return useState <boolean> ('useShowMedia', () => false)
+}
+
 export function useEditID() {
   return useState <string> ('useEditID', () => '')
 }

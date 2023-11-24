@@ -21,6 +21,7 @@ onMounted(() => {
       <div class="p-6 w-full">
         <AdminPostsList />
         <AdminAddPost />
+        <AdminAddMedia />
       </div>
     </div>
   </div>
