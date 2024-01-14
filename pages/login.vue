@@ -2,12 +2,15 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from 'firebase/auth'
 
 const auth = useAuth()
+const router = useRouter()
 
 function singGoogle() {
   const provider = new GoogleAuthProvider()
   signInWithPopup(getAuth(), provider)
     .then(() => {
-      useToast('Login success', 'success')
+      // go to admin panel
+      router.push('/admin')
+      useToast('Jazda z kurwami', 'success')
     })
     .catch((error) => {
       useToast(error, 'error')
@@ -17,7 +20,7 @@ function singGoogle() {
 function singOut() {
   signOut(getAuth())
     .then(async () => {
-      useToast('Logout success', 'success')
+      useToast('No i chuj, no i cześć.', 'success')
       auth.$reset()
     })
     .catch((error) => {
@@ -36,8 +39,12 @@ onMounted(() => {
       <h2 class="text-2xl mb-4">
         <ClientOnly>
           <template #default>
-            <span v-if="auth.userName">Cześć, {{ auth.userName }} <span class="wave">👋</span></span>
-            <span v-else>Cześć, nieznajomy <span class="wave">👋</span></span>
+            <div v-if="auth.userName">
+              Witaj Mój Panie. <span class="wave">👋</span>
+            </div>
+            <div v-else>
+              Elo, zaloguj się mordo.  <span class="wave">👋</span>
+            </div>
           </template>
         </ClientOnly>
       </h2>
@@ -47,13 +54,10 @@ onMounted(() => {
     </div>
 
     <div v-if="!auth.logged" class="container flex items-center flex-col">
-      <div class="google-btn cursor-pointer" @click="singGoogle">
-        <div class="google-icon-wrapper">
-          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" width="705.6" height="720" viewBox="0 0 186.69 190.5" xmlns:v="https://vecta.io/nano"><g transform="translate(1184.583 765.171)"><path clip-path="none" mask="none" d="M-1089.333-687.239v36.888h51.262c-2.251 11.863-9.006 21.908-19.137 28.662l30.913 23.986c18.011-16.625 28.402-41.044 28.402-70.052 0-6.754-.606-13.249-1.732-19.483z" fill="#4285f4" /><path clip-path="none" mask="none" d="M-1142.714-651.791l-6.972 5.337-24.679 19.223h0c15.673 31.086 47.796 52.561 85.03 52.561 25.717 0 47.278-8.486 63.038-23.033l-30.913-23.986c-8.486 5.715-19.31 9.179-32.125 9.179-24.765 0-45.806-16.712-53.34-39.226z" fill="#34a853" /><path clip-path="none" mask="none" d="M-1174.365-712.61c-6.494 12.815-10.217 27.276-10.217 42.689s3.723 29.874 10.217 42.689c0 .086 31.693-24.592 31.693-24.592-1.905-5.715-3.031-11.776-3.031-18.098s1.126-12.383 3.031-18.098z" fill="#fbbc05" /><path d="M-1089.333-727.244c14.028 0 26.497 4.849 36.455 14.201l27.276-27.276c-16.539-15.413-38.013-24.852-63.731-24.852-37.234 0-69.359 21.388-85.032 52.561l31.692 24.592c7.533-22.514 28.575-39.226 53.34-39.226z" fill="#ea4335" clip-path="none" mask="none" /></g></svg>
-        </div>
-        <p class="btn-text">
-          <strong>Sign in with google</strong>
-        </p>
+      <div class="cursor-pointer" @click="singGoogle">
+        <button class="px-8 py-2 bg-white border-4 border-black text-black font-bold">
+          Super logowanie kurwo
+        </button>
       </div>
     </div>
   </div>
@@ -77,42 +81,5 @@ onMounted(() => {
    50% { transform: rotate(10.0deg) }
    60% { transform: rotate( 0.0deg) }
   100% { transform: rotate( 0.0deg) }
-}
-
-.google-btn {
-  width: 230px;
-  height: 42px;
-  background-color: #4285f4;
-  border-radius: 2px;
-  box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
-  .google-icon-wrapper {
-    position: absolute;
-    margin-top: 1px;
-    margin-left: 1px;
-    width: 40px;
-    height: 40px;
-    border-radius: 2px;
-    background-color: white;
-  }
-  .google-icon {
-    position: absolute;
-    margin-top: 11px;
-    margin-left: 11px;
-    width: 18px;
-    height: 18px;
-  }
-  .btn-text {
-    float: right;
-    margin: 11px 11px 0 0;
-    color: #fff;
-    font-size: 14px;
-    letter-spacing: 0.2px;
-  }
-  &:hover {
-    box-shadow: 0 0 6px #4285f4;
-  }
-  &:active {
-    background: #1669F2;
-  }
 }
 </style>
